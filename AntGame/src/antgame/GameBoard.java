@@ -44,6 +44,8 @@ public class GameBoard {
     
     
     
+    
+    
     //True if position is rocky, false if clear.
     public boolean rocky(Coordinate position){
         
@@ -90,6 +92,7 @@ public class GameBoard {
         Cell cell = getCellAtPosition(position);
         // check if cell has ant or not?
         Ant ant = cell.getAnt();
+        //move this out to upper wrapper?
         ants.remove(ant);
         ant.setCurrentPosition(null);
         clear_ant_at(position);
@@ -178,6 +181,10 @@ public class GameBoard {
             System.out.println("");
         }
         
+    }
+
+    public Coordinate adjacent_cell(Coordinate position, int direction) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
  

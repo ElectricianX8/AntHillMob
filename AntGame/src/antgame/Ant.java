@@ -97,7 +97,7 @@ public class Ant {
     /**
      * @return Returns whether the ant currently holds food.
      */
-    public boolean getHasFood() {
+    public boolean hasFood() {
         return hasFood;
     }
 

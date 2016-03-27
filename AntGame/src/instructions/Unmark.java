@@ -3,38 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package instructions;
 
 /**
  *
  * @author alisaleem
  */
-public class Mark extends Instruction {
-    private int markToLeave;
+public class Unmark extends Instruction {
+    private int markToRemove;
     private int stateToGoTo;
     
-    public Mark(){
-        markToLeave = 0;
+    public Unmark(){
+        markToRemove = 0;
         stateToGoTo = 0;
     }
     
-    public Mark(int markToLeave, int stateToGoTo){
-        this.markToLeave = markToLeave;
+    public Unmark(int markToRemove, int stateToGoTo){
+        this.markToRemove = markToRemove;
         this.stateToGoTo = stateToGoTo;
     }
 
     /**
-     * @return the markToLeave
+     * @return the markToRemove
      */
-    public int getMarkToLeave() {
-        return markToLeave;
+    public int getMarkToRemove() {
+        return markToRemove;
     }
 
     /**
-     * @param markToLeave the markToLeave to set
+     * @param markToRemove the markToRemove to set
      */
-    public void setMarkToLeave(int markToLeave) {
-        this.markToLeave = markToLeave;
+    public void setMarkToRemove(int markToRemove) {
+        this.markToRemove = markToRemove;
     }
 
     /**
@@ -52,6 +52,8 @@ public class Mark extends Instruction {
     }
     
     public String toString() {
-        return "Mark";
+        return "Unmark";
     }
+    
+    
 }

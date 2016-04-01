@@ -3,44 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package instructions;
 
 /**
  *
  * @author alisaleem
  */
-public class Sense extends Instruction {
-    private int senseDirection;
+public class Pickup extends Instruction {
     private int trueState;
     private int falseState;
-    private Condition cond;
     
-    public Sense(){
-        senseDirection = 0;
+    Pickup(){
         trueState = 0;
         falseState = 0;
-        cond = null;
     }
     
-    public Sense(int senseDirection, int trueState, int falseState, Condition cond){
-        this.senseDirection = senseDirection;
+    Pickup(int trueState, int falseState){
         this.trueState = trueState;
         this.falseState = falseState;
-        this.cond = cond;
-    }
-
-    /**
-     * @return the senseDirection
-     */
-    public int getSenseDirection() {
-        return senseDirection;
-    }
-
-    /**
-     * @param senseDirection the senseDirection to set
-     */
-    public void setSenseDirection(int senseDirection) {
-        this.senseDirection = senseDirection;
     }
 
     /**
@@ -70,22 +50,8 @@ public class Sense extends Instruction {
     public void setFalseState(int falseState) {
         this.falseState = falseState;
     }
-
-    /**
-     * @return the cond
-     */
-    public Condition getCond() {
-        return cond;
-    }
-
-    /**
-     * @param cond the cond to set
-     */
-    public void setCond(Condition cond) {
-        this.cond = cond;
-    }
     
     public String toString() {
-        return "Sense";
+        return "Pickup";
     }
 }

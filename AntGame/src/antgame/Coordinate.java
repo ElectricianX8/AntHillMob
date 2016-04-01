@@ -6,8 +6,7 @@
 package antgame;
 
 /**
- *
- * @author alisaleem
+ * Represents an (x,y) coordinate.
  */
 public class Coordinate {
     private int x;
@@ -19,28 +18,32 @@ public class Coordinate {
     }
 
     /**
-     * @return the x
+     * Returns the x coordinate.
+     * @return x coordinate.
      */
     public int getX() {
         return x;
     }
 
     /**
-     * @param x the x to set
+     * Sets the x coordinate.
+     * @param x The x coordinate to set.
      */
     public void setX(int x) {
         this.x = x;
     }
 
     /**
-     * @return the y
+     * Returns the y coordinate.
+     * @return y coordinate.
      */
     public int getY() {
         return y;
     }
 
     /**
-     * @param y the y to set
+     * Sets the y coordinate.
+     * @param y The y coordinate to set.
      */
     public void setY(int y) {
         this.y = y;

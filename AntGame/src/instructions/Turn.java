@@ -3,38 +3,40 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package instructions;
+
+import antgame.TurnDirection;
 
 /**
  *
  * @author alisaleem
  */
-public class Unmark extends Instruction {
-    private int markToRemove;
+public class Turn {
+    private TurnDirection turnDirection;
     private int stateToGoTo;
     
-    public Unmark(){
-        markToRemove = 0;
+    public Turn(){
+        turnDirection = null;
         stateToGoTo = 0;
     }
     
-    public Unmark(int markToRemove, int stateToGoTo){
-        this.markToRemove = markToRemove;
-        this.stateToGoTo = stateToGoTo;
+    public Turn(TurnDirection td, int s){
+        turnDirection = td;
+        stateToGoTo = s;
     }
 
     /**
-     * @return the markToRemove
+     * @return the turnDirection
      */
-    public int getMarkToRemove() {
-        return markToRemove;
+    public TurnDirection getTurnDirection() {
+        return turnDirection;
     }
 
     /**
-     * @param markToRemove the markToRemove to set
+     * @param turnDirection the turnDirection to set
      */
-    public void setMarkToRemove(int markToRemove) {
-        this.markToRemove = markToRemove;
+    public void setTurnDirection(TurnDirection turnDirection) {
+        this.turnDirection = turnDirection;
     }
 
     /**
@@ -52,8 +54,6 @@ public class Unmark extends Instruction {
     }
     
     public String toString() {
-        return "Unmark";
+        return "Turn";
     }
-    
-    
 }

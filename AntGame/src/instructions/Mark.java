@@ -3,38 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package instructions;
 
 /**
  *
  * @author alisaleem
  */
-public class Turn {
-    private TurnDirection turnDirection;
+public class Mark extends Instruction {
+    private int markToLeave;
     private int stateToGoTo;
     
-    public Turn(){
-        turnDirection = null;
+    public Mark(){
+        markToLeave = 0;
         stateToGoTo = 0;
     }
     
-    public Turn(TurnDirection td, int s){
-        turnDirection = td;
-        stateToGoTo = s;
+    public Mark(int markToLeave, int stateToGoTo){
+        this.markToLeave = markToLeave;
+        this.stateToGoTo = stateToGoTo;
     }
 
     /**
-     * @return the turnDirection
+     * @return the markToLeave
      */
-    public TurnDirection getTurnDirection() {
-        return turnDirection;
+    public int getMarkToLeave() {
+        return markToLeave;
     }
 
     /**
-     * @param turnDirection the turnDirection to set
+     * @param markToLeave the markToLeave to set
      */
-    public void setTurnDirection(TurnDirection turnDirection) {
-        this.turnDirection = turnDirection;
+    public void setMarkToLeave(int markToLeave) {
+        this.markToLeave = markToLeave;
     }
 
     /**
@@ -52,6 +52,6 @@ public class Turn {
     }
     
     public String toString() {
-        return "Turn";
+        return "Mark";
     }
 }

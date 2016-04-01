@@ -1,13 +1,14 @@
 package antgame;
 
 /**
- *
- * @author alisaleem
+ * Ant class
  */
 public class Ant {
 
-    private int id;
-    private Colour colour;
+    private static int idCount = 0;
+    
+    private final int id;
+    private final Colour colour;
     private int state;
     private int resting;
     private int direction;
@@ -15,68 +16,57 @@ public class Ant {
     private Coordinate currentPosition;
     private boolean isAlive;
 
-    public Ant(int id, Colour colour, int direction, int x, int y) {
-        this.id = id;
+    public Ant(Colour colour, int direction, int x, int y) {
+        
         this.colour = colour;
+        this.direction = direction;
+        id = ++idCount;
         state = 0;
         resting = 0;
-        this.direction = direction;
         hasFood = false;
-        currentPosition = new Coordinate(x, y);
         isAlive = true;
+        currentPosition = new Coordinate(x, y);
     }
 
     /**
-     * @return the id
+     * @return Returns ID number of the ant.
      */
     public int getId() {
         return id;
     }
-
+    
     /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the colour
+     * @return Returns the colour of the ant.
      */
     public Colour getColour() {
         return colour;
     }
 
     /**
-     * @param colour the colour to set
-     */
-    public void setColour(Colour colour) {
-        this.colour = colour;
-    }
-
-    /**
-     * @return the state
+     * @return Returns the state of the ant.
      */
     public int getState() {
         return state;
     }
 
     /**
-     * @param state the state to set
+     * Sets the state of the ant.
+     * @param state The state to set
      */
     public void setState(int state) {
         this.state = state;
     }
 
     /**
-     * @return the resting
+     * @return Returns the resting count of an ant
      */
     public int getResting() {
         return resting;
     }
 
     /**
-     * @param resting the resting to set
+     * Sets the resting count of an ant
+     * @param resting The amount of time to rest before next move
      */
     public void setResting(int resting) {
         this.resting = resting;
@@ -90,56 +80,64 @@ public class Ant {
     }
 
     /**
-     * @return the direction
+     * @return Returns the direction of the ant.
      */
     public int getDirection() {
         return direction;
     }
 
     /**
-     * @param direction the direction to set
+     * Sets the direction of the ant
+     * @param direction The direction to set.
      */
     public void setDirection(int direction) {
         this.direction = direction;
     }
 
     /**
-     * @return the hasFood
+     * @return Returns whether the ant currently holds food.
      */
-    public boolean getHasFood() {
+    public boolean hasFood() {
         return hasFood;
     }
 
     /**
-     * @param hasFood the hasFood to set
+     * Sets whether the ant currently holds fold or not.
+     * @param hasFood True if ant has food, false otherwise.
      */
     public void setHasFood(boolean hasFood) {
         this.hasFood = hasFood;
     }
 
     /**
-     * @return the currentPosition
+     * @return Returns the current position of the ant.
      */
     public Coordinate getCurrentPosition() {
         return currentPosition;
     }
 
     /**
-     * @return the isAlive
+     *
+     * @return Returns whether the ant is alive or not.
      */
     public boolean getIsAlive() {
         return isAlive;
     }
 
     /**
-     * @param isAlive the isAlive to set
+     * Sets whether the ant is alive or not.
+     * @param isAlive True if alive, false otherwise
      */
     public void setIsAlive(boolean isAlive) {
         this.isAlive = isAlive;
     }
     
-    public int numAdjacentAnts(){
-        throw new UnsupportedOperationException("Method not yet defined");
+    /**
+     * Sets the current position of the ant.
+     * @param position Position of the ant.
+     */
+    public void setCurrentPosition(Coordinate position){
+        currentPosition = position;
     }
 
 }

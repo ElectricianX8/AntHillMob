@@ -1,4 +1,4 @@
-package antgame;
+package instructions;
 
 /**
  *

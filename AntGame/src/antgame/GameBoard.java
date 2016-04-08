@@ -38,6 +38,9 @@ public class GameBoard {
     
     public Cell getCellAtPosition(Coordinate position){
         
+        //boundary check here or outside??
+        //add isvalid position method somewhere, cover for it in game class?
+        
         return board[position.getX()][position.getY()];
         
     }
@@ -94,7 +97,9 @@ public class GameBoard {
         Ant ant = cell.getAnt();
         //move this out to upper wrapper?
         ants.remove(ant);
+        //maybe don't delete here, simply check death flag to true, and check in step
         ant.setCurrentPosition(null);
+        ant.setIsAlive(false);
         clear_ant_at(position);
         
     }
@@ -183,8 +188,64 @@ public class GameBoard {
         
     }
 
+    //throw null if out of bounds?
     public Coordinate adjacent_cell(Coordinate position, int direction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        
+        int x = position.getX();
+        int y = position.getY();
+        boolean isEven;
+        
+        //what does it mean for coordinates to be even? the same number for both? 
+
+        isEven = y%2==0;         //check if even or not
+        
+        if(direction==0){
+            x+=1;
+        }
+        else if(direction==1){
+            if(isEven){
+                y+=1;
+            }else{
+                x+=1;
+                y+=1;
+            }
+        }
+        else if(direction==2){
+            if(isEven){
+                x-=1;
+                y+=1;
+            }else{
+                y+=1;
+            }
+        }
+        else if(direction==3){
+            x-=1;
+        }
+        else if(direction==4){
+            if(isEven){
+                x-=1;
+                y-=1;
+            }else{
+                y-=1;
+            }
+        }
+        else if(direction==5){
+            if(isEven){
+                y-=1;
+            }else{
+                x+=1;
+                y-=1;
+            }
+        }
+        
+        if(x<0 || y<0 || x > board.length-1 || y > board[0].length-1){
+            return null;
+        }
+        else{
+            return new Coordinate(x, y);
+        }
+       
     }
     
  

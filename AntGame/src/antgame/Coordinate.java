@@ -7,6 +7,7 @@ package antgame;
 
 /**
  * Represents an (x,y) coordinate.
+ * [][] where first [] is the row, second [] the column
  */
 public class Coordinate {
     private int x;

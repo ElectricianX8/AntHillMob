@@ -102,7 +102,7 @@ public class GameBoardTest {
     
     
     @Test
-    public void manageAnts(){
+    public void manageAntsTest(){
         ArrayList<Ant> ants = new ArrayList<Ant>();
         Ant ant = new Ant(Colour.BLACK, 5, 0,0);
         Ant ant2 = new Ant(Colour.RED, 5, 0,1);
@@ -111,6 +111,8 @@ public class GameBoardTest {
         ants.add(ant2);
         ants.add(ant3);
         
+        
+        //static id in ants may cause some test errors, probably due to static not resetting upon test retakes sometimes
         GameBoard board = new GameBoard(10, 10, ants);
         Coordinate cell = new Coordinate(0, 0);
         Coordinate cell2 = new Coordinate(0, 1);
@@ -137,5 +139,67 @@ public class GameBoardTest {
         
         
     }
+    
+    
+    
+    @Test
+    public void AdjacentCellTest(){
+        
+        ArrayList<Ant> ants = new ArrayList<Ant>();
+        Ant ant = new Ant(Colour.BLACK, 5, 0,0);
+        Ant ant2 = new Ant(Colour.RED, 5, 0,1);
+        Ant ant3 = new Ant(Colour.RED, 5, 1,1);
+        ants.add(ant);
+        ants.add(ant2);
+        ants.add(ant3);
+        
+        GameBoard board = new GameBoard(10, 10, ants);
+        Coordinate cell = new Coordinate(0, 0);
+        Coordinate cell2 = new Coordinate(0, 1);
+        Coordinate cell3 = new Coordinate(1, 1);
+        
+        int testX, testY;
+        
+        Coordinate testCord = board.adjacent_cell(cell, 0);
+        testX = testCord.getX();
+        testY = testCord.getY();
+        assertEquals(1, testX);
+        assertEquals(0, testY);
+        
+        testCord = board.adjacent_cell(cell, 1);
+        testX = testCord.getX();
+        testY = testCord.getY();
+        assertEquals(0, testX);
+        assertEquals(1, testY);
+        
+        
+        testCord = board.adjacent_cell(cell, 5);
+        assertEquals(null, testCord);
+        
+        testCord = board.adjacent_cell(cell, 4);
+        assertEquals(null, testCord);
+        
+        testCord = board.adjacent_cell(cell, 3);
+        assertEquals(null, testCord);
+        
+        testCord = board.adjacent_cell(cell, 2);
+        assertEquals(null, testCord);
+        
+        testCord = board.adjacent_cell(cell3, 3);
+        testX = testCord.getX();
+        testY = testCord.getY();
+        assertEquals(0, testX);
+        assertEquals(1, testY);
+        
+        
+        testCord = board.adjacent_cell(cell3, 4);
+        testX = testCord.getX();
+        testY = testCord.getY();
+        assertEquals(1, testX);
+        assertEquals(0, testY); //check here, not sure what even is meant to do here
+        
+    }
+    
+   
 
 }

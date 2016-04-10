@@ -23,6 +23,7 @@ public class WorldParser {
 
     }
 
+    //add exceptions for all this
     public GameBoard parse(String filename) throws FileNotFoundException, IOException, InvalidMapTokenException {
 
         Cell[][] board;
@@ -31,6 +32,8 @@ public class WorldParser {
         //trim sentence, scanToken(x) into cell, into board, maybe n-1 for size? check
         BufferedReader reader = new BufferedReader(new FileReader(filename));
 
+        
+        //add exceptions for all this
         int height = Integer.parseInt(reader.readLine());
         int width = Integer.parseInt(reader.readLine());
         System.out.println(height + " " + width);
@@ -39,7 +42,7 @@ public class WorldParser {
 
         String line;
 
-        int columnCount = 0;
+        int rowCount = 0;
         while ((line = reader.readLine()) != null) {
             String trim_line = line.replaceAll("\\s+", "");
             for (int i = 0; i < trim_line.length(); i++) {
@@ -47,20 +50,21 @@ public class WorldParser {
                 
 
                 if (cell.isAnthill(Colour.RED)) {
-                    Ant ant = new Ant(Colour.RED, 0, columnCount, i); //what direction?
+                    Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
                     cell.setOccupied(ant);
                     ants.add(ant);
+                    //System.out.println("red anthill cords: " + rowCount + " " + i);
                 } else if (cell.isAnthill(Colour.BLACK)) {
-                    Ant ant = new Ant(Colour.BLACK, 0, columnCount, i); //what direction?
+                    Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
                     cell.setOccupied(ant);
                     ants.add(ant);
                 }
                 
-                board[columnCount][i] = cell;
+                board[rowCount][i] = cell;
             }
-            columnCount++;
+            rowCount++;
         }
-        System.out.println("Columns done: " + columnCount);
+        System.out.println("Columns done: " + rowCount);
         
         return new GameBoard(board, ants);
     }

@@ -32,10 +32,39 @@ public class Game {
         }
         
     }
+    
+    public int turn(TurnDirection turnDirection, int direction){
+        
+        if(turnDirection == TurnDirection.LEFT){
+            return (direction+5) % 6;
+        }
+        else{
+            return (direction+1) % 6;
+        }
+    }
+    
+    public Coordinate sensed_cell(Coordinate position, int direction, SenseDirection sense){
+        
+        if(sense==SenseDirection.HERE){
+            return position;
+        }
+        else if(sense==SenseDirection.AHEAD){
+            return board.adjacent_cell(position, direction);
+        }
+        else if(sense==SenseDirection.LEFTAHEAD){
+            return board.adjacent_cell(position, turn(TurnDirection.LEFT, direction));
+        }
+        else if(sense==SenseDirection.RIGHTAHEAD){
+            return board.adjacent_cell(position, turn(TurnDirection.RIGHT, direction));
+        }else{
+            return null;
+        }
+    }
 
     
     public boolean cell_matches(Coordinate position, Condition condition, Colour colour) {
 
+        //convert this into switch statement to make it easier to read?
         if (board.rocky(position)) {
             return condition.getCondition() == ConditionType.ROCK;
         } else {
@@ -75,5 +104,59 @@ public class Game {
           }
         }
     }
+    
+    
+    public int adjacent_ants(Coordinate position, Colour colour){
+        
+        int antCount = 0;
+        
+        //check all directions
+        for(int i=0; i<6; i++){
+            
+            Coordinate adj_cord = board.adjacent_cell(position, i);
+
+            //if not null, and there's an ant in the position of the same colour, count
+            if(adj_cord!= null && board.some_ant_is_at(adj_cord) && board.ant_at(adj_cord).getColour() == colour){
+                antCount++;
+                //System.out.println("Surround check: " + adj_cord.getX() + " " + adj_cord.getY() + " ant check:" + board.some_ant_is_at(adj_cord));
+            }
+        }
+        
+        return antCount;
+    }
+    
+    //untested, double check for correctness
+    public void check_for_surrounded_ant_at(Coordinate position){
+        
+        if(board.some_ant_is_at(position)){
+            Ant ant = board.ant_at(position);
+            
+            if(adjacent_ants(position, other_color(ant.getColour())) >=5){
+                board.kill_ant_at(position);
+                if(ant.hasFood()){
+                    int foodAt = board.food_at(position);
+                    board.set_food_at(position, foodAt+3+1);
+                }
+                else{
+                    int foodAt = board.food_at(position);
+                    board.set_food_at(position, foodAt+3+0); 
+                }
+            }
+        }
+    }
+    
+    //DOUBLE CHECK THIS, not sure what this exactly does, also untested
+    public void check_for_surrounded_ants(Coordinate position){
+        
+        
+        check_for_surrounded_ant_at(position);
+        
+        for(int i=0; i<6; i++){
+            check_for_surrounded_ant_at(board.adjacent_cell(position, i));
+        }
+    }
+    
+    
+    
 
 }

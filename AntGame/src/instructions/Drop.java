@@ -9,7 +9,7 @@ package instructions;
  *
  * @author alisaleem
  */
-public class Drop {
+public class Drop extends Instruction {
     private int stateToGoTo;
   
     public Drop(){

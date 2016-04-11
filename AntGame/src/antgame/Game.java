@@ -7,6 +7,7 @@ package antgame;
 
 import instructions.Condition;
 import instructions.ConditionType;
+import instructions.SenseDirection;
 
 
 
@@ -54,10 +55,10 @@ public class Game {
         else if(sense==SenseDirection.AHEAD){
             return board.adjacent_cell(position, direction);
         }
-        else if(sense==SenseDirection.LEFTAHEAD){
+        else if(sense==SenseDirection.LEFT_AHEAD){
             return board.adjacent_cell(position, turn(TurnDirection.LEFT, direction));
         }
-        else if(sense==SenseDirection.RIGHTAHEAD){
+        else if(sense==SenseDirection.RIGHT_AHEAD){
             return board.adjacent_cell(position, turn(TurnDirection.RIGHT, direction));
         }else{
             return null;
@@ -78,10 +79,10 @@ public class Game {
           else if(condition.getCondition() == ConditionType.FOE){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour;
           }
-          else if(condition.getCondition() == ConditionType.FRIENDWITHFOOD){
+          else if(condition.getCondition() == ConditionType.FRIEND_WITH_FOOD){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() == colour && board.ant_at(position).hasFood();
           }
-          else if(condition.getCondition() == ConditionType.FOEWITHFOOD){
+          else if(condition.getCondition() == ConditionType.FOE_WITH_FOOD){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour && board.ant_at(position).hasFood();
           }
           else if(condition.getCondition() == ConditionType.FOOD){
@@ -93,13 +94,13 @@ public class Game {
           else if(condition.getCondition() == ConditionType.MARKER){
               return board.check_marker_at(position, colour, condition.getMark());
           }
-          else if(condition.getCondition() == ConditionType.FOEMARKER){
+          else if(condition.getCondition() == ConditionType.FOE_MARKER){
               return board.check_any_marker_at(position, other_color(colour));
           }
           else if(condition.getCondition() == ConditionType.HOME){
               return board.anthill_at(position, colour);
           }
-          else if(condition.getCondition() == ConditionType.FOEHOME){
+          else if(condition.getCondition() == ConditionType.FOE_HOME){
               return board.anthill_at(position, other_color(colour));
           }
           else{

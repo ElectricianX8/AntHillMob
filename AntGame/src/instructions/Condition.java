@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package instructions;
 
 /**
@@ -12,24 +6,44 @@ package instructions;
  * by Marker condition.
  */
 public class Condition {
-    
     private ConditionType condition;
     private int markNumber;
 
+    /**
+     * Constructor used for most conditions
+     * @param condition Must be of ConditionType
+     */
     public Condition(ConditionType condition){
         this.condition = condition;
         markNumber = 0;
     }
     
-    public Condition(ConditionType condition, int mark){
-        this.condition = condition;
-        markNumber = mark;
+    /**
+     * Constructor used with Marker condition
+     * @param condition Must be of ConditionType
+     * @param mark Marker that we're sensing for
+     */
+    public Condition(ConditionType condition, int mark) throws NotValidInstructionException{
+        if (condition == ConditionType.MARKER){
+            this.condition = condition;
+            markNumber = mark;
+        } else {
+            throw new NotValidInstructionException("Only Marker Instructions accept a parameter");
+        }
     }
     
+    /**
+     * Gets the ConditionType to be *sensed* for
+     * @return ConditionType
+     */
     public ConditionType getCondition(){
         return condition;
     }
 
+    /**
+     * Gets marker number to sense for
+     * @return marker to sense for
+     */
     public int getMark(){
         return markNumber;
     }

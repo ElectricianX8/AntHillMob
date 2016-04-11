@@ -1,28 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package instructions;
 
 /**
- *
- * @author alisaleem
+ * Sense Instruction class.
+ * 
  */
 public class Sense extends Instruction {
-    private int senseDirection;
+    private SenseDirection senseDirection;
     private int trueState;
     private int falseState;
     private Condition cond;
     
+    /**
+     * Default constructor for testing.
+     * To be removed before final submission.
+     */
     public Sense(){
-        senseDirection = 0;
+        senseDirection = SenseDirection.HERE;
         trueState = 0;
         falseState = 0;
         cond = null;
     }
     
-    public Sense(int senseDirection, int trueState, int falseState, Condition cond){
+    /**
+     * Constructor for Sense class. Takes direction to sense, states to transition
+     * to for true or false conditions, and a condition to sense for.
+     * @param senseDirection location to search at.
+     * @param trueState State to go to if condition returns true
+     * @param falseState State to go to if false
+     * @param cond Condition to *sense* for
+     */
+    public Sense(SenseDirection senseDirection, int trueState, int falseState, Condition cond){
         this.senseDirection = senseDirection;
         this.trueState = trueState;
         this.falseState = falseState;
@@ -30,62 +37,76 @@ public class Sense extends Instruction {
     }
 
     /**
+     * Gets the location to sense in.
      * @return the senseDirection
      */
-    public int getSenseDirection() {
+    public SenseDirection getSenseDirection() {
         return senseDirection;
     }
 
     /**
+     * Sets the direction to sense in.
      * @param senseDirection the senseDirection to set
      */
-    public void setSenseDirection(int senseDirection) {
+    public void setSenseDirection(SenseDirection senseDirection) {
         this.senseDirection = senseDirection;
     }
 
     /**
-     * @return the trueState
+     * Get the state to go to if true.
+     * @return state to go to if true
      */
     public int getTrueState() {
         return trueState;
     }
 
     /**
-     * @param trueState the trueState to set
+     * Set the state to go to if true.
+     * @param trueState the state to go to if true
      */
     public void setTrueState(int trueState) {
         this.trueState = trueState;
     }
 
     /**
-     * @return the falseState
+     * Get the state to go to if false.
+     * @return the state to go to if false.
      */
     public int getFalseState() {
         return falseState;
     }
 
     /**
-     * @param falseState the falseState to set
+     * Set the state to go to if false.
+     * @param falseState the State to go to if false.
      */
     public void setFalseState(int falseState) {
         this.falseState = falseState;
     }
 
     /**
-     * @return the cond
+     * Get the condition to check for.
+     * @return the condition this instruction checks for.
      */
     public Condition getCond() {
         return cond;
     }
 
     /**
-     * @param cond the cond to set
+     * Set the condition to check for.
+     * @param cond the condition to check for
      */
     public void setCond(Condition cond) {
         this.cond = cond;
     }
     
+    /**
+     * Returns this object as a string.
+     * @return 
+     */
+    @Override
     public String toString() {
-        return "Sense";
+        return "Sense "+this.senseDirection+" "+this.trueState+" "+
+                this.falseState+" "+this.cond;
     }
 }

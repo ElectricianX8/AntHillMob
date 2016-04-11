@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package antgame;
+package instructions;
 
 /**
- *
- *
+ * Enum for Directions that can be sensed in.
  */
 public enum SenseDirection {
-    
-    HERE, AHEAD, LEFTAHEAD, RIGHTAHEAD;
-
+    HERE,
+    AHEAD,
+    LEFT_AHEAD,
+    RIGHT_AHEAD
 }

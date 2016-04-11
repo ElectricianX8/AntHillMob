@@ -9,7 +9,7 @@ package instructions;
  *
  * @author alisaleem
  */
-public class Move extends Instruction {
+public class Move {
 
     private int stateToGoToIfClear;
     private int StateToGoToIfBlocked;

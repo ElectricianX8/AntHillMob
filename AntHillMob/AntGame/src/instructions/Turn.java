@@ -11,7 +11,7 @@ import antgame.TurnDirection;
  *
  * @author alisaleem
  */
-public class Turn extends Instruction {
+public class Turn {
     private TurnDirection turnDirection;
     private int stateToGoTo;
     

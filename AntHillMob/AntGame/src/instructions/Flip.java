@@ -4,7 +4,7 @@ package instructions;
  *
  * @author alisaleem
  */
-public class Flip extends Instruction {
+public class Flip {
     private int n;
     private int nisOState;
     private int nGTOState;

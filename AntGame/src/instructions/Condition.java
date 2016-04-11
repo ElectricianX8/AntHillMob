@@ -4,11 +4,12 @@
  * and open the template in the editor.
  */
 
-package antgame;
+package instructions;
 
 /**
- *
- * 
+ * Conditions that can be *sensed* by Sense class. 
+ * Comprises of ConditionType Enum, plus mark number that is used
+ * by Marker condition.
  */
 public class Condition {
     

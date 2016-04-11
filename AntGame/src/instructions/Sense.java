@@ -5,8 +5,6 @@
  */
 package instructions;
 
-import antgame.Condition;
-
 /**
  *
  * @author alisaleem

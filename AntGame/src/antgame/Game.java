@@ -5,6 +5,9 @@
  */
 package antgame;
 
+import instructions.Condition;
+import instructions.ConditionType;
+
 
 
 

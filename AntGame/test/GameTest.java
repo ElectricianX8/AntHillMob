@@ -5,6 +5,7 @@
  */
 
 import antgame.*;
+import instructions.*;
 import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -60,7 +61,7 @@ public class GameTest {
         assertEquals(28, testCord.getX());
         boolean res = game.cell_matches(testCord, cond, Colour.RED);
         assertTrue(res);
-        testCord = game.sensed_cell(cord, 0, SenseDirection.RIGHTAHEAD);
+        testCord = game.sensed_cell(cord, 0, SenseDirection.RIGHT_AHEAD);
         assertEquals(42, testCord.getY());
         assertEquals(28, testCord.getX());
         res = game.cell_matches(testCord, cond, Colour.RED);

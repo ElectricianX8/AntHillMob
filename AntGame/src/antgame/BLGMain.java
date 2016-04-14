@@ -1,5 +1,6 @@
 package antgame;
 
+import UI.GameView;
 import java.io.IOException;
 
 /**
@@ -27,6 +28,10 @@ public class BLGMain {
             GameBoard testBoard = parser.parse("sample0.world.txt");
             testBoard.printBoard();
             
+            GameView ui = new GameView();
+            ui.updateView(testBoard.getHexGrid());
+            
+            
         } catch (IOException ex) {
             System.out.println("IO Exception");
         } catch (InvalidMapTokenException ex) {
@@ -37,6 +42,7 @@ public class BLGMain {
         System.out.println(board.rocky(new Coordinate(0,0)));
         System.out.println(board.some_ant_is_at(new Coordinate(0,0)));
         
+
 
     }
 

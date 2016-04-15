@@ -5,7 +5,6 @@
  */
 package antgame;
 
-import instructions.TurnDirection;
 import instructions.Condition;
 import instructions.ConditionType;
 import instructions.SenseDirection;

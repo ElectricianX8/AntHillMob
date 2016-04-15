@@ -248,6 +248,12 @@ public class GameBoard {
        
     }
     
+    public Cell[][] getHexGrid(){
+       return board; 
+    }
+    
+    
+    
  
 
 }

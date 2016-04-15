@@ -1,59 +1,70 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package instructions;
 
-import antgame.TurnDirection;
-
 /**
- *
- * @author alisaleem
+ * Instruction to turn the calling ant in a direction.
  */
 public class Turn {
     private TurnDirection turnDirection;
     private int stateToGoTo;
     
+    /**
+     * Constructor for testing purposes.
+     * To be removed before submission.
+     */
     public Turn(){
         turnDirection = null;
         stateToGoTo = 0;
     }
     
+    /**
+     * Constructor for the Turn instruction.
+     * @param td TurnDirection object representing the direction for the ant 
+     * to turn in.
+     * @param s the state to s=transition to post execution.
+     */
     public Turn(TurnDirection td, int s){
         turnDirection = td;
         stateToGoTo = s;
     }
 
     /**
-     * @return the turnDirection
+     * Get the TurnDirection for the ant to turn in.
+     * @return direction for the ant to turn in.
      */
     public TurnDirection getTurnDirection() {
         return turnDirection;
     }
 
     /**
-     * @param turnDirection the turnDirection to set
+     * Set the TurnDirection for the ant to turn in.
+     * @param turnDirection the direction for the ant to turn in.
      */
     public void setTurnDirection(TurnDirection turnDirection) {
         this.turnDirection = turnDirection;
     }
 
     /**
-     * @return the stateToGoTo
+     * Get the state to transition to post execution.
+     * @return the state to transition to post execution.
      */
     public int getStateToGoTo() {
         return stateToGoTo;
     }
 
     /**
-     * @param stateToGoTo the stateToGoTo to set
+     * Set the state to transition to post execution.
+     * @param stateToGoTo the state to transition to post execution.
      */
     public void setStateToGoTo(int stateToGoTo) {
         this.stateToGoTo = stateToGoTo;
     }
     
+    /**
+     * String representation of the instruction.
+     * @return String representation of the instruction.
+     */
+    @Override
     public String toString() {
-        return "Turn";
+        return "Turn "+this.turnDirection+" "+this.stateToGoTo;
     }
 }

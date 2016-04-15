@@ -1,69 +1,94 @@
 package instructions;
 
 /**
- *
- * @author alisaleem
+ * Choose a random number from 0 to n-1.
+ * Go to nis0State if n == 0,
+ * else go to nisGT0State if n > 0.
  */
 public class Flip {
     private int n;
-    private int nisOState;
-    private int nGTOState;
+    private int nis0State;
+    private int nisGT0State;
     
+    /**
+     * Constructor for testing purposes.
+     * Should be removed before submission.
+     */
     Flip(){
         n = 0;
-        nisOState = 0;
-        nGTOState = 0;
+        nis0State = 0;
+        nisGT0State = 0;
     }
     
-    Flip(int n, int nisOState, int nGTOState){
+    /**
+     * Constructor for the instruction/
+     * @param n Max value of the random number generator.
+     * @param nisOState state to transition to if random number is 0.
+     * @param nGTOState state to transition to otherwise.
+     */
+    Flip(int n, int nisOState, int nGTOState) throws NotValidInstructionException{
+        if (n < 1) {
+            throw new NotValidInstructionException("Max random number generated must be > 0");
+        }
         this.n = n;
-        this.nisOState = nisOState;
-        this.nGTOState = nGTOState;
+        this.nis0State = nisOState;
+        this.nisGT0State = nGTOState;
     }
 
     /**
-     * @return the n
+     * Get the max number for random number generation.
+     * @return the max number for the random number generator.
      */
     public int getN() {
         return n;
     }
 
     /**
-     * @param n the n to set
+     * Set the max number for the random number generator (RNG).
+     * @param n the max number for the random number generator.
      */
     public void setN(int n) {
         this.n = n;
     }
 
     /**
-     * @return the nisOState
+     * Get the state to transition to if RNG produces a 0.
+     * @return the state to transition to if RNG produces a 0.
      */
     public int getNisOState() {
-        return nisOState;
+        return nis0State;
     }
 
     /**
-     * @param nisOState the nisOState to set
+     * Set the state to transition to if RNG produces a 0.
+     * @param nisOState the state to transition to if the RNG produces a 0.
      */
     public void setNisOState(int nisOState) {
-        this.nisOState = nisOState;
+        this.nis0State = nisOState;
     }
 
     /**
-     * @return the nGTOState
+     * Get the state to transition to if the RNG produces a number > 0.
+     * @return the state to transition if the RNG produces a value > 0.
      */
     public int getnGTOState() {
-        return nGTOState;
+        return nisGT0State;
     }
 
     /**
-     * @param nGTOState the nGTOState to set
+     * Set the state to transition to if the RNG produces a value > 0.
+     * @param nGTOState the state to transition to if the RNG produces a value > 0.
      */
     public void setnGTOState(int nGTOState) {
-        this.nGTOState = nGTOState;
+        this.nisGT0State = nGTOState;
     }
     
+    /**
+     * String representation of the instruction.
+     * @return String representation of the instruction.
+     */
+    @Override
     public String toString() {
-        return "Flip";
+        return "Flip "+this.n+" "+this.nis0State+" "+this.nisGT0State;
     }
 }

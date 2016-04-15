@@ -8,6 +8,7 @@ package antgame;
 import instructions.Condition;
 import instructions.ConditionType;
 import instructions.SenseDirection;
+import instructions.TurnDirection;
 
 
 

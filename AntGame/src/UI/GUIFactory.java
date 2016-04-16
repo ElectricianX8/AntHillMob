@@ -52,12 +52,18 @@ public class GUIFactory {
     public JLabel createColourLabel(String text, float size, boolean align, Color color){
         JLabel label = createLabel(text, size, align);
         label.setForeground(color);
+        if(align){
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        }
         return label;
     }
     
     public JLabel createColourLabel(String text, boolean align, Color color){
         JLabel label = createLabel(text, align);
         label.setForeground(color);
+        if(align){
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        }
         return label;
     }
     

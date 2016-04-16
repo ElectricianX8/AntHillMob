@@ -25,7 +25,7 @@ public class BLGMain {
         WorldParser parser = new WorldParser();
         
         try {
-            GameBoard testBoard = parser.parse("sample0.world.txt");
+            GameBoard testBoard = parser.parse("1.world");
             testBoard.printBoard();
             
             GameView ui = new GameView();

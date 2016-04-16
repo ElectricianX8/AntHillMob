@@ -13,7 +13,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -23,8 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -37,6 +38,8 @@ public class GameView extends JFrame{
     JPanel mapContent;
     JFileChooser fc;
     GUIFactory factory;
+    JPanel playerListPanel;
+    JPanel worldListPanel;
     
     
     public GameView(){
@@ -93,7 +96,7 @@ public class GameView extends JFrame{
         mainPanel.add(factory.createLabel("Input players", 25, true), BorderLayout.NORTH);
         mainPanel.add(createPlayerList(), BorderLayout.CENTER);
         mainPanel.add(createWorldSelectionPanel(),BorderLayout.SOUTH);
-        mainPanel.setMinimumSize(new Dimension(400,500));
+        setMinimumSize(new Dimension(400,500));
         refreshUI();
     }
     
@@ -116,6 +119,9 @@ public class GameView extends JFrame{
     
     
     
+    
+    
+    
     private JPanel createWorldSelectionPanel(){
         
         JPanel panel = new JPanel(new BorderLayout());
@@ -132,21 +138,218 @@ public class GameView extends JFrame{
         
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton button = new JButton("Start Tournament"); // add functionality
+        button.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(checkPlayerList() && checkWorldList()){ 
+                    //create tournament
+                    //next screen
+                    //add check for file format here, can't do it in file chooser I think
+                    resetMainPanel();
+                    createTournamentPanel();
+                }
+                else{
+                    if(playerListPanel.getComponents().length < 3){
+                        warningMessage("Need at least 2 players to start a tournament!");
+                    } else{
+                        warningMessage("Incorrect player and/or world information!");
+                    }
+                    
+                }
+            }
+            
+        });
+    
         panel.add(button);
         
         return panel;
         
     }
     
+    
+    private void createTournamentPanel(){
+        
+        JPanel panel = new JPanel();
+        factory.setHorizontalBoxLayout(panel);
+        
+        
+        JPanel leftSide = new JPanel();
+        factory.setVerticalBoxLayout(leftSide);
+        leftSide.add(factory.createLabel("Leaderboard", 25, true));
+        leftSide.add(createLeaderboardTable());
+        
+        JPanel rightSide = new JPanel();
+        factory.setVerticalBoxLayout(rightSide);
+        rightSide.setBorder(new EmptyBorder(0,10,0,20));
+        rightSide.add(factory.createLabel("Current Match", 25, true));
+        rightSide.add(factory.createColourLabel("In progress", 16, true, Color.RED));
+        rightSide.add(Box.createRigidArea(new Dimension(0, 15)));
+        rightSide.add(createCurrentMatchPanel());
+        rightSide.add(Box.createRigidArea(new Dimension(0, 40)));
+        rightSide.add(createTournamentButtonsPanel());
+        rightSide.add(Box.createVerticalGlue());
+        
+        panel.add(leftSide);
+        panel.add(rightSide);
+        
+        mainPanel.add(panel);
+        setMinimumSize(new Dimension(560,350));
+        refreshUI();
+    }
+
+    
+    private JPanel createCurrentMatchPanel(){
+        
+        JPanel panel = new JPanel();
+        factory.setVerticalBoxLayout(panel);
+        
+        panel.add(factory.createLabel("Map name", true));
+        
+        JPanel players = new JPanel();
+        factory.setHorizontalBoxLayout(players);
+        
+        JPanel firstPlayer = new JPanel();
+        factory.setVerticalBoxLayout(firstPlayer);
+        firstPlayer.add(factory.createLabel("Player1", 20, true));
+        firstPlayer.add(factory.createColourLabel("Red", 14, true, Color.RED));
+        
+        JPanel secondPlayer = new JPanel();
+        factory.setVerticalBoxLayout(secondPlayer);
+        secondPlayer.add(factory.createLabel("Player2", 20, true));
+        secondPlayer.add(factory.createColourLabel("Black", 14, true, Color.BLACK));
+        
+        
+        
+        players.add(firstPlayer);
+        players.add(Box.createHorizontalGlue());
+        players.add(secondPlayer);
+
+        
+        panel.add(players);
+        
+        return panel;
+    }
+    
+        
+    private JPanel createTournamentButtonsPanel(){
+        
+        
+        JPanel panel = new JPanel();
+        factory.setVerticalBoxLayout(panel);
+        //panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //panel.setBorder(new EmptyBorder(20,5,20,5));
+        
+        JButton button1 = new JButton("Watch game");
+        //add action listener for buttons
+        
+        JButton button2 = new JButton("Next game");
+        
+        panel.add(button1);
+        button1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        panel.add(button2);
+        button2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        return panel;
+    }
+    
+    private JPanel createLeaderboardTable(){
+        
+        JPanel panel = new JPanel();
+        String[] columnNames = {"Ranking", "Player Name", "Score"};
+        String[][] sampleData = { {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},
+        {"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"},{"1", "Player1", "20"}, {"2", "Player2", "10"},{"3", "Player3", "5"}};
+        JTable table = new JTable(sampleData, columnNames){
+            
+            @Override
+            public boolean isCellEditable(int row, int column) { //make all cells uneditable
+            return false;
+            }
+        };
+        table.setColumnSelectionAllowed(false);
+        table.setRowSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.setShowHorizontalLines(false);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
+        
+        JScrollPane pane = new JScrollPane(table);
+        pane.setPreferredSize(new Dimension(250,250));
+        panel.add(pane);
+        
+        return panel;
+    }
+    
+    private boolean isValidName(JTextField field){
+        
+        boolean valid = true;
+        if(field.getText().trim().equals("") || field.getText().trim() == null){
+            valid = false;
+        }
+        return valid;
+    }
+    
+    private boolean checkPlayerList(){
+        
+        boolean valid = true;
+        for(Component c : playerListPanel.getComponents()){
+            if(c instanceof JPanel){
+                JPanel panel = (JPanel) c;
+                if(panel.getComponent(0) instanceof JTextField && isValidName((JTextField)panel.getComponent(0)) && panel.getComponent(1) instanceof JPanel){
+                    //valid, maybe process players here as pairs
+                    System.out.println("player check");
+                }
+                else{
+                    valid = false;
+                }
+            }
+        }
+        if(playerListPanel.getComponents().length < 3 ){
+            valid = false; //only add button?
+        }
+        return valid;
+    }
+    
+    private boolean checkWorldList(){
+        
+        boolean valid = true;
+        for(Component c : worldListPanel.getComponents()){
+            if(c instanceof JPanel){
+                JPanel panel = (JPanel) c;
+                if(panel.getComponent(0) instanceof JPanel){
+                    System.out.println("player check");//valid, maybe process players here as pairs
+                }
+                else{
+                    valid = false;
+                }
+            }
+        }
+        
+        if(worldListPanel.getComponents().length < 2 ){ //at least 1 world needed
+            valid = false; //only add button?
+        }
+        return valid;
+        
+        
+        
+    }
+    
+    
     private JPanel createWorldList(){
         
         JPanel panel = new JPanel(); //default flow
         
-        JPanel listPanel = new JPanel();
-        factory.setVerticalBoxLayout(listPanel); //box layout
-        listPanel.add(createAddWorldButton());
+        worldListPanel = new JPanel();
+        factory.setVerticalBoxLayout(worldListPanel); //box layout
+        worldListPanel.add(createAddWorldButton());
         
-        JScrollPane pane = new JScrollPane(listPanel);
+        JScrollPane pane = new JScrollPane(worldListPanel);
         pane.setPreferredSize(new Dimension(350,150));
         panel.add(pane);
 
@@ -235,16 +438,18 @@ public class GameView extends JFrame{
     
     
     
+    
+   
     private JPanel createPlayerList(){
         
         JPanel panel = new JPanel(); //default flow
         
-        JPanel listPanel = new JPanel();
+        playerListPanel = new JPanel();
         
-        factory.setVerticalBoxLayout(listPanel); //box layout
-        listPanel.add(createAddPlayerButton());
+        factory.setVerticalBoxLayout(playerListPanel); //box layout
+        playerListPanel.add(createAddPlayerButton());
         
-        JScrollPane pane = new JScrollPane(listPanel);
+        JScrollPane pane = new JScrollPane(playerListPanel);
         pane.setPreferredSize(new Dimension(350,150));
         
         panel.add(pane);
@@ -272,7 +477,6 @@ public class GameView extends JFrame{
         return addButton;
     }
 
-    
     private JPanel createPlayerInput(){
         
         final JPanel panel = new JPanel(new GridLayout(0,2,10,5));
@@ -415,19 +619,7 @@ public class GameView extends JFrame{
         factory.setVerticalBoxLayout(panel);
         
 
-        panel.add(factory.createLabel("Ranking:", 22, false));
-        panel.add(factory.createBoxPadding(0, 10));
-        
-        panel.add(new JLabel("Ranking # | Player Name"));
-        panel.add(new JLabel("| Score"));
-        panel.add(factory.createBoxPadding(0, 25));
-        //create from tournament client        
-        
-        
-        
-        for(int i=0; i<10;i++){
-        panel.add(factory.createLabel("#" +i + " | Player Name" + i + "| Score" + i, false));
-        }
+        panel.add(createLeaderboardTable());
         
         
         panel.setBorder(factory.createBlackLine(0,0,1,0,Color.BLACK));
@@ -435,15 +627,18 @@ public class GameView extends JFrame{
         
     }
     
-    
-    
-        
     private void prepareFileChooser(){
         
         fc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-        "TXT documents", "txt");
+        "TXT and WORLD documents", "txt", "world");
         fc.setFileFilter(filter);
+        fc.setAcceptAllFileFilterUsed(false);
+    }
+    
+    public void warningMessage(String s) {
+        JOptionPane.showMessageDialog(null, s, "Warning",
+                JOptionPane.WARNING_MESSAGE);
     }
 
   

@@ -10,6 +10,7 @@ import antgame.Colour;
 import antgame.Terrain;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -23,10 +24,14 @@ import javax.swing.JPanel;
 public class HexagonMap extends JPanel {
 
     Cell[][] map;
+    int height;
+    int width;
 
     public HexagonMap(Cell[][] map) {
 
         this.map = map;
+        height = (map.length * 9) + 15;
+        width = (map[0].length * 11) + 30;
 
     }
 
@@ -83,7 +88,7 @@ public class HexagonMap extends JPanel {
 
     private Polygon getHexAtCoordinates(int h_count, int w_count) {
 
-        final int MINIMUM_Y_CORD = 30;
+        final int MINIMUM_Y_CORD = 0;
         final int MINIMUM_X_CORD = 10;
         int wOffset;
         if (h_count % 2 != 0) {
@@ -96,6 +101,54 @@ public class HexagonMap extends JPanel {
         return polygon;
 
     }
+    
+    /*
+    private Polygon getTriangleAtCoordinates(int h_count, int w_count, int direction){
+        
+        final int MINIMUM_Y_CORD = 0;
+        final int MINIMUM_X_CORD = 10;
+        int wOffset;
+        if (h_count % 2 != 0) {
+            wOffset = MINIMUM_X_CORD + (w_count * 11);
+        } else {
+            wOffset = MINIMUM_X_CORD + (w_count * 11) + 6; //11 for 6
+        }
+        int hOffset = MINIMUM_Y_CORD + (h_count * 9); //9 for 6
+        Polygon polygon = getTriangle(wOffset, hOffset, direction);
+        return polygon;
+        
+    }
+    
+    
+    private Polygon getTriangle(int posX, int posY, int direction){
+        
+        Polygon hex = new Polygon();
+
+        int trHeight = 6;
+        int trWidth = 6;
+        
+        
+        if(direction==0){
+            hex.addPoint((int) posX - trWidth/2, (int) posY-trHeight/2 );
+            hex.addPoint((int) posX + trWidth/2, (int) posY);
+            hex.addPoint((int) posX - trWidth/2, (int) posY+trHeight/2);
+            
+            
+        }
+        //hex.addPoint((int) posX, (int) posY-trHeight/2 );
+        //hex.addPoint((int) posX - trWidth/2, (int) posY+trHeight/2);
+        //hex.addPoint((int) posX + trWidth/2, (int) posY+trHeight/2);
+ 
+        return hex;
+        
+    }
+    */
+    
+    
+    @Override
+    public Dimension getPreferredSize(){
+        return new Dimension(width, height);
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -104,15 +157,17 @@ public class HexagonMap extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         enableAntiAliasing(g2);
 
-        int height = map.length;
-        int width = map[0].length;
+        int heightSize = map.length;
+        int widthSize = map[0].length;
 
         int h_count = 1;
         int w_count = 1;
 
-        for (int i = 0; i < height; i++) {
+        
+        //give ants priority first, then next? or first something, then ants
+        for (int i = 0; i < heightSize; i++) {
 
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < widthSize; j++) {
 
                 Polygon polygon = getHexAtCoordinates(h_count, w_count);
                 w_count++;
@@ -120,17 +175,20 @@ public class HexagonMap extends JPanel {
                 if(map[i][j].getTerrain() == Terrain.ROCKY){
                     setCellColour(g2, polygon, new Color(139,69,19)); //brown
                 }
-                else if(map[i][j].getFoodCount() > 0){
-                    setCellColour(g2, polygon, Color.GREEN);
-                }
                 else if(map[i][j].isOccupied()){
                     setAntCellColour(g2, polygon, map[i][j].getAnt().getColour());
+                    //Polygon triangle = getTriangleAtCoordinates(h_count, w_count-1, map[i][j].getAnt().getDirection());
+                    //g2.setColor(Color.BLUE);
+                    //g2.fillPolygon(triangle);
                 }
                 else if(map[i][j].isAnthill(Colour.RED)){
                     setCellColour(g2, polygon, Color.PINK );
                 }
                 else if(map[i][j].isAnthill(Colour.BLACK)){
                     setCellColour(g2, polygon, Color.GRAY);
+                }
+                else if(map[i][j].getFoodCount() > 0){
+                    setCellColour(g2, polygon, Color.GREEN);
                 }
                 else{
                     setCellColour(g2, polygon, new Color(250,250,210)); //bleached yellow for less epilepsy
@@ -146,23 +204,6 @@ public class HexagonMap extends JPanel {
             h_count++;
             w_count = 1;
         }
-
-        /*
-         for (int i = 10; i <= (height*11)+10; i += 11) {
-         //x , y cordinates ,size, y
-         Polygon polygon = getHex(i, MINIMUM_Y_CORD);
-
-         if (i % 18 == 0) {
-
-         setAntCellColour(g2, polygon, Colour.BLACK);
-         g2.drawPolygon(polygon);
-         } else {
-         setAntCellColour(g2, polygon, Colour.RED);
-         g2.drawPolygon(polygon);
-         }
-
-         }
-         */
     }
 
 }

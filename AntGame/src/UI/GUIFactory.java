@@ -13,10 +13,12 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.MatteBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -67,7 +69,7 @@ public class GUIFactory {
         return label;
     }
     
-    public MatteBorder createBlackLine(int top, int left, int bottom, int right, Color color){
+    public MatteBorder createBlackLine(int top, int left, int bottom, int right){
         return BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK);
     }
     
@@ -86,6 +88,21 @@ public class GUIFactory {
     public void setHorizontalBoxLayout(JPanel panel){
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     }
+    
+    public JFileChooser createFileBrowser(){
+        
+        JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "TXT and WORLD documents", "txt", "world");
+        fc.setFileFilter(filter);
+        fc.setAcceptAllFileFilterUsed(false);
+        
+        return fc;
+        
+    }
+    
+    
+    
     
     
 }

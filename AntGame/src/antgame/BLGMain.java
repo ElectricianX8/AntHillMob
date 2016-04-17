@@ -29,7 +29,7 @@ public class BLGMain {
             testBoard.printBoard();
             
             GameView ui = new GameView();
-            //ui.updateView(testBoard.getHexGrid());
+            //ui.updateView(testBoard);
             
             
         } catch (IOException ex) {

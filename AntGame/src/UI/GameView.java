@@ -7,6 +7,10 @@ package UI;
 
 import UI.EnumHolder.ListMode;
 import antgame.Cell;
+import antgame.GameBoard;
+import antgame.InvalidMapTokenException;
+import antgame.Player;
+import antgame.WorldParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -16,6 +20,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -33,7 +39,6 @@ import javax.swing.border.EmptyBorder;
 public class GameView extends JFrame {
 
     JPanel mainPanel;
-    JPanel mapContent;
     JFileChooser fileBrowser;
     GUIFactory factory;
     JPanel playerListPanel;
@@ -49,17 +54,8 @@ public class GameView extends JFrame {
 
         mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.add(createStartPanel());
-        
-        
-        /*
-         mapContent = new JPanel(new BorderLayout(5,5)); //5,5 gap between panels
-         mapContent.setPreferredSize(new Dimension( 1200,700)); //x,y
-          
-         mainPanel.add(createSidePanel(), BorderLayout.WEST);
-         mainPanel.add(mapContent, BorderLayout.CENTER);
-                
-         */
 
+        
         getContentPane().add(mainPanel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -278,14 +274,11 @@ public class GameView extends JFrame {
     private JPanel createTournamentStartButton() {
 
         String buttonText;
-        final int playerReq;
 
         if (tournament) {
             buttonText = "Start Tournament";
-            playerReq = 3;
         } else {
             buttonText = "Start Game";
-            playerReq = 2;
         }
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -295,7 +288,11 @@ public class GameView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (checkPlayerList() && checkWorldList()) {
+                StringBuilder msg = new StringBuilder();
+
+                ArrayList<Player> players = processPlayers(msg);
+                ArrayList<GameBoard> worlds = processWorlds(msg);
+                if (players != null && worlds != null) {
                     //create tournament
                     //next screen
                     //add check for file format here, can't do it in file chooser I think
@@ -303,15 +300,11 @@ public class GameView extends JFrame {
                     if (tournament) {
                         createTournamentPanel();
                     } else {
-                        createPlaceholderPanel();
+                        createGameViewPanel(worlds.get(0));
                     }
 
                 } else {
-                    if (playerListPanel.getComponents().length < playerReq) {
-                        warningMessage("Need at least 2 players to start a tournament!");
-                    } else {
-                        warningMessage("Incorrect player and/or world information!");
-                    }
+                    warningMessage(msg.toString());
                 }
             }
         });
@@ -321,7 +314,7 @@ public class GameView extends JFrame {
     }
 
     //Tournament Menu Panel
-    private void createTournamentPanel() {
+    public void createTournamentPanel() {
 
         JPanel panel = new JPanel();
         factory.setHorizontalBoxLayout(panel);
@@ -431,27 +424,45 @@ public class GameView extends JFrame {
 
         return panel;
     }
-    
-    
 
-    public void updateView(Cell[][] map) {
+    public void updateView(GameBoard board) {
         //update score here, move score labels to main?
-        mapContent.removeAll();
+        mainPanel.removeAll();
 
-        HexagonMap testRect = new HexagonMap(map);
-        //testRect.setPreferredSize(new Dimension(500,500));
-        JScrollPane pane = new JScrollPane(testRect, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        createGameViewPanel(board);
+        
+        //revalidate();
+        //repaint();
+       // pack();
+    }
+    
+    public void createGameViewPanel(GameBoard board){
+          
+        mainPanel.add(createSidePanel(), BorderLayout.WEST);
+        mainPanel.add(createMapPanel(board.getHexGrid()), BorderLayout.CENTER);
+        
+    }
+    
+    
+    public JPanel createMapPanel(Cell[][] map){
+        
+        JPanel mapContent = new JPanel(new BorderLayout(5,5)); //5,5 gap between panels
+        mapContent.setPreferredSize(new Dimension( 1200,700)); //x,y
+        setMinimumSize(new Dimension(1600, 900)); //min size of frame
+        HexagonMap mapGraphic = new HexagonMap(map);
+
+        JScrollPane pane = new JScrollPane(mapGraphic, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setPreferredSize(new Dimension(100, 100));
         pane.getVerticalScrollBar().setUnitIncrement(12);
         //pane.setWheelScrollingEnabled(false);
         JViewport port = pane.getViewport();
         port.setScrollMode(JViewport.SIMPLE_SCROLL_MODE); //use simple or backing for performance gains, backing takes more ram
         pane.setViewport(port);
-
+        
         mapContent.add(pane);
-        revalidate();
-        repaint();
-        pack();
+        
+        return mapContent;
+        
     }
     
     
@@ -533,52 +544,135 @@ public class GameView extends JFrame {
         return valid;
     }
 
-    private boolean checkPlayerList() {
+    private boolean isValidBrain(String filename, StringBuilder errMsg) {
 
+        File file = new File(filename);
+
+        if (!file.exists()) {
+            errMsg.append("Error: Brain file " + "\"").append(filename).append("\"" + " does not exist!\n");
+            return false;
+        } else {
+            //parse brain here DONT FORGEt
+            return true;
+        }
+    }
+
+    private GameBoard isValidWorld(String filename, StringBuilder errMsg) {
+
+        File file = new File(filename);
+
+        if (!file.exists()) {
+            errMsg.append("Error: World file " + "\"").append(filename).append("\"" + " does not exist!\n");
+            return null;
+        } else {
+            WorldParser parser = new WorldParser();
+
+            try {
+                GameBoard board = parser.parse(filename);
+                return board;
+            } catch (IOException e) {
+                errMsg.append("Error: Unable to open the world file: ").append(filename).append("\n");
+                return null;
+            } catch (InvalidMapTokenException e) {
+                errMsg.append("Error: Invalid world input: " + filename + "\n");
+                return null;
+            }
+        }
+
+    }
+
+    private ArrayList<Player> processPlayers(StringBuilder errMsg) {
+
+        ArrayList<Player> validPlayers = new ArrayList<Player>();
         boolean valid = true;
         int playerCount = 0;
 
-        for (Component c : playerListPanel.getComponents()) {
-            if (c instanceof JPanel) {
-                JPanel panel = (JPanel) c;
-                if (panel.getComponent(0) instanceof JTextField && isValidName((JTextField) panel.getComponent(0)) && panel.getComponent(1) instanceof JPanel) {
-                    //valid, maybe process players here as pairs
-                    playerCount++;
+        for (int i = 0; i < playerListPanel.getComponentCount(); i++) {
+            if (playerListPanel.getComponent(i) instanceof JPanel) {
+                playerCount++;
+                boolean localValid = true;
+                JPanel panel = (JPanel) playerListPanel.getComponent(i);
+
+                if (panel.getComponent(0) instanceof JTextField && panel.getComponent(1) instanceof JPanel) {
+                    
+                    JTextField field = (JTextField) panel.getComponent(0);
+                    JPanel childPanel = (JPanel) panel.getComponent(1);
+                    String antLabel = ((JLabel) childPanel.getComponent(0)).getText();
+
+                    if (!isValidName(field)) {
+                        errMsg.append("Error: Player field #").append(i).append(" has incorrect name!\n");
+                        localValid = false;
+                    }
+                    if (!isValidBrain(antLabel, errMsg)) {
+                        //errMsg.append("Error: Brain field #").append(i).append(" contains illegal brain structure!\n");
+                        localValid = false;
+                    }
+                    if (localValid) {
+                        validPlayers.add(new Player(field.getText(), i, null)); // PARSE VALID BRAIN HERE DONT FORGET
+                    } else {
+                        valid = false;
+                    }
                     System.out.println("player check");
                 } else {
+                    errMsg.append("Error: Do not leave empty players (Player #").append(i).append(")! \n");
                     valid = false;
                 }
             }
         }
         if (playerCount < 2) {
-            valid = false; //only add button?
+            errMsg.append("Error: Minimum of two players is required to start!\n");
+            valid = false;
         }
-        return valid;
+        if (valid && validPlayers.size() > 0) {
+            return validPlayers;
+        } else {
+            return null; //null even if one invalid
+        }
     }
 
-    private boolean checkWorldList() {
+    private ArrayList<GameBoard> processWorlds(StringBuilder errMsg) {
 
+        ArrayList<GameBoard> validWorlds = new ArrayList<GameBoard>();
         boolean valid = true;
         int worldCount = 0;
 
-        for (Component c : worldListPanel.getComponents()) {
-            if (c instanceof JPanel) {
-                JPanel panel = (JPanel) c;
+        for (int i = 0; i < worldListPanel.getComponentCount(); i++) {
+            boolean localValid = true;
+            if (worldListPanel.getComponent(i) instanceof JPanel) {
+                worldCount++;
+                JPanel panel = (JPanel) worldListPanel.getComponent(i);
+                
                 if (panel.getComponent(0) instanceof JPanel) {
-                    worldCount++;
-                    System.out.println("player check");//valid, maybe process players here as pairs
+
+                    JLabel worldPath = ((JLabel) ((JPanel) panel.getComponent(0)).getComponent(0));
+                    GameBoard board = isValidWorld(worldPath.getText(), errMsg);
+                    if (board == null) {
+                        localValid = false;
+                    }
+                    if (localValid) {
+                        validWorlds.add(board);
+                    }
+                    System.out.println("player check");
                 } else {
+                    errMsg.append("Error: Do not leave empty worlds (World #").append(i).append(")!\n");
                     valid = false;
                 }
             }
         }
 
         if (worldCount < 1) { //at least 1 world needed
-            valid = false; //only add button?
+            valid = false;
+            errMsg.append("Error: Minimum of one world is required to start!\n");
         }
-        return valid;
 
+        if (valid && validWorlds.size() > 0) {
+            return validWorlds;
+        } else {
+            return null;
+        }
     }
+
+    
 
     private void resetMainPanel() { //check this
 

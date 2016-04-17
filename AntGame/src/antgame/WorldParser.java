@@ -32,10 +32,17 @@ public class WorldParser {
         //trim sentence, scanToken(x) into cell, into board, maybe n-1 for size? check
         BufferedReader reader = new BufferedReader(new FileReader(filename));
 
-        
+        int height;
+        int width;
         //add exceptions for all this
-        int height = Integer.parseInt(reader.readLine());
-        int width = Integer.parseInt(reader.readLine());
+        try{
+            height = Integer.parseInt(reader.readLine());
+            width = Integer.parseInt(reader.readLine());
+        }
+        catch(NumberFormatException e){
+            throw new InvalidMapTokenException("Can't process world size input");
+        }
+
         System.out.println(height + " " + width);
 
         board = new Cell[height][width];

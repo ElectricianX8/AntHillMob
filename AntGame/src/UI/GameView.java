@@ -7,10 +7,15 @@ package UI;
 
 import UI.EnumHolder.ListMode;
 import antgame.Cell;
+import antgame.Colour;
 import antgame.GameBoard;
 import antgame.InvalidMapTokenException;
+import antgame.LexerException;
+import antgame.Match;
+import antgame.ParsingException;
 import antgame.Player;
 import antgame.WorldParser;
+import instructions.NotValidInstructionException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,6 +27,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -34,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 public class GameView extends JFrame {
@@ -300,7 +308,16 @@ public class GameView extends JFrame {
                     if (tournament) {
                         createTournamentPanel();
                     } else {
-                        createGameViewPanel(worlds.get(0));
+                        Match game = new Match(players.get(0), players.get(1), worlds.get(0));
+                        //createGameViewPanel(game.getBoard());
+                        try {
+                            
+                            Thread t = new Thread(game);
+                            t.start();
+                            updateView(game);
+                        } catch (Exception ex) {
+                            warningMessage("Error: Unable to start the game for mysterious reasons");
+                        }
                     }
 
                 } else {
@@ -425,12 +442,31 @@ public class GameView extends JFrame {
         return panel;
     }
 
-    public void updateView(GameBoard board) {
+    public void updateView(final Match match) {
         //update score here, move score labels to main?
-        mainPanel.removeAll();
 
-        createGameViewPanel(board);
+        createGameViewPanel(match.getBoard());
+        final Timer timer = new Timer(60, null);
+        timer.start();
+        timer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                updateMap(match.getBoard().getHexGrid());
+                updateScores(match);
+                refreshPanel(mainPanel);
+                System.out.println("Updated game view");
+                if(match.isGameDone()){
+                    timer.stop();
+                    System.out.println("Timer done");
+                }
+            }
+        });
         
+        //resetMainPanel();
+
+        //createGameViewPanel(board);
+
+        //refreshUI();
         //revalidate();
         //repaint();
        // pack();
@@ -444,6 +480,22 @@ public class GameView extends JFrame {
     }
     
     
+    public void updateMap(Cell[][] map){
+        
+        JPanel mapPanel = (JPanel)mainPanel.getComponent(1);
+        JScrollPane pane = (JScrollPane) mapPanel.getComponent(0);
+        pane.getComponent(0).repaint();
+    }
+    
+    public void updateScores(Match match){
+        
+        JPanel sidePanel = (JPanel)mainPanel.getComponent(0);
+        JPanel scorePanel = (JPanel)sidePanel.getComponent(0);
+        ((JLabel)scorePanel.getComponent(3)).setText(Integer.toString(match.getPlayerFoodCount(Colour.RED)));
+        ((JLabel)scorePanel.getComponent(6)).setText(Integer.toString(match.getPlayerFoodCount(Colour.BLACK)));
+    }
+    
+    
     public JPanel createMapPanel(Cell[][] map){
         
         JPanel mapContent = new JPanel(new BorderLayout(5,5)); //5,5 gap between panels
@@ -451,6 +503,7 @@ public class GameView extends JFrame {
         setMinimumSize(new Dimension(1600, 900)); //min size of frame
         HexagonMap mapGraphic = new HexagonMap(map);
 
+  
         JScrollPane pane = new JScrollPane(mapGraphic, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setPreferredSize(new Dimension(100, 100));
         pane.getVerticalScrollBar().setUnitIncrement(12);
@@ -552,7 +605,6 @@ public class GameView extends JFrame {
             errMsg.append("Error: Brain file " + "\"").append(filename).append("\"" + " does not exist!\n");
             return false;
         } else {
-            //parse brain here DONT FORGEt
             return true;
         }
     }
@@ -574,7 +626,7 @@ public class GameView extends JFrame {
                 errMsg.append("Error: Unable to open the world file: ").append(filename).append("\n");
                 return null;
             } catch (InvalidMapTokenException e) {
-                errMsg.append("Error: Invalid world input: " + filename + "\n");
+                errMsg.append("Error: Invalid world input: ").append(filename).append("\n");
                 return null;
             }
         }
@@ -598,6 +650,7 @@ public class GameView extends JFrame {
                     JTextField field = (JTextField) panel.getComponent(0);
                     JPanel childPanel = (JPanel) panel.getComponent(1);
                     String antLabel = ((JLabel) childPanel.getComponent(0)).getText();
+                    
 
                     if (!isValidName(field)) {
                         errMsg.append("Error: Player field #").append(i).append(" has incorrect name!\n");
@@ -608,7 +661,22 @@ public class GameView extends JFrame {
                         localValid = false;
                     }
                     if (localValid) {
-                        validPlayers.add(new Player(field.getText(), i, null)); // PARSE VALID BRAIN HERE DONT FORGET
+                        Player player = new Player(field.getText(), i, null);
+                        try{
+                            File file = new File(antLabel);
+                            player.loadAntBrain(file);   
+                            validPlayers.add(player); // PARSE VALID BRAIN HERE DONT FORGET
+                        }
+                        catch(IOException e){
+                            errMsg.append("Error: Brain field #").append(i).append(" can't be loaded!\n");
+                            valid = false;
+                        
+                        } catch (LexerException | NotValidInstructionException | ParsingException ex) {
+                            errMsg.append("Error: Brain field #").append(i).append(" contains illegal brain structure!\n");
+                            valid = false;
+                        }
+
+                        
                     } else {
                         valid = false;
                     }

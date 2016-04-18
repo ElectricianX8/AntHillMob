@@ -33,7 +33,7 @@ public class Lexer {
                 nextResult = gabl.yylex();
             }
             return lexedInstructions;
-        } catch (Exception e) {
+        } catch (Exception | Error e) {
             throw new LexerException("Problem Lexing the AntBrain");
         }
     }

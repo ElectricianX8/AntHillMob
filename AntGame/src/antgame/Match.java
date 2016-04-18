@@ -1,27 +1,33 @@
 package antgame;
 
+import UI.GameView;
 import instructions.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing the Match to be played.
  */
-public class Match {
+public class Match  implements Runnable{
 
     private Player player1;
     private Player player2;
     private GameBoard board;
     private Result result;
+    private boolean isDone;
     private int round = 0;
     private int numOfRedAnts;
     private int numOfBlackAnts;
     Ant[] ants;
+
 
     public Match(Player p1, Player p2, GameBoard b) {
         int totalAnts;
         ArrayList<Coordinate> redAntHillCoordinates;
         ArrayList<Coordinate> blackAntHillCoordinates;
 
+        isDone = false;
         player1 = p1;
         player2 = p2;
         board = b;
@@ -54,15 +60,26 @@ public class Match {
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
-
+        
+        int delay = 3000;
         while (round < 300000) {
             for (Ant ant : ants) {
                 step(ant);
+                
             }
+            if(round % delay == 0){
+                Thread.sleep(50);
+                System.out.print(("Sleeping zzz.."));
+            }
+            
+
             round++;
         }
         
-        this.board.printBoard();
+        isDone = true;
+        System.out.print("Game has finished, yay");
+        
+        //this.board.printBoard();
 
         p1Food = this.board.foodAtAntHill(Colour.RED);
         p2Food = this.board.foodAtAntHill(Colour.BLACK);
@@ -247,5 +264,27 @@ public class Match {
         double toReturn = Math.random();
         toReturn *= n;
         return (int)toReturn;
+    }
+    
+    public GameBoard getBoard(){
+        return board;
+    }
+
+    @Override
+    public void run() {
+        try {
+            start();
+        } catch (Exception ex) {
+            System.out.println("System, opp smatch error");
+        }
+    }
+    
+    public boolean isGameDone(){
+        return isDone;
+        
+    }
+    
+    public int getPlayerFoodCount(Colour colour){
+        return board.foodAtAntHill(colour);
     }
 }

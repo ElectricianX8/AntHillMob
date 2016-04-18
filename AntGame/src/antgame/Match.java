@@ -47,10 +47,12 @@ public class Match  implements Runnable{
 
         for (int i = 0; i < numOfRedAnts; i++) {
             ants[i].setCurrentPosition(redAntHillCoordinates.get(0));
+            board.getCellAtPosition(redAntHillCoordinates.get(0)).setAntColour(Colour.RED);
             redAntHillCoordinates.remove(0);
         }
         for (int i = numOfRedAnts; i < totalAnts; i++) {
             ants[i].setCurrentPosition(blackAntHillCoordinates.get(0));
+            board.getCellAtPosition(blackAntHillCoordinates.get(0)).setAntColour(Colour.BLACK);
             blackAntHillCoordinates.remove(0);
         }
 
@@ -64,14 +66,16 @@ public class Match  implements Runnable{
         int delay = 3000;
         while (round < 300000) {
             for (Ant ant : ants) {
-                step(ant);
-                
+                if(ant.getIsAlive()){
+                    step(ant);
+                    
+                    //System.out.print(("Sleeping zzz.."));
+                }
+
+               
             }
-            if(round % delay == 0){
-                Thread.sleep(50);
-                System.out.print(("Sleeping zzz.."));
-            }
-            
+
+             Thread.sleep(60);
 
             round++;
         }
@@ -239,7 +243,10 @@ public class Match  implements Runnable{
             Cell cellToMoveTo = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), SenseDirection.Ahead);
             if (cellToMoveTo.getTerrain().equals(Terrain.CLEAR)) {
                 currentCell.removeOccupation();
+                currentCell.removeAntColour();
                 ant.setCurrentPosition(cellToMoveTo.getCoordinate());
+                cellToMoveTo.setOccupied(ant.getId());
+                cellToMoveTo.setAntColour(ant.getColour());
                 nextState = move.getStateToGoToIfClear();
             } else {
                 nextState = move.getStateToGoToIfBlocked();

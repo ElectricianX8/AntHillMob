@@ -176,7 +176,7 @@ public class HexagonMap extends JPanel {
                     setCellColour(g2, polygon, new Color(139,69,19)); //brown
                 }
                 else if(map[i][j].isOccupied()){
-                    setAntCellColour(g2, polygon, map[i][j].getAnt().getColour());
+                    setAntCellColour(g2, polygon, map[i][j].getAntColour());
                     //Polygon triangle = getTriangleAtCoordinates(h_count, w_count-1, map[i][j].getAnt().getDirection());
                     //g2.setColor(Color.BLUE);
                     //g2.fillPolygon(triangle);

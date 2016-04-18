@@ -11,6 +11,7 @@ public class Cell {
     private Terrain terrain;
     private int food;
     private int occupied;
+    private Colour antColour;
     private Ant ant;                        // NOT SURE WHAT THIS IS FOR?
     private ArrayList<Integer> redMarkers;
     private ArrayList<Integer> blackMarkers;
@@ -31,6 +32,8 @@ public class Cell {
         food = 0; // constructor parameter?
         ant = null;
         this.antHill = antHill; // constructor parameter?
+        
+        antColour = null;
 
     }
     
@@ -51,6 +54,7 @@ public class Cell {
         this.antHill = anthill;
         this.redMarkers = new ArrayList<>(6);
         this.blackMarkers = new ArrayList<>(6);
+        antColour = null;
     }
     
     /**
@@ -311,6 +315,18 @@ public class Cell {
      */
     public boolean containsFood() {
         return this.food>0;
+    }
+    
+    public void setAntColour(Colour colour){
+        antColour = colour;
+    }
+    
+    public Colour getAntColour(){
+        return antColour;
+    }
+    
+    public void removeAntColour(){
+        antColour = null;
     }
     
 

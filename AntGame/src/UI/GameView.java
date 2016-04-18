@@ -446,7 +446,7 @@ public class GameView extends JFrame {
         //update score here, move score labels to main?
 
         createGameViewPanel(match.getBoard());
-        final Timer timer = new Timer(1, null);
+        final Timer timer = new Timer(50, null);
         timer.start();
         timer.addActionListener(new ActionListener() {
             @Override

@@ -4,7 +4,7 @@ package instructions;
  * Instruction for the calling ant to move forward one cell from the cell
  * it is currently in to the one that it is facing.
  */
-public class Move {
+public class Move extends Instruction {
 
     private int stateToGoToIfClear;
     private int StateToGoToIfBlocked;

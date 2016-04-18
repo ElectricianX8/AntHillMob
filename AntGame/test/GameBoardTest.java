@@ -9,6 +9,8 @@ import antgame.Colour;
 import antgame.Coordinate;
 import antgame.GameBoard;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,16 +26,29 @@ public class GameBoardTest {
     @Test
     public void MarkerAddingTest() {
 
-        GameBoard board = new GameBoard(10, 10, null);
-        Coordinate cell = new Coordinate(0, 0);
-        board.set_marker_at(cell, Colour.RED, 1);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+        try {
 
-        board.clear_marker_at(cell, Colour.RED, 0);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
-
-        board.clear_marker_at(cell, Colour.RED, 1);
-        assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+            GameBoard board = new GameBoard(10, 10, null);
+            Coordinate cell = new Coordinate(0, 0);
+            board.set_marker_at(cell, Colour.RED, 1);
+            try {
+                assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+            } catch (Exception ex) {
+                Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            board.clear_marker_at(cell, Colour.RED, 0);
+            try {
+                assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+            } catch (Exception ex) {
+                Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            board.clear_marker_at(cell, Colour.RED, 1);
+            assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
@@ -42,11 +57,19 @@ public class GameBoardTest {
         GameBoard board = new GameBoard(10, 10, null);
         Coordinate cell = new Coordinate(0, 0);
         board.set_marker_at(cell, Colour.RED, 1);
-        //make sure it only adds one, not multiple of same marker
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+        try {
+            //make sure it only adds one, not multiple of same marker
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         board.set_marker_at(cell, Colour.RED, 1);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+        try {
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         board.clear_marker_at(cell, Colour.RED, 1);
         //assertTrue(board.check_marker_at(cell, Colour.RED, 1));
@@ -67,7 +90,7 @@ public class GameBoardTest {
     }
 
     @Test
-    public void AddingDifferentMarkersTest() {
+    public void AddingDifferentMarkersTest() throws Exception {
 
         // check adding different markers
         GameBoard board = new GameBoard(10, 10, null);
@@ -103,7 +126,7 @@ public class GameBoardTest {
     
     @Test
     public void manageAntsTest(){
-        ArrayList<Ant> ants = new ArrayList<Ant>();
+        ArrayList<Ant> ants = new ArrayList<>();
         Ant ant = new Ant(Colour.BLACK, 5, 0,0);
         Ant ant2 = new Ant(Colour.RED, 5, 0,1);
         Ant ant3 = new Ant(Colour.RED, 5, 1,1);

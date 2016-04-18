@@ -58,14 +58,14 @@ public class WorldParser {
                 
 
                 if (cell.isAnthillFor(Colour.RED)) {
-                    Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
-                    cell.setOccupied(ant);
-                    ants.add(ant);
+                    //Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
+                    //cell.setOccupied(ant);
+                    //ants.add(ant);
                     //System.out.println("red anthill cords: " + rowCount + " " + i);
                 } else if (cell.isAnthillFor(Colour.BLACK)) {
-                    Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
-                    cell.setOccupied(ant);
-                    ants.add(ant);
+                    //Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
+                    //cell.setOccupied(ant);
+                    //ants.add(ant);
                 }
                 
                 board[rowCount][i] = cell;

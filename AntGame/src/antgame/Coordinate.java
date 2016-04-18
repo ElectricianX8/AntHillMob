@@ -1,18 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package antgame;
 
 /**
  * Represents an (x,y) coordinate.
- * [][] where first [] is the row, second [] the column
  */
 public class Coordinate {
     private int x;
     private int y;
     
+    /**
+     * Constructor.
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public Coordinate(int x, int y){
         this.x = x;
         this.y = y;

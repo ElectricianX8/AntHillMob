@@ -9,6 +9,8 @@ import instructions.Condition;
 import instructions.ConditionType;
 import instructions.SenseDirection;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -44,30 +46,36 @@ public class GameTest {
 
     @Test
     public void cell_matches_test() {
+        try {
+            Condition cond = new Condition(ConditionType.Home);
+            Coordinate cord = new Coordinate(27, 41); //red anthill
 
-        Condition cond = new Condition(ConditionType.HOME);
-        Coordinate cord = new Coordinate(27, 41); //red anthill
-
-        boolean res = game.cell_matches(cord, cond, Colour.RED);
-        assertTrue(res);
+            boolean res = game.cell_matches(cord, cond, Colour.RED);
+            assertTrue(res);
+        } catch (Exception ex) {
+            Logger.getLogger(GameTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
     @Test
     public void SenseDirectionTest() {
+        try {
+            Condition cond = new Condition(ConditionType.Home);
+            Coordinate cord = new Coordinate(27, 41); //red anthill
 
-        Condition cond = new Condition(ConditionType.HOME);
-        Coordinate cord = new Coordinate(27, 41); //red anthill
-
-        Coordinate testCord = game.sensed_cell(cord, 0, SenseDirection.AHEAD);
-        assertEquals(28, testCord.getX());
-        boolean res = game.cell_matches(testCord, cond, Colour.RED);
-        assertTrue(res);
-        testCord = game.sensed_cell(cord, 0, SenseDirection.RIGHT_AHEAD);
-        assertEquals(42, testCord.getY());
-        assertEquals(28, testCord.getX());
-        res = game.cell_matches(testCord, cond, Colour.RED);
-        assertTrue(res);
+            Coordinate testCord = game.sensed_cell(cord, 0, SenseDirection.Ahead);
+            assertEquals(28, testCord.getX());
+            boolean res = game.cell_matches(testCord, cond, Colour.RED);
+            assertTrue(res);
+            testCord = game.sensed_cell(cord, 0, SenseDirection.RightAhead);
+            assertEquals(42, testCord.getY());
+            assertEquals(28, testCord.getX());
+            res = game.cell_matches(testCord, cond, Colour.RED);
+            assertTrue(res);
+        } catch (Exception ex) {
+            Logger.getLogger(GameTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
     
@@ -75,7 +83,7 @@ public class GameTest {
     @Test
     public void adjacentAntsTest(){
         
-        Condition cond = new Condition(ConditionType.HOME);
+        Condition cond = new Condition(ConditionType.Home);
         Coordinate cord = new Coordinate(27, 41); //red anthill
         
         int antTest = game.adjacent_ants(cord, Colour.RED);

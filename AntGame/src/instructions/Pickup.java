@@ -12,7 +12,7 @@ public class Pickup extends Instruction {
      * Constructor for testing.
      * Should be removed before submission.
      */
-    Pickup(){
+    public Pickup(){
         trueState = 0;
         falseState = 0;
     }
@@ -23,7 +23,7 @@ public class Pickup extends Instruction {
      * @param falseState the state to transition to if unable to pick 
      * up an item.
      */
-    Pickup(int trueState, int falseState){
+    public Pickup(int trueState, int falseState){
         this.trueState = trueState;
         this.falseState = falseState;
     }

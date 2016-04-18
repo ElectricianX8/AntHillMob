@@ -1,22 +1,197 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package antgame;
 
+import instructions.SenseDirection;
 import java.util.ArrayList;
 
 /**
- *
- * Game GameBoard
+ * Class to represent the game board.
  */
 public class GameBoard {
+    Cell [][] board;        // Remember [y][x] as arrays reference row, then column.
+    ArrayList<Ant> ants;    // Not sure about this tbh.
+    
+    public GameBoard(){
+        
+    }
     
     
-    Cell [][] board;
-    ArrayList<Ant> ants;
+    public int numOfAntHillCells(Colour colour) {
+        int antHillCount = 0;
+        for (Cell[] row: board) {
+            for (Cell cell: row) {
+                if (cell.isAnthillFor(colour)){
+                    antHillCount++;
+                }
+            }
+        }
+        return antHillCount;
+    }
+    
+    
+    public ArrayList<Coordinate> getAntHillCoordinates(Colour colour) {
+        ArrayList<Coordinate> antHills = new ArrayList<>();
+        
+        for (Cell[] row: board) {
+            for (Cell cell: row) {
+                if (cell.isAnthillFor(colour)){
+                    antHills.add(cell.getCoordinate());
+                }
+            }
+        }
+             
+        return antHills;
+    }
+    
+    public int foodAtAntHill(Colour colour) {
+        int numOfFoodAtAntHill = 0;
+        
+        for (Cell[] row: board) {
+            for (Cell cell: row) {
+                if (cell.isAnthillFor(colour)){
+                    numOfFoodAtAntHill+=cell.getFoodCount();
+                }
+            }
+        }
+        
+        return numOfFoodAtAntHill;
+    }
+    
+    
+    public Cell getCellAtCurrentPositionPlusDirection(Coordinate cp, int d, SenseDirection sd) throws Exception {
+        boolean isEven = (cp.getY()%2==0);
+        
+        if (sd.equals(SenseDirection.Here)) {
+            return getCellAtPosition(cp);
+        } else if (sd.equals(SenseDirection.Ahead)) {
+            if (d == 0) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 1 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 1) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 3) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 4 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 4) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            }
+        } else if (sd.equals(SenseDirection.LeftAhead)) {
+            d = (d+5)%6;
+            if (d == 0) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 1 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 1) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 3) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 4 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 4) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            }
+        } else if (sd.equals(SenseDirection.RightAhead)) {
+            d = (d+1)%6;
+            if (d == 0) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 1 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 1) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 2) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
+                return getCellAtPosition(toGet);
+            } else if (d == 3) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
+                return getCellAtPosition(toGet);
+            } else if (d == 4 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 4) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5 && isEven) {
+                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
+                return getCellAtPosition(toGet);
+            } else if (d == 5) {
+                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
+                return getCellAtPosition(toGet);
+            }
+        }
+        throw new Exception("Got to end of cell at position + direction and haven't return anything");
+    }
+    
+        
+    public Cell getCellAtPosition(Coordinate position){
+        
+        //boundary check here or outside??
+        //add isvalid position method somewhere, cover for it in game class?
+        
+        return board[position.getY()][position.getX()];
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     //test only, phase out later on
     public GameBoard(int height, int width, ArrayList<Ant> ants){
@@ -35,15 +210,7 @@ public class GameBoard {
         this.ants = ants;
     }
     
-    
-    public Cell getCellAtPosition(Coordinate position){
-        
-        //boundary check here or outside??
-        //add isvalid position method somewhere, cover for it in game class?
-        
-        return board[position.getX()][position.getY()];
-        
-    }
+
     
     
     
@@ -140,9 +307,9 @@ public class GameBoard {
         getCellAtPosition(position).clearMarker(colour, marker);
     }
     
-    public boolean check_marker_at(Coordinate position, Colour colour, int marker){
+    public boolean check_marker_at(Coordinate position, Colour colour, int marker) throws Exception{
         
-        return getCellAtPosition(position).findMarker(colour, marker);
+        return getCellAtPosition(position).containsMarker(colour, marker);
     }
     
     public boolean check_any_marker_at(Coordinate position, Colour colour){
@@ -154,7 +321,7 @@ public class GameBoard {
     
     public boolean anthill_at(Coordinate position, Colour colour){
         
-        return getCellAtPosition(position).isAnthill(colour);
+        return getCellAtPosition(position).isAnthillFor(colour);
         
     }
     
@@ -248,12 +415,10 @@ public class GameBoard {
        
     }
     
+    
     public Cell[][] getHexGrid(){
        return board; 
     }
-    
-    
-    
- 
+
 
 }

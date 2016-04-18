@@ -40,7 +40,7 @@ public class Game {
     
     public int turn(TurnDirection turnDirection, int direction){
         
-        if(turnDirection == TurnDirection.LEFT){
+        if(turnDirection == TurnDirection.Left){
             return (direction+5) % 6;
         }
         else{
@@ -50,58 +50,58 @@ public class Game {
     
     public Coordinate sensed_cell(Coordinate position, int direction, SenseDirection sense){
         
-        if(sense==SenseDirection.HERE){
+        if(sense==SenseDirection.Here){
             return position;
         }
-        else if(sense==SenseDirection.AHEAD){
+        else if(sense==SenseDirection.Ahead){
             return board.adjacent_cell(position, direction);
         }
-        else if(sense==SenseDirection.LEFT_AHEAD){
-            return board.adjacent_cell(position, turn(TurnDirection.LEFT, direction));
+        else if(sense==SenseDirection.LeftAhead){
+            return board.adjacent_cell(position, turn(TurnDirection.Left, direction));
         }
-        else if(sense==SenseDirection.RIGHT_AHEAD){
-            return board.adjacent_cell(position, turn(TurnDirection.RIGHT, direction));
+        else if(sense==SenseDirection.RightAhead){
+            return board.adjacent_cell(position, turn(TurnDirection.Right, direction));
         }else{
             return null;
         }
     }
 
     
-    public boolean cell_matches(Coordinate position, Condition condition, Colour colour) {
+    public boolean cell_matches(Coordinate position, Condition condition, Colour colour) throws Exception {
 
         //convert this into switch statement to make it easier to read?
         if (board.rocky(position)) {
-            return condition.getCondition() == ConditionType.ROCK;
+            return condition.getCondition() == ConditionType.Rock;
         } else {
-          if(condition.getCondition() == ConditionType.FRIEND){
+          if(condition.getCondition() == ConditionType.Friend){
               //check first for null, then colour?
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() == colour;
           }
-          else if(condition.getCondition() == ConditionType.FOE){
+          else if(condition.getCondition() == ConditionType.Foe){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour;
           }
-          else if(condition.getCondition() == ConditionType.FRIEND_WITH_FOOD){
+          else if(condition.getCondition() == ConditionType.FriendWithFood){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() == colour && board.ant_at(position).hasFood();
           }
-          else if(condition.getCondition() == ConditionType.FOE_WITH_FOOD){
+          else if(condition.getCondition() == ConditionType.FoeWithFood){
               return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour && board.ant_at(position).hasFood();
           }
-          else if(condition.getCondition() == ConditionType.FOOD){
+          else if(condition.getCondition() == ConditionType.Food){
               return board.food_at(position) > 0;
           }
-          else if(condition.getCondition() == ConditionType.ROCK){
+          else if(condition.getCondition() == ConditionType.Rock){
               return false;
           }
-          else if(condition.getCondition() == ConditionType.MARKER){
+          else if(condition.getCondition() == ConditionType.Marker){
               return board.check_marker_at(position, colour, condition.getMark());
           }
-          else if(condition.getCondition() == ConditionType.FOE_MARKER){
+          else if(condition.getCondition() == ConditionType.FoeMarker){
               return board.check_any_marker_at(position, other_color(colour));
           }
-          else if(condition.getCondition() == ConditionType.HOME){
+          else if(condition.getCondition() == ConditionType.Home){
               return board.anthill_at(position, colour);
           }
-          else if(condition.getCondition() == ConditionType.FOE_HOME){
+          else if(condition.getCondition() == ConditionType.FoeHome){
               return board.anthill_at(position, other_color(colour));
           }
           else{

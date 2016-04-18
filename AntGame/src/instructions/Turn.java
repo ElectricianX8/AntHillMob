@@ -3,7 +3,7 @@ package instructions;
 /**
  * Instruction to turn the calling ant in a direction.
  */
-public class Turn {
+public class Turn extends Instruction{
     private TurnDirection turnDirection;
     private int stateToGoTo;
     

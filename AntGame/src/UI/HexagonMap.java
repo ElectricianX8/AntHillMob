@@ -181,10 +181,10 @@ public class HexagonMap extends JPanel {
                     //g2.setColor(Color.BLUE);
                     //g2.fillPolygon(triangle);
                 }
-                else if(map[i][j].isAnthill(Colour.RED)){
+                else if(map[i][j].isAnthillFor(Colour.RED)){
                     setCellColour(g2, polygon, Color.PINK );
                 }
-                else if(map[i][j].isAnthill(Colour.BLACK)){
+                else if(map[i][j].isAnthillFor(Colour.BLACK)){
                     setCellColour(g2, polygon, Color.GRAY);
                 }
                 else if(map[i][j].getFoodCount() > 0){

@@ -15,7 +15,7 @@ public class Sense extends Instruction {
      * To be removed before final submission.
      */
     public Sense(){
-        senseDirection = SenseDirection.HERE;
+        senseDirection = SenseDirection.Here;
         trueState = 0;
         falseState = 0;
         cond = null;

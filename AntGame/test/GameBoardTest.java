@@ -9,6 +9,8 @@ import antgame.Colour;
 import antgame.Coordinate;
 import antgame.GameBoard;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,35 +25,41 @@ public class GameBoardTest {
 
     @Test
     public void MarkerAddingTest() {
+        try {
+            GameBoard board = new GameBoard(10, 10, null);
+            Coordinate cell = new Coordinate(0, 0);
+            board.set_marker_at(cell, Colour.RED, 1);
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
 
-        GameBoard board = new GameBoard(10, 10, null);
-        Coordinate cell = new Coordinate(0, 0);
-        board.set_marker_at(cell, Colour.RED, 1);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+            board.clear_marker_at(cell, Colour.RED, 0);
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
 
-        board.clear_marker_at(cell, Colour.RED, 0);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
-
-        board.clear_marker_at(cell, Colour.RED, 1);
-        assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+            board.clear_marker_at(cell, Colour.RED, 1);
+            assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
     public void MarkerDuplicateTest() {
+        try {
+            GameBoard board = new GameBoard(10, 10, null);
+            Coordinate cell = new Coordinate(0, 0);
+            board.set_marker_at(cell, Colour.RED, 1);
+            //make sure it only adds one, not multiple of same marker
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
 
-        GameBoard board = new GameBoard(10, 10, null);
-        Coordinate cell = new Coordinate(0, 0);
-        board.set_marker_at(cell, Colour.RED, 1);
-        //make sure it only adds one, not multiple of same marker
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+            board.set_marker_at(cell, Colour.RED, 1);
+            assertTrue(board.check_marker_at(cell, Colour.RED, 1));
 
-        board.set_marker_at(cell, Colour.RED, 1);
-        assertTrue(board.check_marker_at(cell, Colour.RED, 1));
+            board.clear_marker_at(cell, Colour.RED, 1);
+            //assertTrue(board.check_marker_at(cell, Colour.RED, 1));
 
-        board.clear_marker_at(cell, Colour.RED, 1);
-        //assertTrue(board.check_marker_at(cell, Colour.RED, 1));
-
-        assertFalse(board.check_any_marker_at(cell, Colour.RED));
+            assertFalse(board.check_any_marker_at(cell, Colour.RED));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
@@ -68,16 +76,19 @@ public class GameBoardTest {
 
     @Test
     public void AddingDifferentMarkersTest() {
-
-        // check adding different markers
-        GameBoard board = new GameBoard(10, 10, null);
-        Coordinate cell = new Coordinate(0, 0);
-        board.set_marker_at(cell, Colour.RED, 1);
-        board.set_marker_at(cell, Colour.RED, 2);
-        board.clear_marker_at(cell, Colour.RED, 1);
-        assertTrue(board.check_any_marker_at(cell, Colour.RED));
-        assertTrue(board.check_marker_at(cell, Colour.RED, 2));
-        assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+        try {
+            // check adding different markers
+            GameBoard board = new GameBoard(10, 10, null);
+            Coordinate cell = new Coordinate(0, 0);
+            board.set_marker_at(cell, Colour.RED, 1);
+            board.set_marker_at(cell, Colour.RED, 2);
+            board.clear_marker_at(cell, Colour.RED, 1);
+            assertTrue(board.check_any_marker_at(cell, Colour.RED));
+            assertTrue(board.check_marker_at(cell, Colour.RED, 2));
+            assertFalse(board.check_marker_at(cell, Colour.RED, 1));
+        } catch (Exception ex) {
+            Logger.getLogger(GameBoardTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test

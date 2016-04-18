@@ -9,7 +9,7 @@ package instructions;
  *
  * @author ollie
  */
-class NotValidInstructionException extends Exception {
+public class NotValidInstructionException extends Exception {
     String message;
     public NotValidInstructionException(String s) {
         this.message = s;

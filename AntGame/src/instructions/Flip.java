@@ -5,7 +5,7 @@ package instructions;
  * Go to nis0State if n == 0,
  * else go to nisGT0State if n > 0.
  */
-public class Flip {
+public class Flip extends Instruction {
     private int n;
     private int nis0State;
     private int nisGT0State;
@@ -14,7 +14,7 @@ public class Flip {
      * Constructor for testing purposes.
      * Should be removed before submission.
      */
-    Flip(){
+    public Flip(){
         n = 0;
         nis0State = 0;
         nisGT0State = 0;
@@ -26,7 +26,7 @@ public class Flip {
      * @param nisOState state to transition to if random number is 0.
      * @param nGTOState state to transition to otherwise.
      */
-    Flip(int n, int nisOState, int nGTOState) throws NotValidInstructionException{
+    public Flip(int n, int nisOState, int nGTOState) throws NotValidInstructionException{
         if (n < 1) {
             throw new NotValidInstructionException("Max random number generated must be > 0");
         }

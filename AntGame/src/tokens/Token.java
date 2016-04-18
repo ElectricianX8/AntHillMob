@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package instructions;
+package tokens;
 
 /**
- * Enum for Directions that can be sensed in.
+ *
+ * @author oliverthomas
  */
-public enum SenseDirection {
-    Here,
-    Ahead,
-    LeftAhead,
-    RightAhead
+public class Token {
+    
 }

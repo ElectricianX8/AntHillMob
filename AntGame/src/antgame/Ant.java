@@ -9,13 +9,23 @@ public class Ant {
     
     private final int id;
     private final Colour colour;
-    private int state;
-    private int resting;
-    private int direction;
-    private boolean hasFood;
+    private int state = 0;
+    private int resting = 0;
+    private int direction = 0;
+    private boolean hasFood = false;
     private Coordinate currentPosition;
-    private boolean isAlive;
+    private boolean isAlive = true;
 
+    /**
+     * Constructor for the Ant Class
+     * @param c the Colour team of the Ant.
+     */
+    public Ant(Colour c){
+        id = idCount++;
+        colour = c;
+    }
+    
+    
     public Ant(Colour colour, int direction, int x, int y) {
         
         this.colour = colour;
@@ -29,6 +39,7 @@ public class Ant {
     }
 
     /**
+     * gets the ID num of the Ant.
      * @return Returns ID number of the ant.
      */
     public int getId() {
@@ -36,6 +47,7 @@ public class Ant {
     }
     
     /**
+     * Return the COlour of the Ant.
      * @return Returns the colour of the ant.
      */
     public Colour getColour() {
@@ -43,6 +55,7 @@ public class Ant {
     }
 
     /**
+     * Return the Ant's current state.
      * @return Returns the state of the ant.
      */
     public int getState() {
@@ -58,6 +71,7 @@ public class Ant {
     }
 
     /**
+     * Gets the number of turns the ant has to rest.
      * @return Returns the resting count of an ant
      */
     public int getResting() {
@@ -80,6 +94,8 @@ public class Ant {
     }
 
     /**
+     * Get the ant's direction. 
+     * 0-5, 0 at East, incrementing as you rotate clockwise.
      * @return Returns the direction of the ant.
      */
     public int getDirection() {
@@ -95,14 +111,15 @@ public class Ant {
     }
 
     /**
-     * @return Returns whether the ant currently holds food.
+     * Gets whether the Ant is currently holding food.
+     * @return True if the Ant is currently holding Food, else false.
      */
     public boolean hasFood() {
         return hasFood;
     }
 
     /**
-     * Sets whether the ant currently holds fold or not.
+     * Sets whether the ant currently holds food or not.
      * @param hasFood True if ant has food, false otherwise.
      */
     public void setHasFood(boolean hasFood) {
@@ -110,6 +127,7 @@ public class Ant {
     }
 
     /**
+     * Gets the Coordinate of the Ant
      * @return Returns the current position of the ant.
      */
     public Coordinate getCurrentPosition() {
@@ -117,8 +135,8 @@ public class Ant {
     }
 
     /**
-     *
-     * @return Returns whether the ant is alive or not.
+     * Returns whether the ant is alive or not
+     * @return True if the Ant is alive, else false.
      */
     public boolean getIsAlive() {
         return isAlive;
@@ -138,6 +156,18 @@ public class Ant {
      */
     public void setCurrentPosition(Coordinate position){
         currentPosition = position;
+    }
+
+    /**
+     * Gets the colour of the ant's opposition
+     * @return Colour of opposition ants
+     */
+    public Colour getFoeColour() {
+        if (this.colour.equals(Colour.BLACK)) {
+            return Colour.RED;
+        } else {
+            return Colour.BLACK;
+        }
     }
 
 }

@@ -3,14 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package instructions;
+package antgame;
 
 /**
- * Enum for Directions that can be sensed in.
+ *
+ * @author oliverthomas
  */
-public enum SenseDirection {
-    Here,
-    Ahead,
-    LeftAhead,
-    RightAhead
+public class LexerException extends Exception {
+
+    String error;
+    
+    public LexerException(String e) {
+        this.error = e;
+    }
+    
 }

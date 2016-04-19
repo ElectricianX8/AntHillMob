@@ -115,7 +115,7 @@ public class Match implements Runnable {
         Colour foeColour = ant.getFoeColour();
         Cell currentCell = board.getCellAtPosition(ant.getCurrentPosition());
         int currentState = ant.getState();
-        int nextState = 0;
+        int nextState = ant.getState();
         AntBrain antBrain;
         Instruction instToExec;
 

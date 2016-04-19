@@ -340,10 +340,10 @@ public class GameBoard {
                     System.out.print(food_at(position));
                 }
                 // do these checks to see if ants are correctly placed on top of anthill during parsing
-                else if(anthill_at(position, Colour.RED) && some_ant_is_at(position) && ant_at(position).getColour() == Colour.RED){
+                else if(anthill_at(position, Colour.RED)){// && some_ant_is_at(position) && ant_at(position).getColour() == Colour.RED){
                     System.out.print("+");
                 }
-                else if(anthill_at(position, Colour.BLACK) && some_ant_is_at(position) && ant_at(position).getColour() == Colour.BLACK){
+                else if(anthill_at(position, Colour.BLACK)){// && some_ant_is_at(position) && ant_at(position).getColour() == Colour.BLACK){
                     System.out.print("-");
                 }
                 else{

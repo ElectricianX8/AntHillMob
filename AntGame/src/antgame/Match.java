@@ -2,6 +2,8 @@ package antgame;
 
 import instructions.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing the Match to be played.
@@ -59,15 +61,21 @@ public class Match implements Runnable {
 
         for (int i = 0; i < numOfRedAnts; i++) {
             ants[i].setCurrentPosition(redAntHillCoordinates.get(0));
+            
+            board.getCellAtPosition(redAntHillCoordinates.get(0)).setOccupied(ants[i].getId());
+            board.getCellAtPosition(redAntHillCoordinates.get(0)).setAntColour(Colour.RED);
             redAntHillCoordinates.remove(0);
         }
         for (int i = numOfRedAnts; i < totalAnts; i++) {
             ants[i].setCurrentPosition(blackAntHillCoordinates.get(0));
+            board.getCellAtPosition(blackAntHillCoordinates.get(0)).setOccupied(ants[i].getId());
+            board.getCellAtPosition(blackAntHillCoordinates.get(0)).setAntColour(Colour.BLACK);
+
             blackAntHillCoordinates.remove(0);
         }
     }
 
-    public Result start() throws Exception {
+    public Result start() {
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
@@ -75,11 +83,16 @@ public class Match implements Runnable {
         int delay = 3000;
 
         while (round < MATCH_LENGTH) {
+          
             for (Ant ant : ants) {
-                step(ant);
+                try {
+                    step(ant);
+                } catch (Exception ex) {
+                    Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             round++;
-            Thread.sleep(60);
+            //Thread.sleep(60);
         }
 
         isDone = true;
@@ -111,7 +124,7 @@ public class Match implements Runnable {
         } else {
             antBrain = player2.getAntBrain();
         }
-
+        
         instToExec = antBrain.getInstructionAt(currentState);
 
         if (ant.getIsAlive()) {
@@ -222,7 +235,7 @@ public class Match implements Runnable {
                     }
                 } else if (instToExec instanceof Drop) {
                     Drop drop = (Drop) instToExec;
-                    if (ant.hasFood()) {
+                    if (ant.hasFood() && currentCell.isAnthillFor(ant.getColour())) {
                         currentCell.incrementFoodInCell();
                         ant.setHasFood(false);
                         nextState = drop.getStateToGoTo();
@@ -245,11 +258,16 @@ public class Match implements Runnable {
                 } else if (instToExec instanceof Move) {
                     Move move = (Move) instToExec;
                     Cell cellToMoveTo = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), SenseDirection.Ahead);
-                    if (cellToMoveTo.getTerrain().equals(Terrain.ROCKY) | cellToMoveTo.getOccupier() > -1) {
+                    if (cellToMoveTo.getTerrain().equals(Terrain.ROCKY) || cellToMoveTo.getOccupier() > -1) {
                         nextState = move.getStateToGoToIfBlocked();
                     } else {
+                        //System.out.println("current cell occ = "+currentCell.getOccupier());
                         currentCell.removeOccupation();
+                        currentCell.removeAntColour(); //reset colour
                         cellToMoveTo.setOccupied(ant.getId());
+                        //System.out.println("cell to move to = "+cellToMoveTo.getOccupier());
+
+                        cellToMoveTo.setAntColour(ant.getColour());
                         ant.setCurrentPosition(cellToMoveTo.getCoordinate());
                         nextState = move.getStateToGoToIfClear();
                         ant.setResting(REST_LENGTH);

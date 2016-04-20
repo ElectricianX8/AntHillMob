@@ -12,9 +12,10 @@ public class Coordinate {
      * @param x x-coordinate
      * @param y y-coordinate
      */
-    public Coordinate(int x, int y){
+    public Coordinate(int y, int x){
+       this.y = y;
         this.x = x;
-        this.y = y;
+
     }
 
     /**

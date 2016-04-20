@@ -26,7 +26,7 @@ public class GameBoardTest {
     @Test
     public void MarkerAddingTest() {
         try {
-            GameBoard board = new GameBoard(10, 10, null);
+            GameBoard board = new GameBoard(10, 10);
             Coordinate cell = new Coordinate(0, 0);
             board.set_marker_at(cell, Colour.RED, 1);
             assertTrue(board.check_marker_at(cell, Colour.RED, 1));
@@ -44,7 +44,7 @@ public class GameBoardTest {
     @Test
     public void MarkerDuplicateTest() {
         try {
-            GameBoard board = new GameBoard(10, 10, null);
+            GameBoard board = new GameBoard(10, 10);
             Coordinate cell = new Coordinate(0, 0);
             board.set_marker_at(cell, Colour.RED, 1);
             //make sure it only adds one, not multiple of same marker
@@ -65,7 +65,7 @@ public class GameBoardTest {
     @Test
     public void MarkerMultipleSetsTest() {
 
-        GameBoard board = new GameBoard(10, 10, null);
+        GameBoard board = new GameBoard(10, 10);
         Coordinate cell = new Coordinate(0, 0);
         board.set_marker_at(cell, Colour.RED, 1);
         board.set_marker_at(cell, Colour.BLACK, 1);
@@ -78,7 +78,7 @@ public class GameBoardTest {
     public void AddingDifferentMarkersTest() {
         try {
             // check adding different markers
-            GameBoard board = new GameBoard(10, 10, null);
+            GameBoard board = new GameBoard(10, 10);
             Coordinate cell = new Coordinate(0, 0);
             board.set_marker_at(cell, Colour.RED, 1);
             board.set_marker_at(cell, Colour.RED, 2);
@@ -94,7 +94,7 @@ public class GameBoardTest {
     @Test
     public void AnthillCheckTest() {
 
-        GameBoard board = new GameBoard(10, 10, null);
+        GameBoard board = new GameBoard(10, 10);
         Coordinate cell = new Coordinate(0, 0);
         assertFalse(board.anthill_at(cell, Colour.RED));
         assertFalse(board.anthill_at(cell, Colour.BLACK));
@@ -103,7 +103,7 @@ public class GameBoardTest {
 
     @Test
     public void foodCountTest() {
-        GameBoard board = new GameBoard(10, 10, null);
+        GameBoard board = new GameBoard(10, 10);
         Coordinate cell = new Coordinate(0, 0);
         board.set_food_at(cell, 10);
         assertEquals(10, board.food_at(cell));
@@ -112,6 +112,7 @@ public class GameBoardTest {
     }
     
     
+    /*
     @Test
     public void manageAntsTest(){
         ArrayList<Ant> ants = new ArrayList<Ant>();
@@ -210,7 +211,7 @@ public class GameBoardTest {
         assertEquals(0, testY); //check here, not sure what even is meant to do here
         
     }
-    
+    */
    
 
 }

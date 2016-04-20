@@ -92,9 +92,9 @@ public class HexagonMap extends JPanel {
         final int MINIMUM_X_CORD = 10;
         int wOffset;
         if (h_count % 2 != 0) {
-            wOffset = MINIMUM_X_CORD + (w_count * 11);
+            wOffset = MINIMUM_X_CORD + (w_count * 11); //11 for size 6
         } else {
-            wOffset = MINIMUM_X_CORD + (w_count * 11) + 6; //11 for 6
+            wOffset = MINIMUM_X_CORD + (w_count * 11) + 6; // +6 is the offset to make hexagons align
         }
         int hOffset = MINIMUM_Y_CORD + (h_count * 9); //9 for 6
         Polygon polygon = getHex(wOffset, hOffset);
@@ -176,19 +176,20 @@ public class HexagonMap extends JPanel {
                     setCellColour(g2, polygon, new Color(139,69,19)); //brown
                 }
                 else if(map[i][j].isOccupied()){
-                    setAntCellColour(g2, polygon, map[i][j].getAntColour());
+                    setCellColour(g2, polygon, map[i][j].getAntColour());
                     //Polygon triangle = getTriangleAtCoordinates(h_count, w_count-1, map[i][j].getAnt().getDirection());
                     //g2.setColor(Color.BLUE);
                     //g2.fillPolygon(triangle);
                 }
-                else if(map[i][j].isAnthillFor(Colour.RED)){
+                else if(map[i][j].isAnthill(Colour.RED)){
                     setCellColour(g2, polygon, Color.PINK );
                 }
-                else if(map[i][j].isAnthillFor(Colour.BLACK)){
+                else if(map[i][j].isAnthill(Colour.BLACK)){
                     setCellColour(g2, polygon, Color.GRAY);
                 }
                 else if(map[i][j].getFoodCount() > 0){
                     setCellColour(g2, polygon, Color.GREEN);
+                    //different colour intensity to represent how much food is contained within a cell?
                 }
                 else{
                     setCellColour(g2, polygon, new Color(250,250,210)); //bleached yellow for less epilepsy

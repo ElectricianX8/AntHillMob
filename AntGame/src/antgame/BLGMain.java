@@ -38,9 +38,9 @@ public class BLGMain {
             System.out.println("Invalid token");
         }
         
-        GameBoard board = new GameBoard(10,10, null);
-        System.out.println(board.rocky(new Coordinate(0,0)));
-        System.out.println(board.some_ant_is_at(new Coordinate(0,0)));
+        //GameBoard board = new GameBoard(10,10, null);
+        //System.out.println(board.rocky(new Coordinate(0,0)));
+        //System.out.println(board.some_ant_is_at(new Coordinate(0,0)));
         
 
 

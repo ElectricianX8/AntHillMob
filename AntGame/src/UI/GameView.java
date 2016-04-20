@@ -8,10 +8,11 @@ package UI;
 import UI.EnumHolder.ListMode;
 import antgame.Cell;
 import antgame.Colour;
+import antgame.Game;
 import antgame.GameBoard;
 import antgame.InvalidMapTokenException;
 import antgame.LexerException;
-import antgame.Match;
+
 import antgame.ParsingException;
 import antgame.Player;
 import antgame.WorldParser;
@@ -63,7 +64,6 @@ public class GameView extends JFrame {
         mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.add(createStartPanel());
 
-        
         getContentPane().add(mainPanel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -219,6 +219,8 @@ public class GameView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                fileBrowser.resetChoosableFileFilters();
+                factory.setFileFilter(fileBrowser, mode);
                 int returnVal = fileBrowser.showOpenDialog(panel);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fileBrowser.getSelectedFile();
@@ -308,10 +310,10 @@ public class GameView extends JFrame {
                     if (tournament) {
                         createTournamentPanel();
                     } else {
-                        Match game = new Match(players.get(0), players.get(1), worlds.get(0));
+                        Game game = new Game(players.get(0), players.get(1), worlds.get(0));
                         //createGameViewPanel(game.getBoard());
                         try {
-                            
+
                             Thread t = new Thread(game);
                             t.start();
                             updateView(game);
@@ -442,11 +444,11 @@ public class GameView extends JFrame {
         return panel;
     }
 
-    public void updateView(final Match match) {
+    public void updateView(final Game match) {
         //update score here, move score labels to main?
 
         createGameViewPanel(match.getBoard());
-        final Timer timer = new Timer(50, null);
+        final Timer timer = new Timer(70, null);
         timer.start();
         timer.addActionListener(new ActionListener() {
             @Override
@@ -454,56 +456,56 @@ public class GameView extends JFrame {
                 updateMap(match.getBoard().getHexGrid());
                 updateScores(match);
                 refreshPanel(mainPanel);
-                System.out.println("Updated game view");
-                if(match.isGameDone()){
+                if (match.isGameDone()) {
                     timer.stop();
                     System.out.println("Timer done");
                 }
             }
         });
-        
+
         //resetMainPanel();
-
         //createGameViewPanel(board);
-
         //refreshUI();
         //revalidate();
         //repaint();
-       // pack();
+        // pack();
     }
-    
-    public void createGameViewPanel(GameBoard board){
-          
+
+    public void createGameViewPanel(GameBoard board) {
+
         mainPanel.add(createSidePanel(), BorderLayout.WEST);
         mainPanel.add(createMapPanel(board.getHexGrid()), BorderLayout.CENTER);
-        
+
     }
-    
-    
-    public void updateMap(Cell[][] map){
-        
-        JPanel mapPanel = (JPanel)mainPanel.getComponent(1);
+
+    public void updateMap(Cell[][] map) {
+
+        JPanel mapPanel = (JPanel) mainPanel.getComponent(1);
         JScrollPane pane = (JScrollPane) mapPanel.getComponent(0);
         pane.getComponent(0).repaint();
     }
-    
-    public void updateScores(Match match){
-        
-        JPanel sidePanel = (JPanel)mainPanel.getComponent(0);
-        JPanel scorePanel = (JPanel)sidePanel.getComponent(0);
-        ((JLabel)scorePanel.getComponent(3)).setText(Integer.toString(match.getPlayerFoodCount(Colour.RED)));
-        ((JLabel)scorePanel.getComponent(6)).setText(Integer.toString(match.getPlayerFoodCount(Colour.BLACK)));
+
+    public void updateScores(Game match) {
+
+        JPanel sidePanel = (JPanel) mainPanel.getComponent(0);
+        JPanel scorePanel = (JPanel) sidePanel.getComponent(0);
+
+        JPanel scoreP1 = (JPanel) ((JPanel) scorePanel.getComponent(3)).getComponent(0);
+        JPanel scoreP2 = (JPanel) ((JPanel) scorePanel.getComponent(6)).getComponent(0);
+
+        ((JLabel) scoreP1.getComponent(2)).setText(Integer.toString(match.getPlayerFoodCount(Colour.RED)));
+        ((JLabel) scoreP1.getComponent(3)).setText(Integer.toString(match.getPlayerAntCount(Colour.RED)));
+        ((JLabel) scoreP2.getComponent(2)).setText(Integer.toString(match.getPlayerFoodCount(Colour.BLACK)));
+        ((JLabel) scoreP2.getComponent(3)).setText(Integer.toString(match.getPlayerAntCount(Colour.BLACK)));
     }
-    
-    
-    public JPanel createMapPanel(Cell[][] map){
-        
-        JPanel mapContent = new JPanel(new BorderLayout(5,5)); //5,5 gap between panels
-        mapContent.setPreferredSize(new Dimension( 1200,700)); //x,y
+
+    public JPanel createMapPanel(Cell[][] map) {
+
+        JPanel mapContent = new JPanel(new BorderLayout(5, 5)); //5,5 gap between panels
+        mapContent.setPreferredSize(new Dimension(1200, 700)); //x,y
         setMinimumSize(new Dimension(1600, 900)); //min size of frame
         HexagonMap mapGraphic = new HexagonMap(map);
 
-  
         JScrollPane pane = new JScrollPane(mapGraphic, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setPreferredSize(new Dimension(100, 100));
         pane.getVerticalScrollBar().setUnitIncrement(12);
@@ -511,14 +513,12 @@ public class GameView extends JFrame {
         JViewport port = pane.getViewport();
         port.setScrollMode(JViewport.SIMPLE_SCROLL_MODE); //use simple or backing for performance gains, backing takes more ram
         pane.setViewport(port);
-        
+
         mapContent.add(pane);
-        
+
         return mapContent;
-        
+
     }
-    
-    
 
     // Game Window panels
     private JPanel createSidePanel() {
@@ -546,15 +546,43 @@ public class GameView extends JFrame {
         factory.setVerticalBoxLayout(panel);
 
         JLabel p1Score = factory.createColourLabel("0", true, new Color(50, 205, 50)); //move to global?
+        JLabel p1Ants = factory.createColourLabel("0", true, new Color(50, 205, 50));
         JLabel p2Score = factory.createColourLabel("0", true, new Color(50, 205, 50));
+        JLabel p2Ants = factory.createColourLabel("0", true, new Color(50, 205, 50));
+
+        JLabel scoreLabelP1 = factory.createLabel("Score", true);
+        JLabel antLabelP1 = factory.createLabel("Ants", true);
+        JLabel scoreLabelP2 = factory.createLabel("Score", true);
+        JLabel antLabelP2 = factory.createLabel("Ants", true);
+
+        JPanel p1Wrapper = new JPanel();
+        JPanel p1Info = new JPanel(new GridLayout(0, 2, 20, 5));
+        p1Info.setAlignmentX(Component.CENTER_ALIGNMENT);
+        p1Info.add(scoreLabelP1);
+        p1Info.add(antLabelP1);
+        p1Info.add(p1Score);
+        p1Info.add(p1Ants);
+
+        p1Wrapper.add(p1Info);
+        p1Wrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel p2Wrapper = new JPanel();
+        JPanel p2Info = new JPanel(new GridLayout(0, 2, 20, 5));
+        p2Info.setAlignmentX(Component.CENTER_ALIGNMENT);
+        p2Info.add(scoreLabelP2);
+        p2Info.add(antLabelP2);
+        p2Info.add(p2Score);
+        p2Info.add(p2Ants);
+        p2Wrapper.add(p2Info);
+        p2Wrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(factory.createLabel("Current Game", 22, true));
         panel.add(factory.createBoxPadding(0, 20));
         panel.add(factory.createColourLabel("Player1", 16, true, Color.RED));
-        panel.add(p1Score);
+        panel.add(p1Wrapper);
         panel.add(factory.createBoxPadding(0, 25));
         panel.add(factory.createLabel("Player2", 16, true));
-        panel.add(p2Score);
+        panel.add(p2Wrapper);
         panel.add(factory.createBoxPadding(0, 20));
         panel.setBorder(factory.createBlackLine(0, 0, 1, 0));
 
@@ -646,11 +674,10 @@ public class GameView extends JFrame {
                 JPanel panel = (JPanel) playerListPanel.getComponent(i);
 
                 if (panel.getComponent(0) instanceof JTextField && panel.getComponent(1) instanceof JPanel) {
-                    
+
                     JTextField field = (JTextField) panel.getComponent(0);
                     JPanel childPanel = (JPanel) panel.getComponent(1);
                     String antLabel = ((JLabel) childPanel.getComponent(0)).getText();
-                    
 
                     if (!isValidName(field)) {
                         errMsg.append("Error: Player field #").append(i).append(" has incorrect name!\n");
@@ -662,21 +689,19 @@ public class GameView extends JFrame {
                     }
                     if (localValid) {
                         Player player = new Player(field.getText(), i, null);
-                        try{
+                        try {
                             File file = new File(antLabel);
-                            player.loadAntBrain(file);   
+                            player.loadAntBrain(file);
                             validPlayers.add(player); // PARSE VALID BRAIN HERE DONT FORGET
-                        }
-                        catch(IOException e){
+                        } catch (IOException e) {
                             errMsg.append("Error: Brain field #").append(i).append(" can't be loaded!\n");
                             valid = false;
-                        
+
                         } catch (LexerException | NotValidInstructionException | ParsingException ex) {
                             errMsg.append("Error: Brain field #").append(i).append(" contains illegal brain structure!\n");
                             valid = false;
                         }
 
-                        
                     } else {
                         valid = false;
                     }
@@ -709,7 +734,7 @@ public class GameView extends JFrame {
             if (worldListPanel.getComponent(i) instanceof JPanel) {
                 worldCount++;
                 JPanel panel = (JPanel) worldListPanel.getComponent(i);
-                
+
                 if (panel.getComponent(0) instanceof JPanel) {
 
                     JLabel worldPath = ((JLabel) ((JPanel) panel.getComponent(0)).getComponent(0));
@@ -739,8 +764,6 @@ public class GameView extends JFrame {
             return null;
         }
     }
-
-    
 
     private void resetMainPanel() { //check this
 

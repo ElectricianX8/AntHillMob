@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
+import antgame.Game;
 import antgame.GameBoard;
 import antgame.InvalidMapTokenException;
 import antgame.LexerException;
-import antgame.Match;
 import antgame.ParsingException;
 import antgame.Player;
 import antgame.Result;
@@ -48,7 +48,7 @@ public class MatchTest {
             two.setName("Two");
             two.setId(2);
             two.loadAntBrain(new File("TestBrain.txt"));
-            Match m = new Match(one, one, testBoard);
+            Game m = new Game(one, one, testBoard);
             Result r = m.start();
             if (r.gameWasATie()) {
                 System.out.println("Tie");

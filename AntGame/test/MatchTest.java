@@ -39,7 +39,6 @@ public class MatchTest {
         try {
             WorldParser parser = new WorldParser();
             GameBoard testBoard = parser.parse("sample0.world.txt");
-            testBoard.printBoard();
             Player one = new Player();
             one.setName("One");
             one.setId(1);
@@ -56,6 +55,7 @@ public class MatchTest {
                     count++;
                 }
             }
+            testBoard.printBoard();
             System.out.println("Num of alive ants at the end " + count);
             if (r.gameWasATie()) {
                 System.out.println("Tie");

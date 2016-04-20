@@ -31,6 +31,14 @@ class AntBrain {
     }
     
     /**
+     * Get the Name of the antbrain without whitespace / newline.
+     * @return the name of the antbrain. For file name in saving.
+     */
+    public String getNameWithoutNewLine(){
+        return name.trim();
+    }
+    
+    /**
      * Gets the Instruction for the state.
      * @param state Current state of Ant.
      * @return Instruction to be carried out.

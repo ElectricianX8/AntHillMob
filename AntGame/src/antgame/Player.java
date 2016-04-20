@@ -134,7 +134,7 @@ public class Player {
         FileWriter fw;
         AntBrain toSave = this.brain;
         try {
-            fw = new FileWriter(toSave.getName() + ".txt");
+            fw = new FileWriter(toSave.getNameWithoutNewLine() + ".txt");
             fw.write(toSave.getName());
             for (Instruction i : toSave.getInstructionArray()) {
                 fw.write(i.toString() + "\n");

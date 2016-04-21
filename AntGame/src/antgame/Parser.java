@@ -154,7 +154,7 @@ class Parser {
                     } else {
                         throw new ParsingException("Marker to remove must follow unmark");
                     }
-                } else if (inst.getInstruction().equals("PickUp")) {
+                } else if (inst.getInstruction().equals("PickUp") || inst.getInstruction().equals("Pickup")) {
                     if (lexAntBrain.get(0) instanceof TokenInt) {
                         TokenInt trueState = (TokenInt) lexAntBrain.get(0);
                         lexAntBrain.remove(0);

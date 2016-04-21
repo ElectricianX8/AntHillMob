@@ -13,7 +13,7 @@ public class TokenCondition extends Token {
     String condition;
     
     public TokenCondition(String cond) {
-        this.condition = cond;
+        this.condition = cond.trim();
     }
 
     public String getCondition() {

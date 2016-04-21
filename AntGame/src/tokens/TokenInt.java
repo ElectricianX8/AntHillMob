@@ -15,6 +15,12 @@ public class TokenInt extends Token {
     public TokenInt(int i) {
         this.num = i;
     }
+    
+    public TokenInt(String i){
+        String stringToInt = i.trim();
+        Integer j = new Integer(stringToInt);
+        this.num = j;
+    }
 
     public int getNum() {
         return num;

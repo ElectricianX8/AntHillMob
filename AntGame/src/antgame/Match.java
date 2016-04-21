@@ -1,6 +1,5 @@
 package antgame;
 
-import UI.GameView;
 import instructions.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -9,7 +8,10 @@ import java.util.logging.Logger;
 /**
  * Class representing the Match to be played.
  */
-public class Match  implements Runnable{
+public class Match implements Runnable {
+
+    private final int REST_LENGTH = 14;
+    private final int MATCH_LENGTH = 300000;
 
     private Player player1;
     private Player player2;
@@ -21,6 +23,8 @@ public class Match  implements Runnable{
     private int numOfBlackAnts;
     Ant[] ants;
 
+    ArrayList<Integer> s = new ArrayList<>();
+    Integer seed = 12345;
 
     public Match(Player p1, Player p2, GameBoard b) {
         int totalAnts;
@@ -36,6 +40,13 @@ public class Match  implements Runnable{
         totalAnts = numOfRedAnts + numOfBlackAnts;
         ants = new Ant[totalAnts];
 
+        s.add(seed);
+        for (int i = 0; i < 5; i++) {
+            Long s_n = (long) s.get(s.size() - 1);
+            s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
+            s.add(s_n.intValue());
+        }
+
         for (int i = 0; i < numOfRedAnts; i++) {
             ants[i] = new Ant(Colour.RED);
         }
@@ -47,42 +58,41 @@ public class Match  implements Runnable{
 
         for (int i = 0; i < numOfRedAnts; i++) {
             ants[i].setCurrentPosition(redAntHillCoordinates.get(0));
+
+            board.getCellAtPosition(redAntHillCoordinates.get(0)).setOccupied(ants[i].getId());
             board.getCellAtPosition(redAntHillCoordinates.get(0)).setAntColour(Colour.RED);
             redAntHillCoordinates.remove(0);
         }
         for (int i = numOfRedAnts; i < totalAnts; i++) {
             ants[i].setCurrentPosition(blackAntHillCoordinates.get(0));
+            board.getCellAtPosition(blackAntHillCoordinates.get(0)).setOccupied(ants[i].getId());
             board.getCellAtPosition(blackAntHillCoordinates.get(0)).setAntColour(Colour.BLACK);
+
             blackAntHillCoordinates.remove(0);
         }
-
     }
 
-    public Result start() throws Exception {
+    public Result start() {
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
-        
+
         int delay = 3000;
-        while (round < 300000) {
+
+        while (round < MATCH_LENGTH) {
+
             for (Ant ant : ants) {
-                if(ant.getIsAlive()){
+                try {
                     step(ant);
-                    
-                    //System.out.print(("Sleeping zzz.."));
+                } catch (Exception ex) {
+                    Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-               
             }
-
-             Thread.sleep(60);
-
             round++;
+            //Thread.sleep(60);
         }
-        
+
         isDone = true;
-        System.out.print("Game has finished, yay");
-        
         //this.board.printBoard();
 
         p1Food = this.board.foodAtAntHill(Colour.RED);
@@ -102,7 +112,7 @@ public class Match  implements Runnable{
         Colour foeColour = ant.getFoeColour();
         Cell currentCell = board.getCellAtPosition(ant.getCurrentPosition());
         int currentState = ant.getState();
-        int nextState = 0;
+        int nextState = ant.getState();
         AntBrain antBrain;
         Instruction instToExec;
 
@@ -114,166 +124,242 @@ public class Match  implements Runnable{
 
         instToExec = antBrain.getInstructionAt(currentState);
 
-        if (instToExec instanceof Sense) {
-            Sense sense = (Sense) instToExec;
-            Cell cellToSenseIn = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), sense.getSenseDirection());
-            int cellOccupiedBy = cellToSenseIn.getOccupier();
-            if (sense.getCond().getCondition().equals(ConditionType.Friend)) {
-                if (cellOccupiedBy < 0) {
-                    nextState = sense.getFalseState();
-                } else if (ants[cellOccupiedBy].getColour().equals(antColour)) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.Foe)) {
-                if (cellOccupiedBy < 0) {
-                    nextState = sense.getFalseState();
-                } else if (ants[cellOccupiedBy].getColour().equals(foeColour)) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.FriendWithFood)) {
-                if (cellOccupiedBy < 0) {
-                    nextState = sense.getFalseState();
-                } else if (ants[cellOccupiedBy].getColour().equals(antColour)) {
-                    if (ants[cellOccupiedBy].hasFood()) {
-                        nextState = sense.getTrueState();
+        if (ant.getIsAlive()) {
+            if (ant.getResting() > 0) {
+                ant.decResting();
+            } else {
+                if (instToExec instanceof Sense) {
+                    Sense sense = (Sense) instToExec;
+                    Cell cellToSenseIn = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), sense.getSenseDirection());
+                    int cellOccupiedBy = cellToSenseIn.getOccupier();
+                    if (sense.getCond().getCondition().equals(ConditionType.Friend)) {
+                        if (cellOccupiedBy < 0) {
+                            nextState = sense.getFalseState();
+                        } else if (ants[cellOccupiedBy].getColour().equals(antColour)) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.Foe)) {
+                        if (cellOccupiedBy < 0) {
+                            nextState = sense.getFalseState();
+                        } else if (ants[cellOccupiedBy].getColour().equals(foeColour)) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.FriendWithFood)) {
+                        if (cellOccupiedBy < 0) {
+                            nextState = sense.getFalseState();
+                        } else if (ants[cellOccupiedBy].getColour().equals(antColour)) {
+                            if (ants[cellOccupiedBy].hasFood()) {
+                                nextState = sense.getTrueState();
+                            } else {
+                                nextState = sense.getFalseState();
+                            }
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.FoeWithFood)) {
+                        if (cellOccupiedBy < 0) {
+                            nextState = sense.getFalseState();
+                        } else if (ants[cellOccupiedBy].getColour().equals(foeColour)) {
+                            if (ants[cellOccupiedBy].hasFood()) {
+                                nextState = sense.getTrueState();
+                            } else {
+                                nextState = sense.getFalseState();
+                            }
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.Food)) {
+                        if (cellToSenseIn.containsFood()) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.Rock)) {
+                        if (cellToSenseIn.getTerrain().equals(Terrain.ROCKY)) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.Marker)) {
+                        if (cellToSenseIn.containsMarker(antColour, sense.getCond().getMark())) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.FoeMarker)) {
+                        if (cellToSenseIn.containsMarker(foeColour, sense.getCond().getMark())) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.Home)) {
+                        if (cellToSenseIn.isAnthillFor(antColour)) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    } else if (sense.getCond().getCondition().equals(ConditionType.FoeHome)) {
+                        if (cellToSenseIn.isAnthillFor(foeColour)) {
+                            nextState = sense.getTrueState();
+                        } else {
+                            nextState = sense.getFalseState();
+                        }
+                    }
+                } else if (instToExec instanceof Mark) {
+                    Mark mark = (Mark) instToExec;
+                    currentCell.addMarker(antColour, mark.getMarkToLeave());
+                    nextState = mark.getStateToGoTo();
+                } else if (instToExec instanceof Unmark) {
+                    Unmark unmark = (Unmark) instToExec;
+                    currentCell.removeMarker(antColour, unmark.getMarkToRemove());
+                    nextState = unmark.getStateToGoTo();
+                } else if (instToExec instanceof Pickup) {
+                    Pickup pickup = (Pickup) instToExec;
+                    if (currentCell.containsFood()) {
+                        if (!ant.hasFood()) {
+                            currentCell.decrementFoodInCell();
+                            ant.setHasFood(true);
+                            nextState = pickup.getTrueState();
+                        } else {
+                            nextState = pickup.getFalseState();
+                        }
                     } else {
-                        nextState = sense.getFalseState();
+                        nextState = pickup.getFalseState();
+                    }
+                } else if (instToExec instanceof Drop) {
+                    Drop drop = (Drop) instToExec;
+                    if (ant.hasFood() && currentCell.isAnthillFor(ant.getColour())) {
+                        currentCell.incrementFoodInCell();
+                        ant.setHasFood(false);
+                        nextState = drop.getStateToGoTo();
+                    } else {
+                        nextState = drop.getStateToGoTo();
+                    }
+                } else if (instToExec instanceof Turn) {
+                    Turn turn = (Turn) instToExec;
+                    if (turn.getTurnDirection().equals(TurnDirection.Left)) {
+                        int newDirection = (ant.getDirection() + 5) % 6;
+                        ant.setDirection(newDirection);
+                        nextState = turn.getStateToGoTo();
+                    } else if (turn.getTurnDirection().equals(TurnDirection.Right)) {
+                        int newDirection = (ant.getDirection() + 1) % 6;
+                        ant.setDirection(newDirection);
+                        nextState = turn.getStateToGoTo();
+                    } else {
+                        throw new Exception("Can only turn left or right");
+                    }
+                } else if (instToExec instanceof Move) {
+                    Move move = (Move) instToExec;
+                    Cell cellToMoveTo = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), SenseDirection.Ahead);
+                    if (cellToMoveTo.getTerrain().equals(Terrain.ROCKY) || cellToMoveTo.getOccupier() > -1) {
+                        nextState = move.getStateToGoToIfBlocked();
+                    } else {
+                        //System.out.println("current cell occ = "+currentCell.getOccupier());
+                        currentCell.removeOccupation();
+                        currentCell.removeAntColour(); //reset colour
+                        cellToMoveTo.setOccupied(ant.getId());
+                        //System.out.println("cell to move to = "+cellToMoveTo.getOccupier());
+
+                        cellToMoveTo.setAntColour(ant.getColour());
+                        ant.setCurrentPosition(cellToMoveTo.getCoordinate());
+                        nextState = move.getStateToGoToIfClear();
+                        ant.setResting(REST_LENGTH);
+                        checkForSurroundedAnts(cellToMoveTo);
+                    }
+                } else if (instToExec instanceof Flip) {
+                    Flip flip = (Flip) instToExec;
+                    int randomNumber = randomNumberGen(flip.getN());
+                    if (randomNumber == 0) {
+                        nextState = flip.getNisOState();
+                    } else {
+                        nextState = flip.getnGTOState();
                     }
                 } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.FoeWithFood)) {
-                if (cellOccupiedBy < 0) {
-                    nextState = sense.getFalseState();
-                } else if (ants[cellOccupiedBy].getColour().equals(foeColour)) {
-                    if (ants[cellOccupiedBy].hasFood()) {
-                        nextState = sense.getTrueState();
-                    } else {
-                        nextState = sense.getFalseState();
-                    }
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.Food)) {
-                if (cellToSenseIn.containsFood()) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.Rock)) {
-                if (cellToSenseIn.getTerrain().equals(Terrain.ROCKY)) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.Marker)) {
-                if (cellToSenseIn.containsMarker(antColour, sense.getCond().getMark())) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.FoeMarker)) {
-                if (cellToSenseIn.containsMarker(foeColour, sense.getCond().getMark())) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.Home)) {
-                if (cellToSenseIn.isAnthillFor(antColour)) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
-                }
-            } else if (sense.getCond().getCondition().equals(ConditionType.FoeHome)) {
-                if (cellToSenseIn.isAnthillFor(foeColour)) {
-                    nextState = sense.getTrueState();
-                } else {
-                    nextState = sense.getFalseState();
+                    throw new Exception("Unexpected instruction");
                 }
             }
-        } else if (instToExec instanceof Mark) {
-            Mark mark = (Mark) instToExec;
-            currentCell.addMarker(antColour, mark.getMarkToLeave());
-            nextState = mark.getStateToGoTo();
-        } else if (instToExec instanceof Unmark) {
-            Unmark unmark = (Unmark) instToExec;
-            currentCell.removeMarker(antColour, unmark.getMarkToRemove());
-            nextState = unmark.getStateToGoTo();
-        } else if (instToExec instanceof Pickup) {
-            Pickup pickup = (Pickup) instToExec;
-            if (currentCell.containsFood()) {
-                if (!ant.hasFood()) {
-                    currentCell.decrementFoodInCell();
-                    ant.setHasFood(true);
-                    nextState = pickup.getTrueState();
-                } else {
-                    nextState = pickup.getFalseState();
-                }
-            } else {
-                nextState = pickup.getFalseState();
-            }
-        } else if (instToExec instanceof Drop) {
-            Drop drop = (Drop) instToExec;
-            if (ant.hasFood()) {
-                currentCell.incrementFoodInCell();
-                ant.setHasFood(false);
-                nextState = drop.getStateToGoTo();
-            } else {
-                nextState = drop.getStateToGoTo();
-            }
-        } else if (instToExec instanceof Turn) {
-            Turn turn = (Turn) instToExec;
-            if (turn.getTurnDirection().equals(TurnDirection.Left)) {
-                int newDirection = (ant.getDirection() + 5) % 6;
-                ant.setDirection(newDirection);
-                nextState = turn.getStateToGoTo();
-            } else if (turn.getTurnDirection().equals(TurnDirection.Right)) {
-                int newDirection = (ant.getDirection() + 1) % 6;
-                ant.setDirection(newDirection);
-                nextState = turn.getStateToGoTo();
-            } else {
-                throw new Exception("Can only turn left or right");
-            }
-        } else if (instToExec instanceof Move) {
-            Move move = (Move) instToExec;
-            Cell cellToMoveTo = board.getCellAtCurrentPositionPlusDirection(ant.getCurrentPosition(), ant.getDirection(), SenseDirection.Ahead);
-            if (cellToMoveTo.getTerrain().equals(Terrain.CLEAR)) {
-                currentCell.removeOccupation();
-                currentCell.removeAntColour();
-                ant.setCurrentPosition(cellToMoveTo.getCoordinate());
-                cellToMoveTo.setOccupied(ant.getId());
-                cellToMoveTo.setAntColour(ant.getColour());
-                nextState = move.getStateToGoToIfClear();
-            } else {
-                nextState = move.getStateToGoToIfBlocked();
-            }
-        } else if (instToExec instanceof Flip) {
-            Flip flip = (Flip) instToExec;
-            int randomNumber = randomNumberGen(flip.getN());
-            if (randomNumber == 0) {
-                nextState = flip.getNisOState();
-            } else {
-                nextState = flip.getnGTOState();
-            }
-        } else {
-            throw new Exception("Unexpected instruction");
         }
 
         ant.setState(nextState);
     }
 
-    private int randomNumberGen(int n) {
-        // Java random number gen for now.
-        double toReturn = Math.random();
-        toReturn *= n;
-        return (int)toReturn;
+    public int randomNumberGen(int n) {
+        Long s_n = (long) s.get(s.size() - 1);
+        s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
+        s.add(s_n.intValue());
+
+        int toReturn = s.get(4);
+        toReturn = (((toReturn / 65536)% 16384)%n);
+
+        s.remove(0);
+        
+        if (s.size() > 7) {
+            System.out.println("List got bigger than expected");
+        }
+
+        return toReturn;
+        /*
+         // Java random number gen for now.
+         double toReturn = Math.random();
+         toReturn *= n;
+         return (int) toReturn;
+         */
     }
-    
-    public GameBoard getBoard(){
+
+    public void checkForSurroundedAnts(Cell c) throws Exception {
+        checkForSurroundedAntAt(c);
+        for (int d = 0; d < 6; d++) {
+            Cell lookingIn = board.getCellAtCurrentPositionPlusDirection(c.getCoordinate(), d, SenseDirection.Ahead);
+            checkForSurroundedAntAt(lookingIn);
+        }
+    }
+
+    public void checkForSurroundedAntAt(Cell c) throws Exception {
+        if (c.isOccupied()) {
+            Ant a = ants[c.getOccupier()];
+            if (adjacentAnts(c, a.getFoeColour()) >= 5) {
+                a.setIsAlive(false);
+                c.setOccupied(-1);
+                c.setFoodCount(c.getFoodCount() + 3);
+                if (a.hasFood()) {
+                    c.setFoodCount(c.getFoodCount() + 1);
+                }
+            }
+        }
+    }
+
+    public int adjacentAnts(Cell cell, Colour foeColour) throws Exception {
+        int foeCount = 0;
+        for (int d = 0; d < 6; d++) {
+            Cell lookingIn = board.getCellAtCurrentPositionPlusDirection(cell.getCoordinate(), d, SenseDirection.Ahead);
+            if (lookingIn.isOccupied()) {
+                if (ants[lookingIn.getOccupier()].getColour().equals(foeColour)) {
+                    foeCount++;
+                }
+            }
+        }
+        return foeCount;
+    }
+
+    /**
+     * Get the ants for the game. Used in testing
+     *
+     * @return Ants used in the game.
+     */
+    public Ant[] getAntArray() {
+        return ants;
+    }
+
+    /**
+     * Get the Game Board.
+     *
+     * @return Game Board
+     */
+    public GameBoard getBoard() {
         return board;
     }
 
@@ -285,13 +371,13 @@ public class Match  implements Runnable{
             System.out.println("System, opp smatch error");
         }
     }
-    
-    public boolean isGameDone(){
+
+    public boolean isGameDone() {
         return isDone;
-        
+
     }
-    
-    public int getPlayerFoodCount(Colour colour){
+
+    public int getPlayerFoodCount(Colour colour) {
         return board.foodAtAntHill(colour);
     }
 }

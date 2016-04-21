@@ -27,14 +27,13 @@ public class Lexer {
             
             GeneratedAntBrainLexer gabl = new GeneratedAntBrainLexer(new StringReader(input));
             Token nextResult = gabl.yylex();
-            
             while(nextResult != null) {
                 lexedInstructions.add(nextResult);
                 nextResult = gabl.yylex();
             }
             return lexedInstructions;
         } catch (Exception | Error e) {
-            throw new LexerException("Problem Lexing the AntBrain");
+            throw new LexerException(e.getMessage());
         }
     }
 }

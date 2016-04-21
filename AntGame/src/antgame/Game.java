@@ -18,10 +18,13 @@ public class Game implements Runnable {
     Player blackPlayer;
     boolean isDone;
     ArrayList<Ant> ants;
-
     GameBoard board;
-
-
+    int delay;
+    
+    ArrayList<Integer> s = new ArrayList<>();
+    Integer seed = 12345;
+    static int rngCalls = 0;
+    
 
     public Game(Player redPlayer, Player blackPlayer, GameBoard board) {
         this.redPlayer = redPlayer;
@@ -29,9 +32,19 @@ public class Game implements Runnable {
         this.board = board;
         isDone = false;
         initiateAnts();
+        initiateRNG();
+        delay = 0;
     }
     
-    
+   
+    private void initiateRNG(){
+        s.add(seed);
+        for (int i = 0; i < 10; i++) {
+            Long s_n = (long) s.get(s.size()-1);
+            s_n = (s_n*22695477+1)&(Integer.MAX_VALUE);
+            s.add(s_n.intValue());
+        }
+    }
     
     private void initiateAnts(){
         
@@ -239,7 +252,7 @@ public class Game implements Runnable {
                 else if(instruction instanceof Drop){
                     Drop drop = (Drop) instruction;
                     // && board.anthill_at(currentPos, ant.getColour()) prevent dropping outside anthill, not in spec
-                    if(ant.hasFood()){
+                    if(ant.hasFood() && board.anthill_at(currentPos, ant.getColour())){
                         board.set_food_at(currentPos, board.food_at(currentPos)+1);
                         ant.setHasFood(false);
                     }
@@ -263,7 +276,10 @@ public class Game implements Runnable {
                         ant.setResting(14);
                         nextState = move.getStateToGoToIfClear();
                         //System.out.println("Initial Cord: X (" + currentPos.getX() + ") Y(" + currentPos.getY()+ "), Moved to: X(" + nextPosition.getX() + ") Y(" + nextPosition.getY()+ ")");
-                        check_for_surrounded_ants(nextPosition);
+                        check_for_surrounded_ants(nextPosition);     
+                        if(delay>0){
+                           Thread.sleep(delay);
+                        }
                          
                     }
                 }
@@ -301,7 +317,8 @@ public class Game implements Runnable {
                 //alive check
                 step(ant);
             }
-            //Thread.sleep(60);
+
+
 
             round++;
         }
@@ -345,16 +362,35 @@ public class Game implements Runnable {
                 count++;
             }
         }
-        
         return count;
-        
-        
+    }
+    
+    public void changeDelay(int delay){
+        this.delay = delay;
     }
     
     
-    private int randomNumberGen(int n) {
-        // Java random number gen for now.
-        double toReturn = Math.random();
+    public int randomNumberGen(int n) {
+        
+        /*
+        Long s_n = (long) s.get(s.size()-1);
+         s_n = (s_n*22695477+1)&(1073741823);
+         s.add(s_n.intValue());
+        
+         //for (int i = 0; i < s.size(); i++) {
+         //System.out.println("S_"+i+" = "+s.get(i)); //HEAVY RESOURCE HOG
+         //}
+        
+         int toReturn = s.get(rngCalls+4);
+         toReturn = toReturn/65536;
+         toReturn = toReturn%16384;
+         toReturn = toReturn%n;
+        
+         rngCalls++;
+        
+         return toReturn;
+                */
+              double toReturn = Math.random();
         toReturn *= n;
         return (int)toReturn;
     }

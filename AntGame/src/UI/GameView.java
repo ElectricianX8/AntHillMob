@@ -53,6 +53,7 @@ public class GameView extends JFrame {
     JPanel playerListPanel;
     JPanel worldListPanel;
     boolean tournament; //test to check adaptability with single player
+    Game game;
 
     public GameView() {
         super("Setup the game");
@@ -310,7 +311,8 @@ public class GameView extends JFrame {
                     if (tournament) {
                         createTournamentPanel();
                     } else {
-                        Game game = new Game(players.get(0), players.get(1), worlds.get(0));
+                        game = new Game(players.get(0), players.get(1), worlds.get(0));
+                        game.changeDelay(60);
                         //createGameViewPanel(game.getBoard());
                         try {
 
@@ -605,6 +607,15 @@ public class GameView extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 1));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         JButton button = new JButton("Fast-Forward");
+        button.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.changeDelay(0);
+            }
+            
+        });
+        
         buttonPanel.add(button);
 
         return buttonPanel;

@@ -13,7 +13,7 @@ public class TokenTurn extends Token {
     String turn;
     
     public TokenTurn(String turn) {
-        this.turn = turn;
+        this.turn = turn.trim();
     }
 
     public String getTurn() {

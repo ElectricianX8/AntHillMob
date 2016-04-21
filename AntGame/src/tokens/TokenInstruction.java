@@ -13,7 +13,7 @@ public class TokenInstruction extends Token {
     String instruction;
     
     public TokenInstruction(String instruction) {
-        this.instruction = instruction;
+        this.instruction = instruction.trim();
     }
 
     public String getInstruction() {

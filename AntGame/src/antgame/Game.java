@@ -230,7 +230,7 @@ public class Game {
                     Pickup pickup = (Pickup) instruction;
                     //|| board.anthill_at(currentPos, other_color(ant.getColour())) add this to prevent picking up from enemy anthill
                     //only prevents picking up from own anthill now, but that's not specified in spec
-                    if (ant.hasFood() || board.food_at(currentPos) == 0 || board.anthill_at(currentPos, ant.getColour())) {
+                    if (ant.hasFood() || board.food_at(currentPos) == 0) {
                         nextState = pickup.getFalseState();
                     } else {
                         board.set_food_at(currentPos, board.food_at(currentPos) - 1);
@@ -240,7 +240,7 @@ public class Game {
                 } else if (instruction instanceof Drop) {
                     Drop drop = (Drop) instruction;
                     // && board.anthill_at(currentPos, ant.getColour()) prevent dropping outside anthill, not in spec
-                    if (ant.hasFood() && board.anthill_at(currentPos, ant.getColour())) {
+                    if (ant.hasFood()) {
                         board.set_food_at(currentPos, board.food_at(currentPos) + 1);
                         ant.setHasFood(false);
                     }

@@ -25,7 +25,6 @@ public class Match implements Runnable {
 
     ArrayList<Integer> s = new ArrayList<>();
     Integer seed = 12345;
-    static int rngCalls = 0;
 
     public Match(Player p1, Player p2, GameBoard b) {
         int totalAnts;
@@ -42,9 +41,9 @@ public class Match implements Runnable {
         ants = new Ant[totalAnts];
 
         s.add(seed);
-        for (int i = 0; i < 10; i++) {
-            Long s_n = (long) s.get(s.size()-1);
-            s_n = (s_n*22695477+1)&(Integer.MAX_VALUE);
+        for (int i = 0; i < 5; i++) {
+            Long s_n = (long) s.get(s.size() - 1);
+            s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
             s.add(s_n.intValue());
         }
 
@@ -59,7 +58,7 @@ public class Match implements Runnable {
 
         for (int i = 0; i < numOfRedAnts; i++) {
             ants[i].setCurrentPosition(redAntHillCoordinates.get(0));
-            
+
             board.getCellAtPosition(redAntHillCoordinates.get(0)).setOccupied(ants[i].getId());
             board.getCellAtPosition(redAntHillCoordinates.get(0)).setAntColour(Colour.RED);
             redAntHillCoordinates.remove(0);
@@ -77,11 +76,11 @@ public class Match implements Runnable {
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
-        
+
         int delay = 3000;
 
         while (round < MATCH_LENGTH) {
-          
+
             for (Ant ant : ants) {
                 try {
                     step(ant);
@@ -122,7 +121,7 @@ public class Match implements Runnable {
         } else {
             antBrain = player2.getAntBrain();
         }
-        
+
         instToExec = antBrain.getInstructionAt(currentState);
 
         if (ant.getIsAlive()) {
@@ -289,27 +288,25 @@ public class Match implements Runnable {
     }
 
     public int randomNumberGen(int n) {
-         Long s_n = (long) s.get(s.size()-1);
-         s_n = (s_n*22695477+1)&(1073741823);
-         s.add(s_n.intValue());
+        Long s_n = (long) s.get(s.size() - 1);
+        s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
+        s.add(s_n.intValue());
+
+        int toReturn = s.get(4);
+        toReturn = (((toReturn / 65536)% 16384)%n);
+
+        s.remove(0);
         
-         for (int i = 0; i < s.size(); i++) {
-         System.out.println("S_"+i+" = "+s.get(i));
-         }
-        
-         int toReturn = s.get(rngCalls+4);
-         toReturn = toReturn/65536;
-         toReturn = toReturn%16384;
-         toReturn = toReturn%n;
-        
-         rngCalls++;
-        
-         return toReturn;
+        if (s.size() > 7) {
+            System.out.println("List got bigger than expected");
+        }
+
+        return toReturn;
         /*
-        // Java random number gen for now.
-        double toReturn = Math.random();
-        toReturn *= n;
-        return (int) toReturn;
+         // Java random number gen for now.
+         double toReturn = Math.random();
+         toReturn *= n;
+         return (int) toReturn;
          */
     }
 
@@ -350,6 +347,7 @@ public class Match implements Runnable {
 
     /**
      * Get the ants for the game. Used in testing
+     *
      * @return Ants used in the game.
      */
     public Ant[] getAntArray() {
@@ -358,12 +356,13 @@ public class Match implements Runnable {
 
     /**
      * Get the Game Board.
+     *
      * @return Game Board
      */
     public GameBoard getBoard() {
         return board;
     }
-    
+
     @Override
     public void run() {
         try {
@@ -372,13 +371,13 @@ public class Match implements Runnable {
             System.out.println("System, opp smatch error");
         }
     }
-    
-    public boolean isGameDone(){
+
+    public boolean isGameDone() {
         return isDone;
-        
+
     }
-    
-    public int getPlayerFoodCount(Colour colour){
+
+    public int getPlayerFoodCount(Colour colour) {
         return board.foodAtAntHill(colour);
     }
 }

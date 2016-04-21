@@ -33,7 +33,7 @@ public class MatchTest {
 
     public MatchTest() {
     }
-
+/*
     @Test
     public void testMatch() throws LexerException, ParsingException {
         try {
@@ -42,11 +42,11 @@ public class MatchTest {
             Player one = new Player();
             one.setName("One");
             one.setId(1);
-            one.loadAntBrain(new File("TestBrain.txt"));
+            one.loadAntBrain(new File("sample.ant"));
             Player two = new Player();
             two.setName("Two");
             two.setId(2);
-            two.loadAntBrain(new File("TestBrain.txt"));
+            two.loadAntBrain(new File("sample.ant"));
             Match m = new Match(one, one, testBoard);
             Result r = m.start();
             int count = 0;
@@ -68,7 +68,7 @@ public class MatchTest {
             Logger.getLogger(MatchTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /*
+    */
      @Test
      public void testRNG() throws InvalidMapTokenException {
      try {
@@ -85,9 +85,45 @@ public class MatchTest {
      two.loadAntBrain(new File("TestBrain.txt"));
      Match m = new Match(one, one, testBoard);
      assertEquals(7193, m.randomNumberGen(16384));
+     assertEquals(2932, m.randomNumberGen(16384));
+     assertEquals(10386, m.randomNumberGen(16384));
+     assertEquals(5575, m.randomNumberGen(16384));
+     assertEquals(100, m.randomNumberGen(16384));
+     assertEquals(15976, m.randomNumberGen(16384));
+     assertEquals(430, m.randomNumberGen(16384));
+     assertEquals(9740, m.randomNumberGen(16384));
+     assertEquals(9449, m.randomNumberGen(16384));
+     assertEquals(1636, m.randomNumberGen(16384));
+     assertEquals(11030, m.randomNumberGen(16384));
+     assertEquals(9848, m.randomNumberGen(16384));
+     assertEquals(13965, m.randomNumberGen(16384));
+     assertEquals(16051, m.randomNumberGen(16384));
+     assertEquals(14483, m.randomNumberGen(16384));
+     assertEquals(6708, m.randomNumberGen(16384));
+     assertEquals(5184, m.randomNumberGen(16384));
+     assertEquals(15931, m.randomNumberGen(16384));
+     assertEquals(7014, m.randomNumberGen(16384));
+     assertEquals(461, m.randomNumberGen(16384));
+     assertEquals(11371, m.randomNumberGen(16384));
+     assertEquals(5856, m.randomNumberGen(16384));
+     assertEquals(2136, m.randomNumberGen(16384));
+     assertEquals(9139, m.randomNumberGen(16384));
+     assertEquals(1684, m.randomNumberGen(16384));
+     assertEquals(15900, m.randomNumberGen(16384));
+     assertEquals(10236, m.randomNumberGen(16384));
+     assertEquals(13297, m.randomNumberGen(16384));
+     
+     
+     
+     
+     
+     
+     
+     
+     
      } catch (IOException | LexerException | ParsingException | NotValidInstructionException ex) {
      Logger.getLogger(MatchTest.class.getName()).log(Level.SEVERE, null, ex);
      }
             
-     }*/
+     }
 }

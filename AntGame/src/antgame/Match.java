@@ -43,10 +43,8 @@ public class Match implements Runnable {
 
         s.add(seed);
         for (int i = 0; i < 10; i++) {
-            Long s_n = (long) s.get(s.size() - 1);
-            s_n *= 22695477;
-            s_n = s_n % Integer.MAX_VALUE;
-            s_n++;
+            Long s_n = (long) s.get(s.size()-1);
+            s_n = (s_n*22695477+1)&(Integer.MAX_VALUE);
             s.add(s_n.intValue());
         }
 
@@ -291,14 +289,8 @@ public class Match implements Runnable {
     }
 
     public int randomNumberGen(int n) {
-        /*
-        
-         TRYING TO DO MFB's RBG - it's a pain
-        
          Long s_n = (long) s.get(s.size()-1);
-         s_n*=22695477;
-         s_n++;
-         s_n = s_n%Integer.MAX_VALUE;
+         s_n = (s_n*22695477+1)&(1073741823);
          s.add(s_n.intValue());
         
          for (int i = 0; i < s.size(); i++) {
@@ -306,26 +298,19 @@ public class Match implements Runnable {
          }
         
          int toReturn = s.get(rngCalls+4);
-         System.out.println("s_"+rngCalls+"+4 ="+toReturn);
-         System.out.print(toReturn+" div 65536 = ");
          toReturn = toReturn/65536;
-         System.out.println(toReturn);
-         System.out.print(toReturn+" mod 16384 = ");
          toReturn = toReturn%16384;
-         System.out.println(toReturn);
-         System.out.print(toReturn+" mod n = ");
          toReturn = toReturn%n;
-         System.out.println(toReturn);
         
          rngCalls++;
         
          return toReturn;
-         */
-
+        /*
         // Java random number gen for now.
         double toReturn = Math.random();
         toReturn *= n;
         return (int) toReturn;
+         */
     }
 
     public void checkForSurroundedAnts(Cell c) throws Exception {

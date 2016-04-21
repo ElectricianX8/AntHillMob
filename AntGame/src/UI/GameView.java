@@ -10,11 +10,14 @@ import antgame.Cell;
 import antgame.Colour;
 import antgame.Game;
 import antgame.GameBoard;
+import antgame.GameController;
 import antgame.InvalidMapTokenException;
 import antgame.LexerException;
 
 import antgame.ParsingException;
 import antgame.Player;
+import antgame.QueueMatch;
+import antgame.Result;
 import antgame.WorldParser;
 import instructions.NotValidInstructionException;
 import java.awt.BorderLayout;
@@ -53,7 +56,7 @@ public class GameView extends JFrame {
     JPanel playerListPanel;
     JPanel worldListPanel;
     boolean tournament; //test to check adaptability with single player
-    Game game;
+    GameController gameController;
 
     public GameView() {
         super("Setup the game");
@@ -61,6 +64,7 @@ public class GameView extends JFrame {
         //game panel
         factory = new GUIFactory();
         fileBrowser = factory.createFileBrowser();
+        gameController = new GameController();
 
         mainPanel = new JPanel(new BorderLayout(5, 5));
         mainPanel.add(createStartPanel());
@@ -309,19 +313,14 @@ public class GameView extends JFrame {
                     //add check for file format here, can't do it in file chooser I think
                     resetMainPanel();
                     if (tournament) {
+                        gameController.setTournament(players, worlds);
                         createTournamentPanel();
                     } else {
-                        game = new Game(players.get(0), players.get(1), worlds.get(0));
-                        game.changeDelay(60);
+                        gameController.setSingleGame(players, worlds);
+                        gameController.changeDelay(60);
                         //createGameViewPanel(game.getBoard());
-                        try {
+                        startGame(false);
 
-                            Thread t = new Thread(game);
-                            t.start();
-                            updateView(game);
-                        } catch (Exception ex) {
-                            warningMessage("Error: Unable to start the game for mysterious reasons");
-                        }
                     }
 
                 } else {
@@ -332,6 +331,48 @@ public class GameView extends JFrame {
         panel.add(button);
 
         return panel;
+    }
+
+    public void startGame(boolean skip) {
+
+        Thread t = new Thread(gameController);
+        t.start();
+
+        while (gameController.getCurrentGame() == null); //semi-semaphore
+
+        if (!skip) {
+            resetMainPanel();
+            updateView(gameController.getCurrentGame());
+        } else {
+            changeReadyStatus();
+
+            final Timer timer = new Timer(70, null);
+            timer.start();
+            timer.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+
+                    if (gameController.getCurrentGame()==null) {
+                        timer.stop();
+                        resetMainPanel();
+                        createTournamentPanel();
+                    }
+                }
+            });
+
+
+        }
+
+    }
+
+    public void changeReadyStatus() {
+
+        JPanel tourneyPanel = (JPanel) mainPanel.getComponent(0);
+        JPanel rightSide = (JPanel) tourneyPanel.getComponent(1);
+        JLabel progressLabel = (JLabel)rightSide.getComponent(1);
+        progressLabel.setText("In progress");
+        progressLabel.setForeground(Color.RED);
+
     }
 
     //Tournament Menu Panel
@@ -345,16 +386,24 @@ public class GameView extends JFrame {
         leftSide.add(factory.createLabel("Leaderboard", 25, true));
         leftSide.add(createLeaderboardTable());
 
+        QueueMatch currentMatch = gameController.getNextMatch();
+
         JPanel rightSide = new JPanel();
         factory.setVerticalBoxLayout(rightSide);
         rightSide.setBorder(new EmptyBorder(0, 10, 0, 20));
-        rightSide.add(factory.createLabel("Current Match", 25, true));
-        rightSide.add(factory.createColourLabel("In progress", 16, true, Color.RED));
-        rightSide.add(Box.createRigidArea(new Dimension(0, 15)));
-        rightSide.add(createCurrentMatchPanel());
-        rightSide.add(Box.createRigidArea(new Dimension(0, 40)));
-        rightSide.add(createTournamentButtonsPanel());
-        rightSide.add(Box.createVerticalGlue());
+
+        if (currentMatch != null) {
+            rightSide.add(factory.createLabel("Current Match", 25, true));
+            rightSide.add(factory.createColourLabel("Ready", 16, true, Color.GREEN));
+            rightSide.add(Box.createRigidArea(new Dimension(0, 15)));
+            rightSide.add(createCurrentMatchPanel(currentMatch));
+            rightSide.add(Box.createRigidArea(new Dimension(0, 40)));
+            rightSide.add(createTournamentButtonsPanel());
+            rightSide.add(Box.createVerticalGlue());
+        } else {
+            rightSide.add(createCurrentMatchPanel(currentMatch));
+            rightSide.add(Box.createRigidArea(new Dimension(0, 40)));
+        }
 
         panel.add(leftSide);
         panel.add(rightSide);
@@ -368,13 +417,19 @@ public class GameView extends JFrame {
 
         JPanel panel = new JPanel();
         String[] columnNames = {"Ranking", "Player Name", "Score"};
-        String[][] sampleData = {{"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"},
-        {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}, {"1", "Player1", "20"}, {"2", "Player2", "10"}, {"3", "Player3", "5"}};
+
+        ArrayList<Player> players = gameController.getLeaderboard();
+        String[][] sampleData = new String[players.size()][];
+
+        for (int i = 0; i < players.size(); i++) {
+
+            String[] playerInfo = new String[3];
+            playerInfo[0] = Integer.toString(i);
+            playerInfo[1] = players.get(i).getName();
+            playerInfo[2] = Integer.toString(players.get(i).getScore());
+            sampleData[i] = playerInfo;
+        }
+
         JTable table = new JTable(sampleData, columnNames) {
 
             @Override
@@ -396,29 +451,34 @@ public class GameView extends JFrame {
         return panel;
     }
 
-    private JPanel createCurrentMatchPanel() {
+    private JPanel createCurrentMatchPanel(QueueMatch currentMatch) {
 
         JPanel panel = new JPanel();
         factory.setVerticalBoxLayout(panel);
 
-        panel.add(factory.createLabel("Map name", true));
-
         JPanel players = new JPanel();
         factory.setHorizontalBoxLayout(players);
 
-        JPanel firstPlayer = new JPanel();
-        factory.setVerticalBoxLayout(firstPlayer);
-        firstPlayer.add(factory.createLabel("Player1", 20, true));
-        firstPlayer.add(factory.createColourLabel("Red", 14, true, Color.RED));
+        if (currentMatch == null) {
+            players.add(factory.createLabel("The tournament is done!", 20, true));
 
-        JPanel secondPlayer = new JPanel();
-        factory.setVerticalBoxLayout(secondPlayer);
-        secondPlayer.add(factory.createLabel("Player2", 20, true));
-        secondPlayer.add(factory.createColourLabel("Black", 14, true, Color.BLACK));
+        } else {
+            panel.add(factory.createLabel("Map name", true));
 
-        players.add(firstPlayer);
-        players.add(Box.createHorizontalGlue());
-        players.add(secondPlayer);
+            JPanel firstPlayer = new JPanel();
+            factory.setVerticalBoxLayout(firstPlayer);
+            firstPlayer.add(factory.createLabel(currentMatch.getRedPlayer().getName(), 20, true));
+            firstPlayer.add(factory.createColourLabel("Red", 14, true, Color.RED));
+
+            JPanel secondPlayer = new JPanel();
+            factory.setVerticalBoxLayout(secondPlayer);
+            secondPlayer.add(factory.createLabel(currentMatch.getBlackPlayer().getName(), 20, true));
+            secondPlayer.add(factory.createColourLabel("Black", 14, true, Color.BLACK));
+
+            players.add(firstPlayer);
+            players.add(Box.createHorizontalGlue());
+            players.add(secondPlayer);
+        }
 
         panel.add(players);
 
@@ -433,13 +493,41 @@ public class GameView extends JFrame {
         //panel.setBorder(new EmptyBorder(20,5,20,5));
 
         JButton button1 = new JButton("Watch game");
-        //add action listener for buttons
+        button1.addActionListener(new ActionListener() {
 
-        JButton button2 = new JButton("Next game");
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(gameController.getCurrentGame()==null && gameController.getNextMatch()!=null){
+                   gameController.changeDelay(60);
+                    startGame(false); 
+                }
+                else{
+                    warningMessage("Please wait until the current match is finished!");
+                }
+                
+            }
+
+        });
 
         panel.add(button1);
         button1.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        JButton button2 = new JButton("Next game");
+        button2.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameController.changeDelay(0); //no delay,
+                if (gameController.getCurrentGame() == null && gameController.getNextMatch()!=null) {
+                    startGame(true);
+                } else {
+                    warningMessage("Please wait until the current match is finished!");
+                }
+
+            }
+
+        });
         panel.add(button2);
         button2.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -461,6 +549,8 @@ public class GameView extends JFrame {
                 if (match.isGameDone()) {
                     timer.stop();
                     System.out.println("Timer done");
+                    resultMessage(gameController.getLastResult());
+
                 }
             }
         });
@@ -578,12 +668,14 @@ public class GameView extends JFrame {
         p2Wrapper.add(p2Info);
         p2Wrapper.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        QueueMatch currentMatch = gameController.getNextMatch();
+
         panel.add(factory.createLabel("Current Game", 22, true));
         panel.add(factory.createBoxPadding(0, 20));
-        panel.add(factory.createColourLabel("Player1", 16, true, Color.RED));
+        panel.add(factory.createColourLabel(currentMatch.getRedPlayer().getName(), 16, true, Color.RED));
         panel.add(p1Wrapper);
         panel.add(factory.createBoxPadding(0, 25));
-        panel.add(factory.createLabel("Player2", 16, true));
+        panel.add(factory.createLabel(currentMatch.getBlackPlayer().getName(), 16, true));
         panel.add(p2Wrapper);
         panel.add(factory.createBoxPadding(0, 20));
         panel.setBorder(factory.createBlackLine(0, 0, 1, 0));
@@ -607,15 +699,15 @@ public class GameView extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 1));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         JButton button = new JButton("Fast-Forward");
-        button.addActionListener(new ActionListener(){
+        button.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.changeDelay(0);
+                gameController.changeRunningDelay(0);
             }
-            
+
         });
-        
+
         buttonPanel.add(button);
 
         return buttonPanel;
@@ -625,6 +717,25 @@ public class GameView extends JFrame {
     public void warningMessage(String s) {
         JOptionPane.showMessageDialog(null, s, "Warning",
                 JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void resultMessage(Result result) {
+
+        JPanel resultPanel = new JPanel();
+        if (!result.gameWasATie()) {
+            resultPanel.add(factory.createLabel("Player " + result.getWinner().getName() + " won the game!", 20, true));
+        } else {
+            resultPanel.add(factory.createLabel("Draw!", 20, true));
+        }
+
+        JOptionPane.showMessageDialog(null, resultPanel, "Match is over!",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        if (tournament) {
+            resetMainPanel();
+            createTournamentPanel();
+        }
+
     }
 
     private boolean isValidName(JTextField field) {

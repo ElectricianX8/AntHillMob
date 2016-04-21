@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * Top-level class for managing game
  */
-public class Game implements Runnable {
+public class Game {
 
     Player redPlayer;
     Player blackPlayer;
@@ -20,11 +20,9 @@ public class Game implements Runnable {
     ArrayList<Ant> ants;
     GameBoard board;
     int delay;
-    
+
     ArrayList<Integer> s = new ArrayList<>();
     Integer seed = 12345;
-    static int rngCalls = 0;
-    
 
     public Game(Player redPlayer, Player blackPlayer, GameBoard board) {
         this.redPlayer = redPlayer;
@@ -35,34 +33,32 @@ public class Game implements Runnable {
         initiateRNG();
         delay = 0;
     }
-    
-   
-    private void initiateRNG(){
+
+    private void initiateRNG() {
         s.add(seed);
-        for (int i = 0; i < 10; i++) {
-            Long s_n = (long) s.get(s.size()-1);
-            s_n = (s_n*22695477+1)&(Integer.MAX_VALUE);
+        for (int i = 0; i < 5; i++) {
+            Long s_n = (long) s.get(s.size() - 1);
+            s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
             s.add(s_n.intValue());
         }
     }
-    
-    private void initiateAnts(){
-        
+
+    private void initiateAnts() {
+
         ants = new ArrayList<Ant>();
-        for(Coordinate cord : board.getAnthills()){
-            if(board.anthill_at(cord, Colour.RED)){
-               Ant ant = new Ant(Colour.RED, 0, cord.getY(), cord.getX());
-               board.set_ant_at(cord, ant);
-               ants.add(ant);
-            }
-            else if(board.anthill_at(cord,Colour.BLACK)){
-               Ant ant = new Ant(Colour.BLACK, 0, cord.getY(), cord.getX());
-               board.set_ant_at(cord, ant);
-               ants.add(ant);
+        for (Coordinate cord : board.getAnthills()) {
+            if (board.anthill_at(cord, Colour.RED)) {
+                Ant ant = new Ant(Colour.RED, 0, cord.getY(), cord.getX());
+                board.set_ant_at(cord, ant);
+                ants.add(ant);
+            } else if (board.anthill_at(cord, Colour.BLACK)) {
+                Ant ant = new Ant(Colour.BLACK, 0, cord.getY(), cord.getX());
+                board.set_ant_at(cord, ant);
+                ants.add(ant);
             }
             //check if not anthill for error catching purposes?
         }
-        
+
     }
 
     public Colour other_color(Colour colour) {
@@ -101,7 +97,6 @@ public class Game implements Runnable {
 
     public boolean cell_matches(Coordinate position, Condition condition, Colour colour) {
 
-        
         if (board.rocky(position)) {
             return condition.getCondition() == ConditionType.Rock;
         } else {
@@ -150,16 +145,13 @@ public class Game implements Runnable {
 
         return antCount;
     }
-    
-    private void kill_ant(Ant ant){
-        
+
+    private void kill_ant(Ant ant) {
+
         board.clear_ant_at(ant.getCurrentPosition());
         ant.setCurrentPosition(null);
         ant.setIsAlive(false);
     }
-    
-    
-
 
     public void check_for_surrounded_ant_at(Coordinate position) {
 
@@ -206,8 +198,8 @@ public class Game implements Runnable {
 
     public void step(Ant ant) throws Exception {
 
-        if (ant.IsAlive()){
-            
+        if (ant.IsAlive()) {
+
             Coordinate currentPos = ant.getCurrentPosition();
 
             if (ant.getResting() > 0) {
@@ -217,57 +209,51 @@ public class Game implements Runnable {
                 int nextState = 0;
                 AntBrain antBrain = getPlayerBrain(ant.getColour());
                 Instruction instruction = antBrain.getInstructionAt(currentState);
-                
-                if(instruction instanceof Sense){
+
+                if (instruction instanceof Sense) {
                     Sense sense = (Sense) instruction;
                     Coordinate sensedPosition = sensed_cell(currentPos, ant.getDirection(), sense.getSenseDirection());
-                    if(cell_matches(sensedPosition, sense.getCond(), ant.getColour())){ //if sensing true
+                    if (cell_matches(sensedPosition, sense.getCond(), ant.getColour())) { //if sensing true
                         nextState = sense.getTrueState();
                     } else {
                         nextState = sense.getFalseState();
                     }
-                }
-                else if(instruction instanceof Mark){
+                } else if (instruction instanceof Mark) {
                     Mark mark = (Mark) instruction;
                     board.set_marker_at(currentPos, ant.getColour(), mark.getMarkToLeave());
                     nextState = mark.getStateToGoTo();
-                }
-                else if(instruction instanceof Unmark){
+                } else if (instruction instanceof Unmark) {
                     Unmark unmark = (Unmark) instruction;
                     board.clear_marker_at(currentPos, ant.getColour(), unmark.getMarkToRemove());
                     nextState = unmark.getStateToGoTo();
-                }
-                else if(instruction instanceof Pickup){
+                } else if (instruction instanceof Pickup) {
                     Pickup pickup = (Pickup) instruction;
                     //|| board.anthill_at(currentPos, other_color(ant.getColour())) add this to prevent picking up from enemy anthill
                     //only prevents picking up from own anthill now, but that's not specified in spec
-                    if(ant.hasFood() || board.food_at(currentPos) == 0 || board.anthill_at(currentPos, ant.getColour()) ){
+                    if (ant.hasFood() || board.food_at(currentPos) == 0 || board.anthill_at(currentPos, ant.getColour())) {
                         nextState = pickup.getFalseState();
                     } else {
-                        board.set_food_at(currentPos, board.food_at(currentPos)-1);
+                        board.set_food_at(currentPos, board.food_at(currentPos) - 1);
                         ant.setHasFood(true);
                         nextState = pickup.getTrueState();
                     }
-                }
-                else if(instruction instanceof Drop){
+                } else if (instruction instanceof Drop) {
                     Drop drop = (Drop) instruction;
                     // && board.anthill_at(currentPos, ant.getColour()) prevent dropping outside anthill, not in spec
-                    if(ant.hasFood() && board.anthill_at(currentPos, ant.getColour())){
-                        board.set_food_at(currentPos, board.food_at(currentPos)+1);
+                    if (ant.hasFood() && board.anthill_at(currentPos, ant.getColour())) {
+                        board.set_food_at(currentPos, board.food_at(currentPos) + 1);
                         ant.setHasFood(false);
                     }
-                    nextState = drop.getStateToGoTo();           
-                }
-                else if(instruction instanceof Turn){
+                    nextState = drop.getStateToGoTo();
+                } else if (instruction instanceof Turn) {
                     Turn turn = (Turn) instruction;
                     ant.setDirection(turn(turn.getTurnDirection(), ant.getDirection()));
                     nextState = turn.getStateToGoTo();
-                }
-                else if(instruction instanceof Move){
+                } else if (instruction instanceof Move) {
                     Move move = (Move) instruction;
                     Coordinate nextPosition = board.adjacent_cell(currentPos, ant.getDirection());
-                    
-                    if(board.rocky(nextPosition) || board.some_ant_is_at(nextPosition)){ 
+
+                    if (board.rocky(nextPosition) || board.some_ant_is_at(nextPosition)) {
                         nextState = move.getStateToGoToIfBlocked(); //if blocked
                     } else {
                         board.clear_ant_at(currentPos);
@@ -276,41 +262,38 @@ public class Game implements Runnable {
                         ant.setResting(14);
                         nextState = move.getStateToGoToIfClear();
                         //System.out.println("Initial Cord: X (" + currentPos.getX() + ") Y(" + currentPos.getY()+ "), Moved to: X(" + nextPosition.getX() + ") Y(" + nextPosition.getY()+ ")");
-                        check_for_surrounded_ants(nextPosition);     
-                        if(delay>0){
-                           Thread.sleep(delay);
+                        check_for_surrounded_ants(nextPosition);
+                        if (delay > 0) {
+                            Thread.sleep(delay);
                         }
-                         
+
                     }
-                }
-                else if(instruction instanceof Flip){
+                } else if (instruction instanceof Flip) {
                     Flip flip = (Flip) instruction;
-                    
-                    if(randomNumberGen(flip.getN()) == 0){
+
+                    if (randomNumberGen(flip.getN()) == 0) {
                         nextState = flip.getNisOState();
                     } else {
                         nextState = flip.getnGTOState();
                     }
-                }
-                else{
+                } else {
                     System.out.println(instruction);
                     throw new Exception("Unexpected instruction");
                 }
-                
+
                 ant.setState(nextState);
             }
         } else {
             //System.out.println("Ant dead");
         }
     }
-    
-    
-    public Result start() throws Exception{
-        
+
+    public Result start() throws Exception {
+
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
-        
+
         int round = 0;
         while (round < 300000) {
             for (Ant ant : ants) {
@@ -318,14 +301,11 @@ public class Game implements Runnable {
                 step(ant);
             }
 
-
-
             round++;
         }
-        
+
         isDone = true;
         System.out.print("Game has finished, yay");
-        
 
         p1Food = getPlayerFoodCount(Colour.RED);
         p2Food = getPlayerFoodCount(Colour.BLACK);
@@ -337,71 +317,57 @@ public class Game implements Runnable {
         }
 
         return matchResult;
-        
+
     }
-    
-    
-    public int getPlayerFoodCount(Colour colour){
-        
+
+    public int getPlayerFoodCount(Colour colour) {
+
         int count = 0;
-        for(Coordinate antHill : board.getAnthills()){
-            if(board.anthill_at(antHill, colour) && board.food_at(antHill) > 0){
-                count+= board.food_at(antHill);
+        for (Coordinate antHill : board.getAnthills()) {
+            if (board.anthill_at(antHill, colour) && board.food_at(antHill) > 0) {
+                count += board.food_at(antHill);
             }
         }
-        
+
         return count;
-        
+
     }
-    
-    public int getPlayerAntCount(Colour colour){
-        
+
+    public int getPlayerAntCount(Colour colour) {
+
         int count = 0;
-        for(Ant ant : ants){
-            if(ant.IsAlive() && ant.getColour() == colour){
+        for (Ant ant : ants) {
+            if (ant.IsAlive() && ant.getColour() == colour) {
                 count++;
             }
         }
         return count;
     }
-    
-    public void changeDelay(int delay){
+
+    public void changeDelay(int delay) {
         this.delay = delay;
     }
-    
-    
-    public int randomNumberGen(int n) {
-        
-        /*
-        Long s_n = (long) s.get(s.size()-1);
-         s_n = (s_n*22695477+1)&(1073741823);
-         s.add(s_n.intValue());
-        
-         //for (int i = 0; i < s.size(); i++) {
-         //System.out.println("S_"+i+" = "+s.get(i)); //HEAVY RESOURCE HOG
-         //}
-        
-         int toReturn = s.get(rngCalls+4);
-         toReturn = toReturn/65536;
-         toReturn = toReturn%16384;
-         toReturn = toReturn%n;
-        
-         rngCalls++;
-        
-         return toReturn;
-                */
-              double toReturn = Math.random();
-        toReturn *= n;
-        return (int)toReturn;
-    }
 
-    @Override
-    public void run() {
-        try {
-            start();
-        } catch (Exception ex) {
-            System.out.println("oops, game crashed");
+    public int randomNumberGen(int n) {
+
+        Long s_n = (long) s.get(s.size() - 1);
+        s_n = (s_n * 22695477 + 1) & (Integer.MAX_VALUE);
+        s.add(s_n.intValue());
+
+        int toReturn = s.get(4);
+        toReturn = (((toReturn / 65536) % 16384) % n);
+
+        s.remove(0);
+
+        if (s.size() > 7) {
+            System.out.println("List got bigger than expected");
         }
+
+        return toReturn;
+
+//        double toReturn = Math.random();
+//        toReturn *= n;
+//        return (int)toReturn;
     }
 
     public boolean isGameDone() {

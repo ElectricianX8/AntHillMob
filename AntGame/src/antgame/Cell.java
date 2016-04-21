@@ -117,5 +117,17 @@ public class Cell {
             }
         }
     }
+    
+    
+    public Colour getAntHillColour(){
+        
+        if(antHill == null){
+            return null;
+        }
+        else {
+            return antHill;
+        }
+        
+    }
 
 }

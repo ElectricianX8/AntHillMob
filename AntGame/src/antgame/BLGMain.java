@@ -26,7 +26,7 @@ public class BLGMain {
         
         try {
             GameBoard testBoard = parser.parse("1.world");
-            testBoard.printBoard();
+            //testBoard.printBoard();
             
             GameView ui = new GameView();
             //ui.updateView(testBoard);

@@ -44,7 +44,7 @@ public class WorldParser {
             throw new InvalidMapTokenException("Can't process world size input");
         }
 
-        System.out.println(height + " " + width);
+        //System.out.println(height + " " + width);
 
         board = new Cell[height][width];
 
@@ -75,11 +75,11 @@ public class WorldParser {
             }
             rowCount++;
         }
-        System.out.println("Columns done: " + rowCount);
+        //System.out.println("Columns done: " + rowCount);
         
-        for(Coordinate cord:antHills){
-            System.out.println("Cord: " + cord.getY() + ", " + cord.getX());
-        }
+        //for(Coordinate cord:antHills){
+           // System.out.println("Cord: " + cord.getY() + ", " + cord.getX());
+        //}
         
         return new GameBoard(board, antHills);
     }

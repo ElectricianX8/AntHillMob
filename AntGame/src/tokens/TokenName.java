@@ -13,7 +13,7 @@ public class TokenName extends Token{
     String name;
     
     public TokenName(String s) {
-        this.name = s;
+        this.name = s.trim();
     }
 
     public String getName() {

@@ -1,4 +1,4 @@
-TestBrain
+~TestBrain
 Sense Ahead 1 3 Food
 Move 2 0
 Pickup 8 0

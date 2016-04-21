@@ -26,7 +26,7 @@ class AntBrain {
      * Get the Name of the antbrain.
      * @return the name of the antbrain.
      */
-    public String getName(){
+    public String getNameRaw(){
         return name;
     }
     
@@ -34,8 +34,9 @@ class AntBrain {
      * Get the Name of the antbrain without whitespace / newline.
      * @return the name of the antbrain. For file name in saving.
      */
-    public String getNameWithoutNewLine(){
-        return name.trim();
+    public String getName(){
+        String s = name.trim();
+        return s.substring(1);
     }
     
     /**

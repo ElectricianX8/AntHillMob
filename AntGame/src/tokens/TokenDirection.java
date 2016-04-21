@@ -13,7 +13,7 @@ public class TokenDirection extends Token {
     String direction;
     
     public TokenDirection(String dir) {
-        this.direction = dir;
+        this.direction = dir.trim();
     }
 
     public String getDirection() {

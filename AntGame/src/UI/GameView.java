@@ -339,6 +339,21 @@ public class GameView extends JFrame {
         t.start();
 
         while (gameController.getCurrentGame() == null); //semi-semaphore
+        
+        final Timer readyGameTimer = new Timer(50, null);
+        readyGameTimer.start();
+        readyGameTimer.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(gameController.getCurrentGame()!=null){
+                    readyGameTimer.stop();
+                }
+            }
+            
+        });
+        
+        
 
         if (!skip) {
             resetMainPanel();
@@ -346,14 +361,14 @@ public class GameView extends JFrame {
         } else {
             changeReadyStatus();
 
-            final Timer timer = new Timer(70, null);
-            timer.start();
-            timer.addActionListener(new ActionListener() {
+            final Timer timerSkip = new Timer(70, null);
+            timerSkip.start();
+            timerSkip.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 
                     if (gameController.getCurrentGame()==null) {
-                        timer.stop();
+                        timerSkip.stop();
                         resetMainPanel();
                         createTournamentPanel();
                     }

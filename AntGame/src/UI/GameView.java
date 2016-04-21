@@ -333,27 +333,28 @@ public class GameView extends JFrame {
         return panel;
     }
 
-    public void startGame(boolean skip) {
+    public void startGame(final boolean skip) {
 
         Thread t = new Thread(gameController);
         t.start();
 
-        while (gameController.getCurrentGame() == null); //semi-semaphore
-        
         final Timer readyGameTimer = new Timer(50, null);
         readyGameTimer.start();
-        readyGameTimer.addActionListener(new ActionListener(){
+        readyGameTimer.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(gameController.getCurrentGame()!=null){
+                if (gameController.getCurrentGame() != null) {
                     readyGameTimer.stop();
+                    processAfterWait(skip);
                 }
             }
-            
+
         });
-        
-        
+
+    }
+
+    public void processAfterWait(final boolean skip) {
 
         if (!skip) {
             resetMainPanel();
@@ -367,14 +368,13 @@ public class GameView extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
 
-                    if (gameController.getCurrentGame()==null) {
+                    if (gameController.getCurrentGame() == null) {
                         timerSkip.stop();
                         resetMainPanel();
                         createTournamentPanel();
                     }
                 }
             });
-
 
         }
 
@@ -384,7 +384,7 @@ public class GameView extends JFrame {
 
         JPanel tourneyPanel = (JPanel) mainPanel.getComponent(0);
         JPanel rightSide = (JPanel) tourneyPanel.getComponent(1);
-        JLabel progressLabel = (JLabel)rightSide.getComponent(1);
+        JLabel progressLabel = (JLabel) rightSide.getComponent(1);
         progressLabel.setText("In progress");
         progressLabel.setForeground(Color.RED);
 
@@ -512,14 +512,13 @@ public class GameView extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(gameController.getCurrentGame()==null && gameController.getNextMatch()!=null){
-                   gameController.changeDelay(60);
-                    startGame(false); 
-                }
-                else{
+                if (gameController.getCurrentGame() == null && gameController.getNextMatch() != null) {
+                    gameController.changeDelay(60);
+                    startGame(false);
+                } else {
                     warningMessage("Please wait until the current match is finished!");
                 }
-                
+
             }
 
         });
@@ -534,7 +533,7 @@ public class GameView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameController.changeDelay(0); //no delay,
-                if (gameController.getCurrentGame() == null && gameController.getNextMatch()!=null) {
+                if (gameController.getCurrentGame() == null && gameController.getNextMatch() != null) {
                     startGame(true);
                 } else {
                     warningMessage("Please wait until the current match is finished!");

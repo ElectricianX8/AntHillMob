@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  * Parse world files into playable game board objects
  */
 public class WorldParser {
-    private static int antCount = 0;
 
     public WorldParser() {
 
@@ -28,7 +27,8 @@ public class WorldParser {
     public GameBoard parse(String filename) throws FileNotFoundException, IOException, InvalidMapTokenException {
 
         Cell[][] board;
-        ArrayList<Ant> ants = new ArrayList<Ant>();
+
+        ArrayList<Coordinate> antHills = new ArrayList<Coordinate>();
 
         //trim sentence, scanToken(x) into cell, into board, maybe n-1 for size? check
         BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -44,7 +44,7 @@ public class WorldParser {
             throw new InvalidMapTokenException("Can't process world size input");
         }
 
-        System.out.println(height + " " + width);
+        //System.out.println(height + " " + width);
 
         board = new Cell[height][width];
 
@@ -54,48 +54,54 @@ public class WorldParser {
         while ((line = reader.readLine()) != null) {
             String trim_line = line.replaceAll("\\s+", "");
             for (int i = 0; i < trim_line.length(); i++) {
-                Cell cell = scanToken(String.valueOf(trim_line.charAt(i)), i, rowCount);
+                Cell cell = scanToken(String.valueOf(trim_line.charAt(i)));
                 
 
-                if (cell.isAnthillFor(Colour.RED)) {
-                    Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
-                    cell.setOccupied(ant);
-                    ants.add(ant);
+                if (cell.isAnthill(Colour.RED)) {
+                    antHills.add(new Coordinate(rowCount, i));
+                    
+                    //Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
+                    //cell.setOccupied(ant);
+                    //ants.add(ant);
                     //System.out.println("red anthill cords: " + rowCount + " " + i);
-                } else if (cell.isAnthillFor(Colour.BLACK)) {
-                    Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
-                    cell.setOccupied(ant);
-                    ants.add(ant);
+                } else if (cell.isAnthill(Colour.BLACK)) {
+                    antHills.add(new Coordinate(rowCount, i));
+                    //Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
+                    //cell.setOccupied(ant);
+                    //ants.add(ant);
                 }
                 
                 board[rowCount][i] = cell;
             }
             rowCount++;
         }
-        System.out.println("Columns done: " + rowCount);
+        //System.out.println("Columns done: " + rowCount);
         
-        return new GameBoard(board, ants);
+        //for(Coordinate cord:antHills){
+           // System.out.println("Cord: " + cord.getY() + ", " + cord.getX());
+        //}
+        
+        return new GameBoard(board, antHills);
     }
 
-    private Cell scanToken(String token, int x, int y) throws InvalidMapTokenException {
+    private Cell scanToken(String token) throws InvalidMapTokenException {
+
         if (token.equals("#")) { //rocky cell
-            Cell cell = new Cell(x, y, Terrain.ROCKY, 0);
+            Cell cell = new Cell(Terrain.ROCKY, null);
             return cell;
         } else if (token.equals(".")) { //normal clear cell
-            Cell cell = new Cell(x, y, Terrain.CLEAR, 0);
+            Cell cell = new Cell(Terrain.CLEAR, null);
             return cell;
         } else if (token.equals("+")) { //red anthill
-            Cell cell = new Cell(x, y, Terrain.CLEAR, 0, antCount, Colour.RED);
-            antCount++;
+            Cell cell = new Cell(Terrain.CLEAR, Colour.RED);
             return cell;
         } else if (token.equals("-")) { //black anthill
-            Cell cell = new Cell(x, y, Terrain.CLEAR, 0, antCount, Colour.BLACK);
-            antCount++;
+            Cell cell = new Cell(Terrain.CLEAR, Colour.BLACK);
             return cell;
         } else if (token.matches("[1-9]")) { //food cell
+            Cell cell = new Cell(Terrain.CLEAR, null);
             int foodCount = Integer.parseInt(token);
-            Cell cell = new Cell(x, y, Terrain.CLEAR, foodCount);
-            //cell.setFoodCount(foodCount);
+            cell.setFoodCount(foodCount);
             return cell;
         } else {
             throw new InvalidMapTokenException("Token not found");

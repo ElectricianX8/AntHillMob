@@ -1,170 +1,40 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package antgame;
 
-import instructions.SenseDirection;
 import java.util.ArrayList;
 
 /**
- * Class to represent the game board.
+ *
+ * Game GameBoard
  */
 public class GameBoard {
-    Cell [][] board;        // Remember [y][x] as arrays reference row, then column.
-    ArrayList<Ant> ants;    // Not sure about this tbh.
     
-    public GameBoard(){
-        
+    
+    Cell [][] board;
+    ArrayList<Coordinate> antHills;
+    
+    //test only, phase out later on
+    public GameBoard(int height, int width){
+    
+        board = new Cell[height][width];
+        board[0][0] = new Cell(Terrain.ROCKY, null);
+        board[0][1] = new Cell(Terrain.ROCKY, null);
+        board[1][1] = new Cell(Terrain.ROCKY, null);
+        //fill up cells with ants here or do outside? 
+    }
+    
+    //use this in world parser
+    public GameBoard(Cell[][] board, ArrayList<Coordinate> antHills){
+        this.board = board;
+        this.antHills = antHills;
     }
     
     
-    public int numOfAntHillCells(Colour colour) {
-        int antHillCount = 0;
-        for (Cell[] row: board) {
-            for (Cell cell: row) {
-                if (cell.isAnthillFor(colour)){
-                    antHillCount++;
-                }
-            }
-        }
-        return antHillCount;
-    }
-    
-    
-    public ArrayList<Coordinate> getAntHillCoordinates(Colour colour) {
-        ArrayList<Coordinate> antHills = new ArrayList<>();
-        
-        for (Cell[] row: board) {
-            for (Cell cell: row) {
-                if (cell.isAnthillFor(colour)){
-                    antHills.add(cell.getCoordinate());
-                }
-            }
-        }
-             
-        return antHills;
-    }
-    
-    public int foodAtAntHill(Colour colour) {
-        int numOfFoodAtAntHill = 0;
-        
-        for (Cell[] row: board) {
-            for (Cell cell: row) {
-                if (cell.isAnthillFor(colour)){
-                    numOfFoodAtAntHill+=cell.getFoodCount();
-                }
-            }
-        }
-        
-        return numOfFoodAtAntHill;
-    }
-    
-    
-    public Cell getCellAtCurrentPositionPlusDirection(Coordinate cp, int d, SenseDirection sd) throws Exception {
-        boolean isEven = (cp.getY()%2==0);
-        
-        if (sd.equals(SenseDirection.Here)) {
-            return getCellAtPosition(cp);
-        } else if (sd.equals(SenseDirection.Ahead)) {
-            if (d == 0) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 1 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 1) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 3) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 4 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 4) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            }
-        } else if (sd.equals(SenseDirection.LeftAhead)) {
-            d = (d+5)%6;
-            if (d == 0) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 1 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 1) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 3) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 4 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 4) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            }
-        } else if (sd.equals(SenseDirection.RightAhead)) {
-            d = (d+1)%6;
-            if (d == 0) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 1 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 1) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 2) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()+1);
-                return getCellAtPosition(toGet);
-            } else if (d == 3) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY());
-                return getCellAtPosition(toGet);
-            } else if (d == 4 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX()-1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 4) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5 && isEven) {
-                Coordinate toGet = new Coordinate(cp.getX(), cp.getY()-1);
-                return getCellAtPosition(toGet);
-            } else if (d == 5) {
-                Coordinate toGet = new Coordinate(cp.getX()+1, cp.getY()-1);
-                return getCellAtPosition(toGet);
-            }
-        }
-        throw new Exception("Got to end of cell at position + direction and haven't return anything");
-    }
-    
-        
     public Cell getCellAtPosition(Coordinate position){
         
         //boundary check here or outside??
@@ -173,44 +43,6 @@ public class GameBoard {
         return board[position.getY()][position.getX()];
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    //test only, phase out later on
-    public GameBoard(int height, int width, ArrayList<Ant> ants){
-    
-        board = new Cell[height][width];
-        board[0][0] = new Cell(Terrain.ROCKY, null);
-        board[0][1] = new Cell(Terrain.ROCKY, null);
-        board[1][1] = new Cell(Terrain.ROCKY, null);
-        this.ants = ants;
-        //fill up cells with ants here or do outside? 
-    }
-    
-    //use this in world parser
-    public GameBoard(Cell[][] board, ArrayList<Ant> ants){
-        this.board = board;
-        this.ants = ants;
-    }
-    
-
     
     
     
@@ -247,6 +79,7 @@ public class GameBoard {
         getCellAtPosition(position).clearAnt();
     }
     
+    /*
     public boolean ant_is_alive(int id){
         return getAnt(id)!= null;
     }
@@ -256,20 +89,7 @@ public class GameBoard {
         return getAnt(id).getCurrentPosition();
     }
     
-   
-    public void kill_ant_at(Coordinate position){
-        
-        Cell cell = getCellAtPosition(position);
-        // check if cell has ant or not?
-        Ant ant = cell.getAnt();
-        //move this out to upper wrapper?
-        ants.remove(ant);
-        //maybe don't delete here, simply check death flag to true, and check in step
-        ant.setCurrentPosition(null);
-        ant.setIsAlive(false);
-        clear_ant_at(position);
-        
-    }
+  
     
     
     //null if no ant
@@ -283,6 +103,7 @@ public class GameBoard {
         return null;
         
     }
+    */
     
     
     
@@ -307,9 +128,9 @@ public class GameBoard {
         getCellAtPosition(position).clearMarker(colour, marker);
     }
     
-    public boolean check_marker_at(Coordinate position, Colour colour, int marker) throws Exception{
+    public boolean check_marker_at(Coordinate position, Colour colour, int marker){
         
-        return getCellAtPosition(position).containsMarker(colour, marker);
+        return getCellAtPosition(position).findMarker(colour, marker);
     }
     
     public boolean check_any_marker_at(Coordinate position, Colour colour){
@@ -321,7 +142,7 @@ public class GameBoard {
     
     public boolean anthill_at(Coordinate position, Colour colour){
         
-        return getCellAtPosition(position).isAnthillFor(colour);
+        return getCellAtPosition(position).isAnthill(colour);
         
     }
     
@@ -410,15 +231,22 @@ public class GameBoard {
             return null;
         }
         else{
-            return new Coordinate(x, y);
+            return new Coordinate(y, x);
         }
        
     }
     
-    
     public Cell[][] getHexGrid(){
        return board; 
     }
-
+    
+    
+    public ArrayList<Coordinate> getAnthills(){
+        return antHills;
+    }
+    
+    
+    
+ 
 
 }

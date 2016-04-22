@@ -40,7 +40,7 @@ public class PlayerTest {
         
         assertNotNull(p.getAntBrain());
         
-        p.saveAntBrain();
+        //p.saveAntBrain();
         
     }
 }

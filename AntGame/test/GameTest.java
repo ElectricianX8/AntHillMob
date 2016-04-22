@@ -30,9 +30,11 @@ public class GameTest {
     public void init() {
 
         try {
+            Player placeHolderPlayer = new Player();
+            Player placeHolderPlayer2 = new Player();
             WorldParser parser = new WorldParser();
             GameBoard testBoard = parser.parse("sample0.world.txt");
-            game = new Game(testBoard);
+            game = new Game(placeHolderPlayer, placeHolderPlayer2, testBoard);
 
         } catch (IOException ex) {
             System.out.println("IO Exception");
@@ -65,12 +67,12 @@ public class GameTest {
             Coordinate cord = new Coordinate(27, 41); //red anthill
 
             Coordinate testCord = game.sensed_cell(cord, 0, SenseDirection.Ahead);
-            assertEquals(28, testCord.getX());
+            assertEquals(42, testCord.getX());
             boolean res = game.cell_matches(testCord, cond, Colour.RED);
             assertTrue(res);
             testCord = game.sensed_cell(cord, 0, SenseDirection.RightAhead);
-            assertEquals(42, testCord.getY());
-            assertEquals(28, testCord.getX());
+            assertEquals(42, testCord.getX());
+            assertEquals(28, testCord.getY());
             res = game.cell_matches(testCord, cond, Colour.RED);
             assertTrue(res);
         } catch (Exception ex) {
@@ -83,15 +85,16 @@ public class GameTest {
     @Test
     public void adjacentAntsTest(){
         
-        Condition cond = new Condition(ConditionType.Home);
-        Coordinate cord = new Coordinate(27, 41); //red anthill
+       
+        Coordinate cord = new Coordinate(27, 43); //red anthill
         
         int antTest = game.adjacent_ants(cord, Colour.RED);
-        assertEquals(5, antTest);
+        assertEquals(4, antTest);
         
+        System.out.println("works?");
         Coordinate cord2 = new Coordinate(27, 40);
         int antTest2 = game.adjacent_ants(cord2, Colour.RED);
-        assertEquals(2, antTest2);
+        assertEquals(3, antTest2);
         
     }
     

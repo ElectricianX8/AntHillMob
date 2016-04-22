@@ -25,13 +25,13 @@ public interface GameControl {
     public void setTournament( ArrayList<Player> players, ArrayList<GameBoard> worlds);
     
     //return the next match to be played, null if all matches finished
-    public Game getNextMatch();
+    public QueueMatch getNextMatch();
     
     //run the next match, here delay will be used to control refresh frequency, skip if we dont update display, let the game finish as fast as possible 
     //call updateView(x) in gui from here probably, to update current state of map after x steps
     //call createTournamentPanel() to bring up tournament menu for tournaments after each game 
     //above 2 methods subject to change
-    public void startNextMatch(boolean skip);
+    public Result startNextMatch() throws Exception;
     
      //speed up/down refresh rate
     public void changeDelay(int delay);

@@ -20,6 +20,7 @@ public class Player {
     private String name;
     private int id;
     private AntBrain brain;
+    private int score;
 
     /**
      * Constructor for testing. Should be removed on submission.
@@ -34,10 +35,11 @@ public class Player {
      * @param id ID number auto assigned, for use as primary key.
      * @param ab AntBrain for the player.
      */
-    public Player(String name, int id, AntBrain ab) {
+    public Player(String name, int id, AntBrain ab){
         this.name = name;
         this.id = id;
         this.brain = ab;
+        score = 0;
     }
 
     /**
@@ -47,6 +49,14 @@ public class Player {
      */
     public String getName() {
         return name;
+    }
+    
+    public void setScore(int score){
+        this.score = score;
+    }
+    
+    public int getScore(){
+        return score;
     }
 
     /**
@@ -135,9 +145,9 @@ public class Player {
         AntBrain toSave = this.brain;
         try {
             fw = new FileWriter(toSave.getName() + ".txt");
-            fw.write(toSave.getName());
+            fw.write("~"+toSave.getName());
             for (Instruction i : toSave.getInstructionArray()) {
-                fw.write(i.toString() + "\n");
+                fw.write("\n"+i.toString());
             }
             fw.close();
         } catch (IOException ex) {

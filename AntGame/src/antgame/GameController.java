@@ -52,12 +52,9 @@ public class GameController implements GameControl, Runnable {
     @Override
     public void setSingleGame(ArrayList<Player> players, ArrayList<GameBoard> worlds) {
 
-        QueueMatch match = new QueueMatch(players.get(0), players.get(1), worlds.get(0));
+        QueueMatch match = new QueueMatch(players.get(0), players.get(1), worlds.get(0), 1);
         waitingMatches.add(match);
         
-        for(int i = 0; i<waitingMatches.size();i++){
-            System.out.println(waitingMatches.get(i));
-        }
     }
 
     @Override
@@ -69,17 +66,14 @@ public class GameController implements GameControl, Runnable {
         for (int i = 0; i < playerList.size() - 1; i++) {
             for (int j = i + 1; j < playerList.size(); j++) {
                 for (int w = 0; w < worldList.size(); w++) {
-                    QueueMatch matchHome = new QueueMatch(playerList.get(i), playerList.get(j), worldList.get(w));
-                    QueueMatch matchAway = new QueueMatch(playerList.get(j), playerList.get(i), worldList.get(w));
+                    QueueMatch matchHome = new QueueMatch(playerList.get(i), playerList.get(j), worldList.get(w), w+1);
+                    QueueMatch matchAway = new QueueMatch(playerList.get(j), playerList.get(i), worldList.get(w), w+1);
                     waitingMatches.add(matchHome);
                     waitingMatches.add(matchAway);
                 }
             }
         }
         
-        for(int i = 0; i<waitingMatches.size();i++){
-            System.out.println(waitingMatches.get(i));
-        }
         
     }
 

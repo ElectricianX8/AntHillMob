@@ -15,12 +15,14 @@ public class QueueMatch {
     Player redPlayer;
     Player blackPlayer;
     GameBoard board;
+    int mapNumber;
     
     
-    public QueueMatch(Player redPlayer, Player blackPlayer, GameBoard board){
+    public QueueMatch(Player redPlayer, Player blackPlayer, GameBoard board, int mapNumber){
         this.redPlayer = redPlayer;
         this.blackPlayer = blackPlayer;
         this.board = board;
+        this.mapNumber = mapNumber;
     }
     
     public Player getRedPlayer(){
@@ -33,6 +35,10 @@ public class QueueMatch {
     
     public GameBoard getGameBoard(){
         return board;
+    }
+    
+    public int getMapNumber(){
+        return mapNumber;
     }
     
     @Override

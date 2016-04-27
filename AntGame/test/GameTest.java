@@ -1,3 +1,5 @@
+package antgame;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,6 +10,7 @@ import antgame.*;
 import instructions.Condition;
 import instructions.ConditionType;
 import instructions.SenseDirection;
+import instructions.TurnDirection;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,4 +101,16 @@ public class GameTest {
         
     }
     
+    @Test
+    public void otherColourTest(){
+        assertEquals(Colour.BLACK, game.other_color(Colour.RED));
+    }
+    
+    @Test
+    public void turnTest(){
+        assertEquals(3, game.turn(TurnDirection.Left, 4));
+        assertEquals(0, game.turn(TurnDirection.Left, 1));
+        assertEquals(0, game.turn(TurnDirection.Right, 5));
+        assertEquals(2, game.turn(TurnDirection.Right, 7));
+    }
 }

@@ -10,9 +10,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -107,6 +109,54 @@ public class GUIFactory {
 
         return fc;
 
+    }
+    
+    
+    public JComboBox createIntDropdownBox(int numberCount){
+        
+        JComboBox<Integer> numbers = new JComboBox<Integer>();
+        for(int i = 1; i<=numberCount; i++){
+            numbers.addItem(i);
+        }
+        
+        return numbers;
+    }
+    
+    
+    
+    public JPanel createLabelAndComboPanel(String label, int numberCount){
+        
+        JPanel panel = new JPanel();
+        
+        panel.add(createLabel(label, false));
+        panel.add(createIntDropdownBox(numberCount));
+        
+        return panel;
+    }
+    
+    public JPanel createSizeInputPanel(int heightCount, int widthCount){
+        
+        JPanel panel = new JPanel();
+        
+        
+        
+        panel.add(createLabel("Height: ", false));
+        panel.add(createIntDropdownBox(heightCount));
+        panel.add(createLabel("Width: ", false));
+        panel.add(createIntDropdownBox(widthCount));
+        
+        return panel;
+    }
+    
+    public JPanel createBooleanComboPanel(String label){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        
+        panel.add(createLabel(label, false));
+        JComboBox<String> box = new JComboBox<String>();
+        box.addItem("True");
+        box.addItem("False");
+        panel.add(box);
+        return panel;
     }
 
 }

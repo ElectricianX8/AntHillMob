@@ -83,6 +83,7 @@ public class GameView extends JFrame {
     // Start Menu Panel
     public void createStartPanel() {
 
+        setTitle("Setup the game");
         JPanel panel = new JPanel(new GridLayout(3, 0, 5, 20));
         panel.setBorder(new EmptyBorder(20, 5, 20, 5));
 

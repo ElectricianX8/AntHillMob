@@ -141,9 +141,20 @@ public class GUIFactory {
         
         
         panel.add(createLabel("Height: ", false));
-        panel.add(createIntDropdownBox(heightCount));
+        
+        JComboBox<Integer> numbers = new JComboBox<Integer>();
+        for(int i = 20; i<=heightCount; i+=10){
+            numbers.addItem(i);
+        }
+        panel.add(numbers);
         panel.add(createLabel("Width: ", false));
-        panel.add(createIntDropdownBox(widthCount));
+        
+        JComboBox<Integer> numbers2 = new JComboBox<Integer>();
+        for(int i = 20; i<=widthCount; i+=10){
+            numbers2.addItem(i);
+        }
+        
+        panel.add(numbers2);
         
         return panel;
     }

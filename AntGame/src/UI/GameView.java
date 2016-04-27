@@ -581,7 +581,7 @@ public class GameView extends JFrame {
         JPanel panel = new JPanel();
         factory.setVerticalBoxLayout(panel);
 
-        panel.add(factory.createSizeInputPanel(500, 500));
+        panel.add(factory.createSizeInputPanel(150, 150));
         panel.add(factory.createLabelAndComboPanel("Anthill Size: ", 50));
         panel.add(factory.createLabelAndComboPanel("Food Count: ", 50));
         panel.add(factory.createBooleanComboPanel("Spread Food? "));

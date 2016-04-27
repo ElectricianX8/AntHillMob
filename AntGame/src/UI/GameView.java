@@ -13,6 +13,7 @@ import antgame.GameBoard;
 import antgame.GameController;
 import antgame.InvalidMapTokenException;
 import antgame.LexerException;
+import antgame.BoardLayoutGenerator;
 
 import antgame.ParsingException;
 import antgame.Player;
@@ -47,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JComboBox;
 
 public class GameView extends JFrame {
 
@@ -81,7 +83,8 @@ public class GameView extends JFrame {
     // Start Menu Panel
     public void createStartPanel() {
 
-        JPanel panel = new JPanel(new GridLayout(2, 0, 5, 20));
+        setTitle("Setup the game");
+        JPanel panel = new JPanel(new GridLayout(3, 0, 5, 20));
         panel.setBorder(new EmptyBorder(20, 5, 20, 5));
 
         JButton button1 = new JButton("Start game");
@@ -105,8 +108,19 @@ public class GameView extends JFrame {
                 createSelectionPanel();
             }
         });
+        JButton button3 = new JButton("Create Random World");
+        button3.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetMainPanel();
+                createWorldCreationPanel();
+            }
+
+        });
         panel.add(button1);
         panel.add(button2);
+        panel.add(button3);
 
         mainPanel.add(panel, BorderLayout.CENTER);
         setMinimumSize(new Dimension(250, 150));
@@ -543,6 +557,98 @@ public class GameView extends JFrame {
 
     }
 
+    //World creation panels
+    private void createWorldCreationPanel() {
+        setTitle("Generate World");
+        JPanel panel = new JPanel();
+        factory.setVerticalBoxLayout(panel);
+
+        JLabel topLabel = factory.createLabel("World Settings", 20, true);
+        topLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
+        panel.add(topLabel);
+
+        panel.add(createSettingsPanel());
+        panel.add(createWorldCreationButtons());
+
+        mainPanel.add(panel);
+        setMinimumSize(new Dimension(350, 350));
+        refreshUI();
+
+    }
+
+    private JPanel createSettingsPanel() {
+
+        JPanel panel = new JPanel();
+        factory.setVerticalBoxLayout(panel);
+
+        panel.add(factory.createSizeInputPanel(500, 500));
+        panel.add(factory.createLabelAndComboPanel("Anthill Size: ", 50));
+        panel.add(factory.createLabelAndComboPanel("Food Count: ", 50));
+        panel.add(factory.createBooleanComboPanel("Spread Food? "));
+        panel.add(factory.createLabelAndComboPanel("Number of rocks: ", 50));
+        panel.setBorder(factory.createBlackLine(1, 0, 1, 0));
+
+        return panel;
+
+    }
+
+    private JPanel createWorldCreationButtons() {
+
+        final JPanel panel = new JPanel();
+
+        JButton button1 = new JButton("Create World");
+        button1.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    processWorldInput();
+                    //if processed well, do this
+                    factory.setFileFilter(fileBrowser, ListMode.WORLD);
+                    int returnVal = fileBrowser.showOpenDialog(panel);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File file = fileBrowser.getSelectedFile();
+
+                        System.out.println("Opening: " + file.getPath());
+                        //dump to file here
+                        //finish screen?
+                    } else {
+                        System.out.println("Open command cancelled by user.");
+                    }
+                } catch (Exception ex){
+                    warningMessage("Error generating the world: " + ex.getMessage());
+                }
+
+            }
+
+        });
+        panel.add(button1);
+        panel.add(createBackButton());
+
+        return panel;
+    }
+
+    private void processWorldInput() throws Exception {
+
+        BoardLayoutGenerator generator = new BoardLayoutGenerator();
+
+        JPanel parent = (JPanel) ((JPanel) mainPanel.getComponent(0)).getComponent(1);
+
+        int height = (Integer) ((JComboBox) ((JPanel) parent.getComponent(0)).getComponent(1)).getSelectedItem(); //first panel (0), second component(2)
+        int width = (Integer) ((JComboBox) ((JPanel) parent.getComponent(0)).getComponent(3)).getSelectedItem();
+        int anthillSize = (Integer) ((JComboBox) ((JPanel) parent.getComponent(1)).getComponent(1)).getSelectedItem();
+        int foodCount = (Integer) ((JComboBox) ((JPanel) parent.getComponent(2)).getComponent(1)).getSelectedItem();
+
+        String bool = (String) ((JComboBox) ((JPanel) parent.getComponent(3)).getComponent(1)).getSelectedItem();
+        boolean foodSpread;
+        foodSpread = bool.equals("True");
+        int noRocks = (Integer) ((JComboBox) ((JPanel) parent.getComponent(4)).getComponent(1)).getSelectedItem();
+
+        generator.generate(height, width, anthillSize, foodCount, foodSpread, noRocks);
+    }
+
+   // Game Window panels
     public void updateView(final Game match) {
         //update score here, move score labels to main?
 
@@ -622,7 +728,6 @@ public class GameView extends JFrame {
 
     }
 
-    // Game Window panels
     private JPanel createSidePanel() {
 
         //side panel for the game window
@@ -815,7 +920,7 @@ public class GameView extends JFrame {
                     String antLabel = ((JLabel) childPanel.getComponent(0)).getText();
 
                     if (!isValidName(field)) {
-                        errMsg.append("Error: Player field #").append(i).append(" has incorrect name!\n");
+                        errMsg.append("Error: Player field #").append(i + 1).append(" has incorrect name!\n");
                         localValid = false;
                     }
 
@@ -830,11 +935,11 @@ public class GameView extends JFrame {
                             player.loadAntBrain(file);
                             validPlayers.add(player); // PARSE VALID BRAIN HERE DONT FORGET
                         } catch (IOException e) {
-                            errMsg.append("Error: Brain field #").append(i).append(" can't be loaded!\n");
+                            errMsg.append("Error: Brain field #").append(i + 1).append(" can't be loaded!\n");
                             valid = false;
 
                         } catch (LexerException | NotValidInstructionException | ParsingException ex) {
-                            errMsg.append("Error: Brain field #").append(i).append(" contains illegal brain structure!\n");
+                            errMsg.append("Error: Brain field #").append(i + 1).append(" contains illegal brain structure!\n");
                             valid = false;
                         }
 
@@ -843,7 +948,7 @@ public class GameView extends JFrame {
                     }
                     System.out.println("player check");
                 } else {
-                    errMsg.append("Error: Do not leave empty players (Player #").append(i).append(")! \n");
+                    errMsg.append("Error: Do not leave empty players (Player #").append(i + 1).append(")! \n");
                     valid = false;
                 }
             }
@@ -888,7 +993,7 @@ public class GameView extends JFrame {
                     }
                     System.out.println("player check");
                 } else {
-                    errMsg.append("Error: Do not leave empty worlds (World #").append(i).append(")!\n");
+                    errMsg.append("Error: Do not leave empty worlds (World #").append(i + 1).append(")!\n");
                     valid = false;
                 }
             }

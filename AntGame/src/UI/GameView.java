@@ -381,7 +381,7 @@ public class GameView extends JFrame {
 
     //Tournament Menu Panel
     public void createTournamentPanel() {
-
+        setResizable(false);
         setTitle("Tournament");
         JPanel panel = new JPanel();
         factory.setHorizontalBoxLayout(panel);
@@ -708,10 +708,12 @@ public class GameView extends JFrame {
     }
 
     public JPanel createMapPanel(Cell[][] map) {
-
+        setResizable(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        setVisible(true);
         JPanel mapContent = new JPanel(new BorderLayout(5, 5)); //5,5 gap between panels
         mapContent.setPreferredSize(new Dimension(1200, 700)); //x,y
-        setMinimumSize(new Dimension(1600, 900)); //min size of frame
+        setMinimumSize(new Dimension(1024, 768)); //min size of frame
         HexagonMap mapGraphic = new HexagonMap(map);
 
         JScrollPane pane = new JScrollPane(mapGraphic, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

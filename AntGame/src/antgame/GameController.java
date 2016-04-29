@@ -117,7 +117,10 @@ public class GameController implements GameControl, Runnable {
     }
 
     public void changeRunningDelay(int delay) {
-        currentGame.changeDelay(delay);
+        if(currentGame != null){
+            currentGame.changeDelay(delay);
+        }
+        
     }
 
     private GameBoard copy(GameBoard gameBoard) {

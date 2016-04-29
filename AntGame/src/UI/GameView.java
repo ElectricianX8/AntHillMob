@@ -606,7 +606,7 @@ public class GameView extends JFrame {
                     processWorldInput();
                     //if processed well, do this
                     factory.setFileFilter(fileBrowser, ListMode.WORLD);
-                    int returnVal = fileBrowser.showOpenDialog(panel);
+                    int returnVal = fileBrowser.showSaveDialog(panel);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File file = fileBrowser.getSelectedFile();
 
@@ -824,8 +824,17 @@ public class GameView extends JFrame {
             }
 
         });
+        JButton button2  = new JButton("Normal Speed");
+        button2.addActionListener(new ActionListener(){
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameController.changeRunningDelay(60);
+            }
+            
+        });
         buttonPanel.add(button);
+        buttonPanel.add(button2);
 
         return buttonPanel;
     }
@@ -940,7 +949,7 @@ public class GameView extends JFrame {
                             errMsg.append("Error: Brain field #").append(i + 1).append(" can't be loaded!\n");
                             valid = false;
 
-                        } catch (LexerException | NotValidInstructionException | ParsingException ex) {
+                        } catch (LexerException | NotValidInstructionException | ParsingException | IndexOutOfBoundsException ex) {
                             errMsg.append("Error: Brain field #").append(i + 1).append(" contains illegal brain structure!\n");
                             valid = false;
                         }

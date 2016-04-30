@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package antgame;
+package parsers;
 
 // Exception for invalid tokens in world parsing.
 public class InvalidMapTokenException extends Exception {

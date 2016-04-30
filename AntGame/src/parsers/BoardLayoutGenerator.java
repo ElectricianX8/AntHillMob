@@ -1,4 +1,4 @@
-package antgame;
+package parsers;
 
 import java.util.Random;
 

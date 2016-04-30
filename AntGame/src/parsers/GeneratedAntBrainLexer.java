@@ -7,7 +7,7 @@
  *     [a-z_]+ | [0-9]+ | if | while | ;
  */
 
-package antgame;
+package parsers;
 
 import java.io.InputStreamReader;
 import tokens.*;

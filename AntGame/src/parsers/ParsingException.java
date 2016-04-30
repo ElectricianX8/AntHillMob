@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package parsers;
 
 /**
  *
  * @author oliverthomas
  */
-public class LexerException extends Exception {
-
+public class ParsingException extends Exception {
     String error;
-    
-    public LexerException(String e) {
-        this.error = e;
+    public ParsingException(String error) {
+        this.error = error;
     }
     
 }

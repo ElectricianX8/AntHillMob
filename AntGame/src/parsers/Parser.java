@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package antgame;
+package parsers;
 
 import instructions.Instruction;
 import instructions.*;
@@ -14,7 +14,7 @@ import tokens.*;
  *
  * @author oliverthomas
  */
-class Parser {
+public class Parser {
 
     public Parser() {}
     

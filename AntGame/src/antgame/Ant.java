@@ -1,7 +1,7 @@
 package antgame;
 
 /**
- * Ant class
+ * Class representing an ant entity.
  */
 public class Ant {
 

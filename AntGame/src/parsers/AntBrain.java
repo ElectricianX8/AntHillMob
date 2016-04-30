@@ -1,4 +1,4 @@
-package antgame;
+package parsers;
 
 import instructions.Instruction;
 
@@ -6,7 +6,7 @@ import instructions.Instruction;
  * Class representing an ant's brain. 
  * Consists of an an array of Instruction objects.
  */
-class AntBrain {
+public class AntBrain {
     
     private String name;
     private Instruction[] antbrain;

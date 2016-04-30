@@ -76,7 +76,7 @@ public class MatchTest {
      try {
      WorldParser parser = new WorldParser();
      GameBoard testBoard = parser.parse("sample0.world.txt");
-     testBoard.printBoard();
+     //testBoard.printBoard();
      Player one = new Player();
      one.setName("One");
      one.setId(1);

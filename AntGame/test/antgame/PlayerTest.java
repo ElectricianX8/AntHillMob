@@ -6,6 +6,8 @@ package antgame;
  * and open the template in the editor.
  */
 
+import parsers.AntBrain;
+import parsers.ParsingException;
 import antgame.*;
 import instructions.Instruction;
 import instructions.NotValidInstructionException;

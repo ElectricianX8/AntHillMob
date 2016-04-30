@@ -6,6 +6,8 @@ package antgame;
  * and open the template in the editor.
  */
 
+import parsers.InvalidMapTokenException;
+import parsers.WorldParser;
 import antgame.*;
 import instructions.Condition;
 import instructions.ConditionType;
@@ -55,7 +57,7 @@ public class GameTest {
             Condition cond = new Condition(ConditionType.Home);
             Coordinate cord = new Coordinate(27, 41); //red anthill
 
-            boolean res = game.cell_matches(cord, cond, Colour.RED);
+            boolean res = game.isCellMatching(cord, cond, Colour.RED);
             assertTrue(res);
         } catch (Exception ex) {
             Logger.getLogger(GameTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,14 +71,14 @@ public class GameTest {
             Condition cond = new Condition(ConditionType.Home);
             Coordinate cord = new Coordinate(27, 41); //red anthill
 
-            Coordinate testCord = game.sensed_cell(cord, 0, SenseDirection.Ahead);
+            Coordinate testCord = game.getSensedCell(cord, 0, SenseDirection.Ahead);
             assertEquals(42, testCord.getX());
-            boolean res = game.cell_matches(testCord, cond, Colour.RED);
+            boolean res = game.isCellMatching(testCord, cond, Colour.RED);
             assertTrue(res);
-            testCord = game.sensed_cell(cord, 0, SenseDirection.RightAhead);
+            testCord = game.getSensedCell(cord, 0, SenseDirection.RightAhead);
             assertEquals(42, testCord.getX());
             assertEquals(28, testCord.getY());
-            res = game.cell_matches(testCord, cond, Colour.RED);
+            res = game.isCellMatching(testCord, cond, Colour.RED);
             assertTrue(res);
         } catch (Exception ex) {
             Logger.getLogger(GameTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,19 +93,19 @@ public class GameTest {
        
         Coordinate cord = new Coordinate(27, 43); //red anthill
         
-        int antTest = game.adjacent_ants(cord, Colour.RED);
+        int antTest = game.countAdjacentAnts(cord, Colour.RED);
         assertEquals(4, antTest);
         
         System.out.println("works?");
         Coordinate cord2 = new Coordinate(27, 40);
-        int antTest2 = game.adjacent_ants(cord2, Colour.RED);
+        int antTest2 = game.countAdjacentAnts(cord2, Colour.RED);
         assertEquals(3, antTest2);
         
     }
     
     @Test
     public void otherColourTest(){
-        assertEquals(Colour.BLACK, game.other_color(Colour.RED));
+        assertEquals(Colour.BLACK, game.getOppositeColour(Colour.RED));
     }
     
     @Test

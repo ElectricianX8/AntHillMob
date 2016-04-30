@@ -7,10 +7,15 @@ package parsers;
 
 /**
  *
- * @author oliverthomas
+ * Exception for invalid brains in the parsing process.
  */
 public class ParsingException extends Exception {
     String error;
+    
+    /**
+     * Constructor for the exception.
+     * @param error Message of the exception.
+     */
     public ParsingException(String error) {
         this.error = error;
     }

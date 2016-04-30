@@ -12,11 +12,12 @@ import javax.swing.text.PlainDocument;
 
 /**
  *
- * Used to limit # of characters within the game
+ * Class used to limit the numbers of username characters
  */
 
 class JTextFieldLimiter extends PlainDocument {
   private int limit;
+  
   JTextFieldLimiter(int limit) {
     super();
     this.limit = limit;

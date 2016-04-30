@@ -6,8 +6,7 @@
 package antgame;
 
 /**
- *
- * @author alisaleem
+ * Enumator representing the ant colours within the game.
  */
 public enum Colour {
     RED, BLACK;

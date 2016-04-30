@@ -1,7 +1,7 @@
 package antgame;
 
 /**
- *
+ * Represent the result of a match.
  */
 public class Result {
     private static int matchNumberCount = 1;
@@ -10,6 +10,12 @@ public class Result {
     private Player loser;
     private boolean tie;
     
+    /**
+     * Constructor for the result class.
+     * @param w The winner of a match
+     * @param l The loser of a match
+     * @param tie Whether the match was a tie or not
+     */
     public Result(Player w, Player l, boolean tie){
         matchNum = matchNumberCount++;
         winner = w;
@@ -42,6 +48,10 @@ public class Result {
         return loser;
     }
     
+    /**
+     * Returns whether the game was a tie.
+     * @return True if tie, false otherwise.
+     */
     public boolean gameWasATie(){
         return tie;
     }

@@ -7,15 +7,23 @@ package tokens;
 
 /**
  *
- * @author oliverthomas
+ * Token representing an instruction
  */
 public class TokenInstruction extends Token {
     String instruction;
     
+    /**
+     * Constructor
+     * @param instruction The instruction
+     */
     public TokenInstruction(String instruction) {
         this.instruction = instruction.trim();
     }
 
+    /**
+     * Returns the instruction of the token.
+     * @return The instruction of the token.
+     */
     public String getInstruction() {
         return instruction;
     }

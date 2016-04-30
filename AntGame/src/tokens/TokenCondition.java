@@ -7,18 +7,27 @@ package tokens;
 
 /**
  *
- * @author oliverthomas
+ * Token representing a condition
  */
 public class TokenCondition extends Token {
     String condition;
     
+    /**
+     * Constructor
+     * @param cond The condition
+     */
     public TokenCondition(String cond) {
         this.condition = cond.trim();
     }
 
+    /**
+     * Returns the condition of the token.
+     * @return The condition of the token.
+     */
     public String getCondition() {
         return condition;
     }
+    
     @Override
     public String toString() {
         return new String(condition);

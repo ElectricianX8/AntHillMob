@@ -15,32 +15,40 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
- * Parse world files into playable game board objects
+ * Class for scanning and parsing world files.
  */
 public class WorldParser {
 
+    /**
+     * Default constructor
+     */
     public WorldParser() {
 
     }
 
-    //add exceptions for all this
+    /**
+     * Parse the world file to generate a valid game board.
+     * @param filename Filename of the file to parse.
+     * @return A game board instance.
+     * @throws FileNotFoundException File doesn't exist.
+     * @throws IOException Error accessing the file.
+     * @throws InvalidMapTokenException Invalid world input.
+     */
     public GameBoard parse(String filename) throws FileNotFoundException, IOException, InvalidMapTokenException {
 
         Cell[][] board;
 
         ArrayList<Coordinate> antHills = new ArrayList<Coordinate>();
 
-        //trim sentence, scanToken(x) into cell, into board, maybe n-1 for size? check
         BufferedReader reader = new BufferedReader(new FileReader(filename));
 
         int height;
         int width;
-        //add exceptions for all this
+        
         try{
             height = Integer.parseInt(reader.readLine());
             width = Integer.parseInt(reader.readLine());
@@ -48,8 +56,6 @@ public class WorldParser {
         catch(NumberFormatException e){
             throw new InvalidMapTokenException("Can't process world size input");
         }
-
-        //System.out.println(height + " " + width);
 
         board = new Cell[height][width];
 
@@ -64,31 +70,21 @@ public class WorldParser {
 
                 if (cell.isAnthill(Colour.RED)) {
                     antHills.add(new Coordinate(rowCount, i));
-                    
-                    //Ant ant = new Ant(Colour.RED, 0, rowCount, i); //what direction?
-                    //cell.setOccupied(ant);
-                    //ants.add(ant);
-                    //System.out.println("red anthill cords: " + rowCount + " " + i);
+
                 } else if (cell.isAnthill(Colour.BLACK)) {
                     antHills.add(new Coordinate(rowCount, i));
-                    //Ant ant = new Ant(Colour.BLACK, 0, rowCount, i); //what direction?
-                    //cell.setOccupied(ant);
-                    //ants.add(ant);
+
                 }
                 
                 board[rowCount][i] = cell;
             }
             rowCount++;
         }
-        //System.out.println("Columns done: " + rowCount);
-        
-        //for(Coordinate cord:antHills){
-           // System.out.println("Cord: " + cord.getY() + ", " + cord.getX());
-        //}
-        
+
         return new GameBoard(board, antHills);
     }
 
+    //Scan token and generate a cell if valid
     private Cell scanToken(String token) throws InvalidMapTokenException {
 
         if (token.equals("#")) { //rocky cell

@@ -7,7 +7,7 @@ package tokens;
 
 /**
  *
- * @author oliverthomas
+ * The base class for tokens.
  */
 public class Token {
     

@@ -8,34 +8,75 @@ package antgame;
 import java.util.ArrayList;
 
 /**
- *
- * Interface for the game, link it with UI
+ * Interface to allow control from within the UI
  */
 public interface GameControl {
-    
-    
-    
-    //return sorted list of players, in descending order, sorted by score, then name
+
+    /**
+     * Returns the list of players, sorted in descending order, first by score,
+     * followed by name.
+     *
+     * @return The list of players sorted in score order.
+     */
     public ArrayList<Player> getLeaderboard();
-    
-    //internally set up a single game
-    public void setSingleGame( ArrayList<Player> players, ArrayList<GameBoard> worlds);
-    
-    //internally process a whole queue of games
-    public void setTournament( ArrayList<Player> players, ArrayList<GameBoard> worlds);
-    
-    //return the next match to be played, null if all matches finished
+
+    /**
+     * Setup a single round of a single game.
+     *
+     * @param players Players to play the game.
+     * @param worlds World/worlds to play the game on.
+     */
+    public void setSingleGame(ArrayList<Player> players, ArrayList<GameBoard> worlds);
+
+    /**
+     * Setup a full tournament.
+     *
+     * @param players Players to play the tournament.
+     * @param worlds Worlds to be played on within the tournament.
+     */
+    public void setTournament(ArrayList<Player> players, ArrayList<GameBoard> worlds);
+
+    /**
+     * Returs the next match to be played.
+     *
+     * @return Return the next match to be played, null if all matches are
+     * finished.
+     */
     public QueueMatch getNextMatch();
-    
-    //run the next match, here delay will be used to control refresh frequency, skip if we dont update display, let the game finish as fast as possible 
-    //call updateView(x) in gui from here probably, to update current state of map after x steps
-    //call createTournamentPanel() to bring up tournament menu for tournaments after each game 
-    //above 2 methods subject to change
+
+    /**
+     * Run the next waiting match.
+     *
+     * @return Returns the result of the match.
+     * @throws Exception Throw Exception if the match does not run properly.
+     */
     public Result startNextMatch() throws Exception;
-    
-     //speed up/down refresh rate
+
+    /**
+     * Set the initial time delay between ant moves.
+     *
+     * @param delay The delay to be set in miliseconds.
+     */
     public void changeDelay(int delay);
-    
-    
-    
+
+    /**
+     * Set the delay while the game is running.
+     *
+     * @param delay The delay to be set in miliseconds.
+     */
+    public void changeRunningDelay(int delay);
+
+    /**
+     * Returns the currently running game.
+     *
+     * @return Returns the currently running game.
+     */
+    public Game getCurrentGame();
+
+    /**
+     * Returns the result of the last match.
+     *
+     * @return The result of the last match.
+     */
+    public Result getLastResult();
 }

@@ -12,12 +12,22 @@ import tokens.*;
 
 /**
  *
- * @author oliverthomas
+ * Class used for brain parsing.
  */
 public class Parser {
 
+    /**
+     * Default constructor.
+     */
     public Parser() {}
     
+    /**
+     * Parse a list of lexed tokens to generate an antbrain.
+     * @param lexAntBrain List of lexed tokens
+     * @return A generated antbrain if valid.
+     * @throws ParsingException Invalid structure of the brain.
+     * @throws NotValidInstructionException Not a valid instruction
+     */
     public AntBrain parseAntBrain(ArrayList<Token> lexAntBrain) throws ParsingException, NotValidInstructionException {
         String AntBrainName;
         Instruction[] parsedInstructionsToReturn;

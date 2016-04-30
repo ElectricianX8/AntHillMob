@@ -5,22 +5,29 @@
  */
 package parsers;
 
-import instructions.Instruction;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import tokens.Token;
 
 /**
  *
- * @author oliverthomas
+ * The class used for lexing brains.
  */
 public class Lexer {
 
+    /**
+     * Default constructor.
+     */
     public Lexer() {
     }
 
+    /**
+     * Lex the brain structure.
+     * @param input The brain to be lexed.
+     * @return A list of tokens containing brain instructions.
+     * @throws LexerException Invalid structure.
+     */
     public ArrayList<Token> lexAntBrain(String input) throws LexerException{
         try {
             ArrayList<Token> lexedInstructions = new ArrayList<>();

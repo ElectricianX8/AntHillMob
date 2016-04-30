@@ -19,14 +19,18 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author
+ * Class responsible for rendering the hex grid within the UI.
  */
 public class HexagonMap extends JPanel {
 
-    Cell[][] map;
-    int height;
-    int width;
+    private Cell[][] map;
+    private int height;
+    private int width;
 
+    /**
+     * Constructor
+     * @param map The board game map to be rendered within the UI.
+     */
     public HexagonMap(Cell[][] map) {
 
         this.map = map;
@@ -35,7 +39,8 @@ public class HexagonMap extends JPanel {
 
     }
 
-    public Polygon getHex(int posX, int posY) {
+    //Create a hexagon unit at the specified coordinate
+    private Polygon getHex(int posX, int posY) {
         Polygon hex = new Polygon();
 
         int hexSize = 6;
@@ -49,12 +54,14 @@ public class HexagonMap extends JPanel {
         //11.5 roughly, cast to int so round down to 11
     }
 
+    //Set black outline around each hexagon
     private void setCellBorder(Graphics2D g) {
 
         g.setStroke(new BasicStroke(1));
         g.setColor(new Color(0, 0, 0));
     }
 
+    //Set colour of the cell containing ants
     private void setAntCellColour(Graphics2D g, Polygon polygon, Colour colour) {
 
         if (colour == Colour.RED) {
@@ -68,6 +75,7 @@ public class HexagonMap extends JPanel {
         setCellBorder(g); //add border
     }
 
+    //Set colour of a cell.
     private void setCellColour(Graphics2D g, Polygon polygon, Color colour) {
 
         g.setColor(colour);
@@ -76,7 +84,7 @@ public class HexagonMap extends JPanel {
 
     }
 
-    //smoothen outlines
+    //enables anti-aliasing for smoothing outlines
     private void enableAntiAliasing(Graphics2D g) {
 
         RenderingHints hints = new RenderingHints(
@@ -86,6 +94,7 @@ public class HexagonMap extends JPanel {
 
     }
 
+    //Generate a hexagon at the specified coordinates
     private Polygon getHexAtCoordinates(int h_count, int w_count) {
 
         final int MINIMUM_Y_CORD = 0;
@@ -144,12 +153,17 @@ public class HexagonMap extends JPanel {
     }
     */
     
-    
+    /*
+    * Returns the size of the map.
+    */
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(width, height);
     }
 
+    /*
+    * Paint the map UI
+    */
     @Override
     public void paintComponent(Graphics g) {
 
@@ -163,8 +177,7 @@ public class HexagonMap extends JPanel {
         int h_count = 1;
         int w_count = 1;
 
-        
-        //give ants priority first, then next? or first something, then ants
+
         for (int i = 0; i < heightSize; i++) {
 
             for (int j = 0; j < widthSize; j++) {
@@ -194,10 +207,6 @@ public class HexagonMap extends JPanel {
                 else{
                     setCellColour(g2, polygon, new Color(250,250,210)); //bleached yellow for less epilepsy
                 }
-                
-                
-
-
                 g2.drawPolygon(polygon);
 
             }

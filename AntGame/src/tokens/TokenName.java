@@ -7,15 +7,23 @@ package tokens;
 
 /**
  *
- * @author oliverthomas
+ * Token representing a name
  */
 public class TokenName extends Token{
     String name;
     
+    /**
+     * Constructor
+     * @param s Name
+     */
     public TokenName(String s) {
         this.name = s.trim();
     }
 
+    /**
+     * Returns the name the token holds.
+     * @return The name the token holds.
+     */
     public String getName() {
         return name;
     }

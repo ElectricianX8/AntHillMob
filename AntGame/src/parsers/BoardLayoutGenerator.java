@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  *
- * @author ot44
+ * Class for generating random game worlds.
  */
 public class BoardLayoutGenerator {
 
@@ -12,6 +12,16 @@ public class BoardLayoutGenerator {
     int width;
     char[][] board;
 
+    /**
+     * Generate a random world map using the specified parameters.
+     * @param h The height of the world.
+     * @param w The width of the world.
+     * @param anthillSize The size of each anthill.
+     * @param numOfFoodBlobs The total number of food spread throughout the world.
+     * @param randomFoodBlobs Whether to keep uniform food spread or not.
+     * @param numOfRocks The total number of non-border rocks within the world.
+     * @throws Exception Incorrect parameters.
+     */
     public void generate(int h, int w, int anthillSize, int numOfFoodBlobs, boolean randomFoodBlobs, int numOfRocks) throws Exception {
         if (anthillSize%2 == 0) {
             throw new Exception("Ant Hill Size must be an odd number");
@@ -31,6 +41,12 @@ public class BoardLayoutGenerator {
 
     }
 
+    /**
+     * Generate a random world map using the specified parameters.
+     * @param h The height of the world.
+     * @param w The width of the world.
+     * @throws Exception Incorrect parameters.
+     */
     public void generate(int h, int w) throws Exception {
         this.height = h;
         this.width = w;
@@ -47,7 +63,8 @@ public class BoardLayoutGenerator {
 
     }
 
-    public void addExteriorWalls(char[][] ca) {
+    //Generate the rocky outline for the world.
+    private void addExteriorWalls(char[][] ca) {
         for (int i = 0; i < ca.length; i++) {
             for (int j = 0; j < ca[0].length; j++) {
                 if (i == 0 || j == 0 || i == (ca.length - 1) || j == (ca[0].length - 1)) {
@@ -57,7 +74,8 @@ public class BoardLayoutGenerator {
         }
     }
 
-    public void addAntHills(char[][] ca, int size) throws Exception {
+    //Assess whether an anthill can be placed.
+    private void addAntHills(char[][] ca, int size) throws Exception {
         if (size%2 == 0) {
             throw new Exception("Odd size anthills only pls");
         }
@@ -95,7 +113,8 @@ public class BoardLayoutGenerator {
 
     }
 
-    public boolean checkPosAntHill(int x, int y, char[][] ca, int size) {
+    //check if the position of the ant hill is valid.
+   private boolean checkPosAntHill(int x, int y, char[][] ca, int size) {
         if (x+(((2*size)+(size-2)-1)/2)+1 >= ca[0].length || x-(((2*size)+(size-2)-1)/2)-1 < 0) {
             return false;
         } else if (y+size >= ca.length || y-size <= 0) {
@@ -112,7 +131,8 @@ public class BoardLayoutGenerator {
         return true;
     }
 
-    public void placeAntHill(int x, int y, char[][] ca, int ahp, int size) throws Exception {
+   //Place random anthills
+    private void placeAntHill(int x, int y, char[][] ca, int ahp, int size) throws Exception {
         char toMark = '?';
         if (ahp == 0) {
             toMark = '+';
@@ -162,12 +182,14 @@ public class BoardLayoutGenerator {
         }
     }
 
-    public int getRandom(int max) {
+    //Return random number
+    private int getRandom(int max) {
         Random r = new Random();
         return r.nextInt(max);
     }
 
-    public void out() {
+    //Output for testing
+    private void out() {
         for (char[] ca : board) {
             for (char c : ca) {
                 System.out.print(c);
@@ -176,6 +198,7 @@ public class BoardLayoutGenerator {
         }
     }
 
+    //Check whether food can be placed
     private void addFood(char[][] ca, boolean random) throws Exception {
         boolean possible = false;
         int maxTries = ca.length * ca[0].length;
@@ -193,6 +216,7 @@ public class BoardLayoutGenerator {
         }
     }
 
+    //Assess whether the food can be placed at the specified position
     private boolean checkPosFood(int x, int y, char[][] ca) {
         if (x + 3 >= ca[0].length || x - 3 < 0) {
             return false;
@@ -209,6 +233,7 @@ public class BoardLayoutGenerator {
         return true;
     }
 
+    //Place food on the game board
     private void placeFood(int x, int y, char[][] ca, boolean random) {
         if (!random) {
             for (int i = -2; i <= 2; i++) {
@@ -227,6 +252,7 @@ public class BoardLayoutGenerator {
         }
     }
 
+    // Place rocky terrain
     private void addRockyTerrain(char[][] ca) throws Exception {
         boolean possible = false;
         int maxTries = ca.length * ca[0].length;
@@ -240,10 +266,11 @@ public class BoardLayoutGenerator {
             maxTries--;
         }
         if (maxTries <= 0) {
-            throw new Exception("couldn't place food blob");
+            throw new Exception("couldn't place rocky terrain");
         }
     }
 
+    //Check position of the rock
     private boolean checkPosRock(int x, int y, char[][] ca) {
         if (x + 1 >= ca[0].length || x - 1 < 0) {
             return false;
@@ -260,10 +287,12 @@ public class BoardLayoutGenerator {
         return true;
     }
 
+    //Place a rock
     private void placeRock(int x, int y, char[][] ca) {
         ca[y][x] = '#';
     }
 
+    //fill in gaps
     private void fillIn(char[][] ca) {
         for (int y = 0; y < ca.length; y++) {
             for (int x = 0; x < ca[0].length; x++) {

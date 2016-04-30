@@ -16,6 +16,13 @@ public class Ant {
     private Coordinate currentPosition;
     private boolean isAlive;
 
+    /**
+     * Constructor for an ant.
+     * @param colour Colour of the ant.
+     * @param direction Initial direction the ant is facing.
+     * @param y Initial y coordinate the ant is at.
+     * @param x Initial x coordinate the ant is at.
+     */
     public Ant(Colour colour, int direction, int y, int x) {
         
         this.colour = colour;
@@ -29,21 +36,24 @@ public class Ant {
     }
 
     /**
-     * @return Returns ID number of the ant.
+     * Returns ID number of the ant
+     * @return The ID number of the ant.
      */
     public int getId() {
         return id;
     }
     
     /**
-     * @return Returns the colour of the ant.
+     * Returns the colour of the ant.
+     * @return The colour of the ant.
      */
     public Colour getColour() {
         return colour;
     }
 
     /**
-     * @return Returns the state of the ant.
+     * Returns the state of the ant.
+     * @return The state of the ant.
      */
     public int getState() {
         return state;
@@ -58,15 +68,16 @@ public class Ant {
     }
 
     /**
-     * @return Returns the resting count of an ant
+     * Returns the resting count of an ant.
+     * @return The resting count of an ant.
      */
     public int getResting() {
         return resting;
     }
 
     /**
-     * Sets the resting count of an ant
-     * @param resting The amount of time to rest before next move
+     * Sets the resting count of an ant.
+     * @param resting The amount of time to rest before next move.
      */
     public void setResting(int resting) {
         this.resting = resting;
@@ -80,14 +91,15 @@ public class Ant {
     }
 
     /**
-     * @return Returns the direction of the ant.
+     * Returns the direction of the ant.
+     * @return The direction of the ant.
      */
     public int getDirection() {
         return direction;
     }
 
     /**
-     * Sets the direction of the ant
+     * Sets the direction of the ant.
      * @param direction The direction to set.
      */
     public void setDirection(int direction) {
@@ -95,7 +107,8 @@ public class Ant {
     }
 
     /**
-     * @return Returns whether the ant currently holds food.
+     * Returns whether the ant currently holds food.
+     * @return True if ant has food, false otherwise.
      */
     public boolean hasFood() {
         return hasFood;
@@ -110,7 +123,8 @@ public class Ant {
     }
 
     /**
-     * @return Returns the current position of the ant.
+     * Returns the current position of the ant.
+     * @return The current position of the ant.
      */
     public Coordinate getCurrentPosition() {
         return currentPosition;
@@ -118,7 +132,8 @@ public class Ant {
 
     /**
      *
-     * @return Returns whether the ant is alive or not.
+     * Returns whether the ant is alive or not.
+     * @return True if ant is alive, false otherwise.
      */
     public boolean IsAlive() {
         return isAlive;
@@ -126,7 +141,7 @@ public class Ant {
 
     /**
      * Sets whether the ant is alive or not.
-     * @param isAlive True if alive, false otherwise
+     * @param isAlive True if alive, false otherwise.
      */
     public void setIsAlive(boolean isAlive) {
         this.isAlive = isAlive;

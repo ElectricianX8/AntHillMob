@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+
 package antgame;
 
 import parsers.AntBrain;
@@ -10,21 +12,26 @@ import instructions.*;
 import java.util.ArrayList;
 
 /**
- *
- * Top-level class for managing game
+ * Top-level class for managing a single instance of the game.
  */
 public class Game {
 
-    Player redPlayer;
-    Player blackPlayer;
-    boolean isDone;
-    ArrayList<Ant> ants;
-    GameBoard board;
-    int delay;
+    private Player redPlayer;
+    private Player blackPlayer;
+    private boolean isDone;
+    private ArrayList<Ant> ants;
+    private GameBoard board;
+    private int delay;
 
-    ArrayList<Integer> s = new ArrayList<>();
-    Integer seed = 12345;
+    private ArrayList<Integer> s = new ArrayList<>();
+    private Integer seed = 12345;
 
+    /**
+     * Constructor for the game class.
+     * @param redPlayer The red player.
+     * @param blackPlayer The black player.
+     * @param board The board/world to play on.
+     */
     public Game(Player redPlayer, Player blackPlayer, GameBoard board) {
         this.redPlayer = redPlayer;
         this.blackPlayer = blackPlayer;
@@ -35,6 +42,7 @@ public class Game {
         delay = 0;
     }
 
+    //Initialise the random number generator.
     private void initiateRNG() {
         s.add(seed);
         for (int i = 0; i < 5; i++) {
@@ -44,6 +52,7 @@ public class Game {
         }
     }
 
+    //Spawn initial ants onto the board.
     private void initiateAnts() {
 
         ants = new ArrayList<Ant>();
@@ -57,11 +66,15 @@ public class Game {
                 board.setAntAt(cord, ant);
                 ants.add(ant);
             }
-            //check if not anthill for error catching purposes?
         }
-
     }
 
+    /**
+     * Returns the opposite colour.
+     * Black->Red, Red->Black
+     * @param colour The initial colour.
+     * @return The opposite colour
+     */
     public Colour getOppositeColour(Colour colour) {
 
         if (colour == Colour.RED) {
@@ -69,9 +82,14 @@ public class Game {
         } else {
             return Colour.RED;
         }
-
     }
 
+    /**
+     * Shift the direction by one.
+     * @param turnDirection The direction to turn to.
+     * @param direction The initial direction
+     * @return The direction after turning.
+     */
     public int turn(TurnDirection turnDirection, int direction) {
 
         if (turnDirection == TurnDirection.Left) {
@@ -80,7 +98,14 @@ public class Game {
             return (direction + 1) % 6;
         }
     }
-
+    
+    /**
+     * Returns the coordinate of the cell in the sensed direction.
+     * @param position The coordinate of the cell to sense from.
+     * @param direction The current direction.
+     * @param sense The direction of the sensing condition.
+     * @return The coordinate of the cell in the sensed direction.
+     */
     public Coordinate getSensedCell(Coordinate position, int direction, SenseDirection sense) {
 
         if (sense == SenseDirection.Here) {
@@ -96,6 +121,13 @@ public class Game {
         }
     }
 
+    /**
+     * Returns whether the current coordinate matches the criteria in the condition.
+     * @param position The coordinate of the cell.
+     * @param condition The condition to check for.
+     * @param colour The colour of the ant checking.
+     * @return True if the condition matches, false otherwise.
+     */
     public boolean isCellMatching(Coordinate position, Condition condition, Colour colour) {
 
         if (board.isRocky(position)) {
@@ -128,6 +160,12 @@ public class Game {
         }
     }
 
+    /**
+     * Returns the count of ants of the particular colour adjacent to the specified position.
+     * @param position The coordinate of the cell.
+     * @param colour The colour of the adjacent ants.
+     * @return The amount of ants of the particular colour adjacent to the specified coordinate.
+     */
     public int countAdjacentAnts(Coordinate position, Colour colour) {
 
         int antCount = 0;
@@ -146,7 +184,8 @@ public class Game {
 
         return antCount;
     }
-
+    
+    //kill the specified ant
     private void killAnt(Ant ant) {
 
         board.clearAntAt(ant.getCurrentPosition());
@@ -154,6 +193,11 @@ public class Game {
         ant.setIsAlive(false);
     }
 
+    /**
+     * Check if the specified coordinate has any surrounded ants.
+     * If so, kill the surrounded ant.
+     * @param position The coordinate of the cell.
+     */
     public void checkSurroundedAnt(Coordinate position) {
 
         if (board.isAntAt(position)) {
@@ -172,6 +216,10 @@ public class Game {
         }
     }
 
+    /**
+     * Check the current and adjacent coordinates for any surrounded ants.
+     * @param position The coordinate of the cell.
+     */
     public void checkForSurroundedAnts(Coordinate position) {
 
         checkSurroundedAnt(position);
@@ -180,11 +228,16 @@ public class Game {
             checkSurroundedAnt(board.getAdjacentCell(position, i));
         }
     }
-
+    
+    /**
+     * Returns the game board instance.
+     * @return The game board instance.
+     */
     public GameBoard getBoard() {
         return board;
     }
 
+    //Get the ant brain of the player with the specified colour.
     private AntBrain getPlayerBrain(Colour colour) {
 
         AntBrain antBrain;
@@ -197,6 +250,11 @@ public class Game {
         }
     }
 
+    /**
+     * Move one step for the specified ant
+     * @param ant The ant to process.
+     * @throws Exception Unexpected instruction
+     */
     public void step(Ant ant) throws Exception {
 
         if (ant.IsAlive()) {
@@ -289,6 +347,11 @@ public class Game {
         }
     }
 
+    /**
+     * Start the game.
+     * @return Return the result of the game
+     * @throws Exception Unexpected error has occured.
+     */
     public Result start() throws Exception {
 
         int p1Food = 0;
@@ -306,7 +369,7 @@ public class Game {
         }
 
         isDone = true;
-        System.out.print("Game has finished, yay");
+        
 
         p1Food = getPlayerFoodCount(Colour.RED);
         p2Food = getPlayerFoodCount(Colour.BLACK);
@@ -320,7 +383,12 @@ public class Game {
         return matchResult;
 
     }
-
+    
+    /**
+     * Returns the food score for the player of the specified colour.
+     * @param colour Colour of the player.
+     * @return The number of current food the player has.
+     */
     public int getPlayerFoodCount(Colour colour) {
 
         int count = 0;
@@ -334,6 +402,11 @@ public class Game {
 
     }
 
+    /**
+     * Returns the ant count for the player of the specified colour.
+     * @param colour Colour of the player.
+     * @return The number of alive ants the player has.
+     */
     public int getPlayerAntCount(Colour colour) {
 
         int count = 0;
@@ -345,10 +418,20 @@ public class Game {
         return count;
     }
 
+    /**
+     * Change the frame delay.
+     * 0 for infinite, >0 to slow down the speed of the game.
+     * @param delay Delay in miliseconds.
+     */
     public void changeDelay(int delay) {
         this.delay = delay;
     }
 
+    /**
+     * Generate a random number using the provided number.
+     * @param n Number to generate from.
+     * @return Random number.
+     */
     public int randomNumberGen(int n) {
 
         Long s_n = (long) s.get(s.size() - 1);
@@ -365,12 +448,12 @@ public class Game {
         }
 
         return toReturn;
-
-//        double toReturn = Math.random();
-//        toReturn *= n;
-//        return (int)toReturn;
     }
-
+    
+    /**
+     * Returns whether the game is over or not.
+     * @return True if the game is done, false otherwise.
+     */
     public boolean isGameDone() {
         return isDone;
     }

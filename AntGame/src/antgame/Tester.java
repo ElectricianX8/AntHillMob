@@ -18,19 +18,22 @@ import java.util.logging.Logger;
 
 /**
  *
- * 
+ * Testing class that can be attached to the game instance to generate dumps of the state of the game at each round.
  */
 public class Tester {
 
-    
-    
-    
-    
+    /**
+     * Default constructor.
+     */
     public Tester(){
         
     }
     
-    
+    /**
+     * Output the round state to a file.
+     * @param board Current board/world of the game
+     * @param roundNumber The round number.
+     */
     public void outputRound(Cell[][] board, int roundNumber){
         
         
@@ -51,8 +54,8 @@ public class Tester {
     }
     
     
-    
-    public String scanCell(Cell cell, int y, int x){
+    //Scan a cell and format its state for outputting
+    private String scanCell(Cell cell, int y, int x){
         
         
         String msg = "cell (" + x + ", " + y + "): ";
@@ -85,8 +88,8 @@ public class Tester {
 
     }
     
-    
-    public String getAntStatus(Ant ant){
+    //Scan an ant and format its state for outputting
+    private String getAntStatus(Ant ant){
         
         String status = "";
         if(ant.getColour() == Colour.RED){
@@ -112,8 +115,8 @@ public class Tester {
         
     }
     
-    
-    public String getMarks(Cell cell, Colour colour){
+    //Scan cell markers and format their state for outputting
+    private String getMarks(Cell cell, Colour colour){
         
         String marks = "";
         ArrayList<Integer> antMarks;
@@ -133,7 +136,8 @@ public class Tester {
         
         
     }
-
+    
+    //Dump the passed in string describing the round state to text file
     private void writeToFile(String round) {
         PrintWriter out = null;
         FileWriter fw = null;

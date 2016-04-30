@@ -11,30 +11,34 @@ import java.util.Comparator;
 
 
 /**
- *
- * Wrapper that manages games/tournaments
+ * Wrapper that manages games/tournaments. 
+ * Extends the runnable to provide multithreading between the game and the UI.
  */
 public class GameController implements GameControl, Runnable {
 
-    ArrayList<QueueMatch> waitingMatches;
-    ArrayList<Player> playerList;
-    ArrayList<GameBoard> worldList;
-    Game currentGame;
-    Result lastResult;
-    int delay;
+    private ArrayList<QueueMatch> waitingMatches;
+    private ArrayList<Player> playerList;
+    private ArrayList<GameBoard> worldList;
+    private Game currentGame;
+    private Result lastResult;
+    private int delay;
 
+    /**
+     * Default constructor.
+     */
     public GameController() {
 
         waitingMatches = new ArrayList<QueueMatch>();
         delay = 0;
     }
 
+    
     @Override
     public ArrayList<Player> getLeaderboard() {
 
         Collections.sort(playerList, new Comparator<Player>() {
 
-            @Override
+            @Override //sorting method
             public int compare(Player o1, Player o2) {
                 if (o1.getScore() < o2.getScore()) {
                     return 1;
@@ -52,7 +56,7 @@ public class GameController implements GameControl, Runnable {
     @Override
     public void setSingleGame(ArrayList<Player> players, ArrayList<GameBoard> worlds) {
 
-        QueueMatch match = new QueueMatch(players.get(0), players.get(1), worlds.get(0), 1);
+        QueueMatch match = new QueueMatch(players.get(0), players.get(1), worlds.get(0), 1); //just one match
         waitingMatches.add(match);
         
     }
@@ -63,6 +67,7 @@ public class GameController implements GameControl, Runnable {
         playerList = players;
         worldList = worlds;
 
+        //create all possible world/player combinations
         for (int i = 0; i < playerList.size() - 1; i++) {
             for (int j = i + 1; j < playerList.size(); j++) {
                 for (int w = 0; w < worldList.size(); w++) {
@@ -73,8 +78,6 @@ public class GameController implements GameControl, Runnable {
                 }
             }
         }
-        
-        
     }
 
     @Override
@@ -98,8 +101,9 @@ public class GameController implements GameControl, Runnable {
         Result result = currentGame.start();
         Player p1 = result.getWinner();
         Player p2 = result.getLoser();
+        
+        //if a tie, 1 score for each, otherwise 2 for winner
         if (result.gameWasATie()) {
-
             p1.setScore(p1.getScore() + 1);
             p2.setScore(p2.getScore() + 1);
         } else {
@@ -116,6 +120,7 @@ public class GameController implements GameControl, Runnable {
         this.delay = delay;
     }
 
+    @Override
     public void changeRunningDelay(int delay) {
         if(currentGame != null){
             currentGame.changeDelay(delay);
@@ -123,6 +128,7 @@ public class GameController implements GameControl, Runnable {
         
     }
 
+    //create a deep copy of the board for each match to prevent referencing issues
     private GameBoard copy(GameBoard gameBoard) {
 
         int height = gameBoard.getHexGrid().length;
@@ -145,8 +151,9 @@ public class GameController implements GameControl, Runnable {
         return new GameBoard(newBoard, gameBoard.getAnthills());
     }
 
+    
+    @Override
     public Game getCurrentGame() {
-        //System.out.println("Current Game: " + currentGame);
         return currentGame;
     }
 
@@ -159,6 +166,7 @@ public class GameController implements GameControl, Runnable {
         }
     }
 
+    @Override
     public Result getLastResult() {
         return lastResult;
     }

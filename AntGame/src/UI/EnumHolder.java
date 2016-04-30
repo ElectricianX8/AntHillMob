@@ -12,10 +12,16 @@ package UI;
  */
 public class EnumHolder {
     
+    /**
+     * Enum for modes available in the game
+     */
     public enum GameMode {
         GAME, TOURNAMENT;
     }
     
+    /**
+     * Enum for modes available in list creation
+     */
     public enum ListMode {
         PLAYER, WORLD;
     }

@@ -1,7 +1,7 @@
 package antgame;
 
 /**
- * Represents an (x,y) coordinate.
+ * Represents a (y, x) coordinate.
  */
 public class Coordinate {
     private int x;

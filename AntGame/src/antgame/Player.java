@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,10 +55,18 @@ public class Player {
         return name;
     }
     
+    /**
+     * Set the score of the player.
+     * @param score The score to set.
+     */
     public void setScore(int score){
         this.score = score;
     }
     
+    /**
+     * Returns the score of the player.
+     * @return The score of the player.
+     */
     public int getScore(){
         return score;
     }

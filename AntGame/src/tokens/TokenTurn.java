@@ -7,15 +7,24 @@ package tokens;
 
 /**
  *
- * @author oliverthomas
+ * Token representing a turn
+ * 
  */
 public class TokenTurn extends Token {
     String turn;
     
+    /**
+     * Constructor
+     * @param turn The turn
+     */
     public TokenTurn(String turn) {
         this.turn = turn.trim();
     }
-
+    
+    /**
+     * Returns the turn of the token.
+     * @return The turn of the token.
+     */
     public String getTurn() {
         return turn;
     }

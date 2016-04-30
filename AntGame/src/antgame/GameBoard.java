@@ -48,99 +48,71 @@ public class GameBoard {
     
     
     
-    //True if position is rocky, false if clear.
-    public boolean rocky(Coordinate position){
+    //True if position is isRocky, false if clear.
+    public boolean isRocky(Coordinate position){
         
         return getCellAtPosition(position).getTerrain() == Terrain.ROCKY;
     }
     
     
-    public boolean some_ant_is_at(Coordinate position){
+    public boolean isAntAt(Coordinate position){
         
         return getCellAtPosition(position).isOccupied();
     }
     
     
-    public Ant ant_at(Coordinate position){
+    public Ant antAt(Coordinate position){
         
         return getCellAtPosition(position).getAnt();
     }
     
     //assumes ant is already in
-    public void set_ant_at(Coordinate position, Ant ant){
+    public void setAntAt(Coordinate position, Ant ant){
         
         //maybe it shouldnt assume that?
         getCellAtPosition(position).setOccupied(ant);
     }
     
     //assumes ant is already in and only moving, not dying
-    public void clear_ant_at(Coordinate position){
+    public void clearAntAt(Coordinate position){
         //reset ants position?
         getCellAtPosition(position).clearAnt();
     }
     
-    /*
-    public boolean ant_is_alive(int id){
-        return getAnt(id)!= null;
-    }
-    
-    public Coordinate find_ant(int id){
-       // not null check?
-        return getAnt(id).getCurrentPosition();
-    }
-    
-  
-    
-    
-    //null if no ant
-    private Ant getAnt(int id){
-   
-        for(Ant ant: ants){
-            if(ant.getId() == id){
-                return ant;
-            }
-        }
-        return null;
-        
-    }
-    */
-    
-    
-    
-    
-    public int food_at(Coordinate position){
+
+    public int getFoodAt(Coordinate position){
         return getCellAtPosition(position).getFoodCount();
     }
     
-    public void set_food_at(Coordinate position, int foodCount){
+    public void setFoodAt(Coordinate position, int foodCount){
         getCellAtPosition(position).setFoodCount(foodCount);
     }
     
     
-    public void set_marker_at(Coordinate position, Colour colour, int marker){
+    public void setMarkerAt(Coordinate position, Colour colour, int marker){
         
         getCellAtPosition(position).setMarker(colour, marker);
     }
     
     
-    public void clear_marker_at(Coordinate position, Colour colour, int marker){
+    public void clearMarkerAt(Coordinate position, Colour colour, int marker){
         
         getCellAtPosition(position).clearMarker(colour, marker);
     }
     
-    public boolean check_marker_at(Coordinate position, Colour colour, int marker){
+    public boolean checkMarkerAt(Coordinate position, Colour colour, int marker){
         
         return getCellAtPosition(position).findMarker(colour, marker);
     }
     
-    public boolean check_any_marker_at(Coordinate position, Colour colour){
+    public boolean checkAnyMarkerAt(Coordinate position, Colour colour){
         
        
         return getCellAtPosition(position).findAnyMarker(colour);
     }
     
     
-    public boolean anthill_at(Coordinate position, Colour colour){
+    public boolean isAnthillAt(Coordinate position, Colour colour){
         
         return getCellAtPosition(position).isAnthill(colour);
         
@@ -154,17 +126,17 @@ public class GameBoard {
                 
                 Coordinate position = new Coordinate(height, width);
                 
-                if(rocky(position)){
+                if(isRocky(position)){
                     System.out.print("#");
                 }
-                else if(food_at(position)!=0){
-                    System.out.print(food_at(position));
+                else if(getFoodAt(position)!=0){
+                    System.out.print(getFoodAt(position));
                 }
                 // do these checks to see if ants are correctly placed on top of anthill during parsing
-                else if(anthill_at(position, Colour.RED) && some_ant_is_at(position) && ant_at(position).getColour() == Colour.RED){
+                else if(isAnthillAt(position, Colour.RED) && isAntAt(position) && antAt(position).getColour() == Colour.RED){
                     System.out.print("+");
                 }
-                else if(anthill_at(position, Colour.BLACK) && some_ant_is_at(position) && ant_at(position).getColour() == Colour.BLACK){
+                else if(isAnthillAt(position, Colour.BLACK) && isAntAt(position) && antAt(position).getColour() == Colour.BLACK){
                     System.out.print("-");
                 }
                 else{
@@ -177,7 +149,7 @@ public class GameBoard {
     }
 
     //throw null if out of bounds?
-    public Coordinate adjacent_cell(Coordinate position, int direction) {
+    public Coordinate getAdjacentCell(Coordinate position, int direction) {
         
         
         int x = position.getX();

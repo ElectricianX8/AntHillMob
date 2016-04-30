@@ -5,6 +5,7 @@
  */
 package antgame;
 
+import parsers.AntBrain;
 import instructions.*;
 import java.util.ArrayList;
 
@@ -47,13 +48,13 @@ public class Game {
 
         ants = new ArrayList<Ant>();
         for (Coordinate cord : board.getAnthills()) {
-            if (board.anthill_at(cord, Colour.RED)) {
+            if (board.isAnthillAt(cord, Colour.RED)) {
                 Ant ant = new Ant(Colour.RED, 0, cord.getY(), cord.getX());
-                board.set_ant_at(cord, ant);
+                board.setAntAt(cord, ant);
                 ants.add(ant);
-            } else if (board.anthill_at(cord, Colour.BLACK)) {
+            } else if (board.isAnthillAt(cord, Colour.BLACK)) {
                 Ant ant = new Ant(Colour.BLACK, 0, cord.getY(), cord.getX());
-                board.set_ant_at(cord, ant);
+                board.setAntAt(cord, ant);
                 ants.add(ant);
             }
             //check if not anthill for error catching purposes?
@@ -61,7 +62,7 @@ public class Game {
 
     }
 
-    public Colour other_color(Colour colour) {
+    public Colour getOppositeColour(Colour colour) {
 
         if (colour == Colour.RED) {
             return Colour.BLACK;
@@ -80,103 +81,103 @@ public class Game {
         }
     }
 
-    public Coordinate sensed_cell(Coordinate position, int direction, SenseDirection sense) {
+    public Coordinate getSensedCell(Coordinate position, int direction, SenseDirection sense) {
 
         if (sense == SenseDirection.Here) {
             return position;
         } else if (sense == SenseDirection.Ahead) {
-            return board.adjacent_cell(position, direction);
+            return board.getAdjacentCell(position, direction);
         } else if (sense == SenseDirection.LeftAhead) {
-            return board.adjacent_cell(position, turn(TurnDirection.Left, direction));
+            return board.getAdjacentCell(position, turn(TurnDirection.Left, direction));
         } else if (sense == SenseDirection.RightAhead) {
-            return board.adjacent_cell(position, turn(TurnDirection.Right, direction));
+            return board.getAdjacentCell(position, turn(TurnDirection.Right, direction));
         } else {
             return null;
         }
     }
 
-    public boolean cell_matches(Coordinate position, Condition condition, Colour colour) {
+    public boolean isCellMatching(Coordinate position, Condition condition, Colour colour) {
 
-        if (board.rocky(position)) {
+        if (board.isRocky(position)) {
             return condition.getCondition() == ConditionType.Rock;
         } else {
             if (condition.getCondition() == ConditionType.Friend) {
                 //check first for null, then colour?
-                return board.some_ant_is_at(position) && board.ant_at(position).getColour() == colour;
+                return board.isAntAt(position) && board.antAt(position).getColour() == colour;
             } else if (condition.getCondition() == ConditionType.Foe) {
-                return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour;
+                return board.isAntAt(position) && board.antAt(position).getColour() != colour;
             } else if (condition.getCondition() == ConditionType.FriendWithFood) {
-                return board.some_ant_is_at(position) && board.ant_at(position).getColour() == colour && board.ant_at(position).hasFood();
+                return board.isAntAt(position) && board.antAt(position).getColour() == colour && board.antAt(position).hasFood();
             } else if (condition.getCondition() == ConditionType.FoeWithFood) {
-                return board.some_ant_is_at(position) && board.ant_at(position).getColour() != colour && board.ant_at(position).hasFood();
+                return board.isAntAt(position) && board.antAt(position).getColour() != colour && board.antAt(position).hasFood();
             } else if (condition.getCondition() == ConditionType.Food) {
-                return board.food_at(position) > 0;
+                return board.getFoodAt(position) > 0;
             } else if (condition.getCondition() == ConditionType.Rock) {
                 return false;
             } else if (condition.getCondition() == ConditionType.Marker) {
-                return board.check_marker_at(position, colour, condition.getMark());
+                return board.checkMarkerAt(position, colour, condition.getMark());
             } else if (condition.getCondition() == ConditionType.FoeMarker) {
-                return board.check_any_marker_at(position, other_color(colour));
+                return board.checkAnyMarkerAt(position, getOppositeColour(colour));
             } else if (condition.getCondition() == ConditionType.Home) {
-                return board.anthill_at(position, colour);
+                return board.isAnthillAt(position, colour);
             } else if (condition.getCondition() == ConditionType.FoeHome) {
-                return board.anthill_at(position, other_color(colour));
+                return board.isAnthillAt(position, getOppositeColour(colour));
             } else {
                 return false;
             }
         }
     }
 
-    public int adjacent_ants(Coordinate position, Colour colour) {
+    public int countAdjacentAnts(Coordinate position, Colour colour) {
 
         int antCount = 0;
 
         //check all directions
         for (int i = 0; i < 6; i++) {
 
-            Coordinate adj_cord = board.adjacent_cell(position, i);
+            Coordinate adj_cord = board.getAdjacentCell(position, i);
 
             //if not null, and there's an ant in the position of the same colour, count
-            if (adj_cord != null && board.some_ant_is_at(adj_cord) && board.ant_at(adj_cord).getColour() == colour) {
+            if (adj_cord != null && board.isAntAt(adj_cord) && board.antAt(adj_cord).getColour() == colour) {
                 antCount++;
-                //System.out.println("Surround check: " + adj_cord.getX() + " " + adj_cord.getY() + " ant check:" + board.some_ant_is_at(adj_cord));
+                //System.out.println("Surround check: " + adj_cord.getX() + " " + adj_cord.getY() + " ant check:" + board.isAntAt(adj_cord));
             }
         }
 
         return antCount;
     }
 
-    private void kill_ant(Ant ant) {
+    private void killAnt(Ant ant) {
 
-        board.clear_ant_at(ant.getCurrentPosition());
+        board.clearAntAt(ant.getCurrentPosition());
         ant.setCurrentPosition(null);
         ant.setIsAlive(false);
     }
 
-    public void check_for_surrounded_ant_at(Coordinate position) {
+    public void checkSurroundedAnt(Coordinate position) {
 
-        if (board.some_ant_is_at(position)) {
-            Ant ant = board.ant_at(position);
+        if (board.isAntAt(position)) {
+            Ant ant = board.antAt(position);
 
-            if (adjacent_ants(position, other_color(ant.getColour())) >= 5) {
-                kill_ant(ant);
+            if (countAdjacentAnts(position, getOppositeColour(ant.getColour())) >= 5) {
+                killAnt(ant);
                 if (ant.hasFood()) {
-                    int foodAt = board.food_at(position);
-                    board.set_food_at(position, foodAt + 3 + 1);
+                    int foodAt = board.getFoodAt(position);
+                    board.setFoodAt(position, foodAt + 3 + 1);
                 } else {
-                    int foodAt = board.food_at(position);
-                    board.set_food_at(position, foodAt + 3 + 0);
+                    int foodAt = board.getFoodAt(position);
+                    board.setFoodAt(position, foodAt + 3 + 0);
                 }
             }
         }
     }
 
-    public void check_for_surrounded_ants(Coordinate position) {
+    public void checkForSurroundedAnts(Coordinate position) {
 
-        check_for_surrounded_ant_at(position);
+        checkSurroundedAnt(position);
 
         for (int i = 0; i < 6; i++) {
-            check_for_surrounded_ant_at(board.adjacent_cell(position, i));
+            checkSurroundedAnt(board.getAdjacentCell(position, i));
         }
     }
 
@@ -212,36 +213,36 @@ public class Game {
 
                 if (instruction instanceof Sense) {
                     Sense sense = (Sense) instruction;
-                    Coordinate sensedPosition = sensed_cell(currentPos, ant.getDirection(), sense.getSenseDirection());
-                    if (cell_matches(sensedPosition, sense.getCond(), ant.getColour())) { //if sensing true
+                    Coordinate sensedPosition = getSensedCell(currentPos, ant.getDirection(), sense.getSenseDirection());
+                    if (isCellMatching(sensedPosition, sense.getCond(), ant.getColour())) { //if sensing true
                         nextState = sense.getTrueState();
                     } else {
                         nextState = sense.getFalseState();
                     }
                 } else if (instruction instanceof Mark) {
                     Mark mark = (Mark) instruction;
-                    board.set_marker_at(currentPos, ant.getColour(), mark.getMarkToLeave());
+                    board.setMarkerAt(currentPos, ant.getColour(), mark.getMarkToLeave());
                     nextState = mark.getStateToGoTo();
                 } else if (instruction instanceof Unmark) {
                     Unmark unmark = (Unmark) instruction;
-                    board.clear_marker_at(currentPos, ant.getColour(), unmark.getMarkToRemove());
+                    board.clearMarkerAt(currentPos, ant.getColour(), unmark.getMarkToRemove());
                     nextState = unmark.getStateToGoTo();
                 } else if (instruction instanceof Pickup) {
                     Pickup pickup = (Pickup) instruction;
-                    //|| board.anthill_at(currentPos, other_color(ant.getColour())) add this to prevent picking up from enemy anthill
+                    //|| board.isAnthillAt(currentPos, getOppositeColour(ant.getColour())) add this to prevent picking up from enemy anthill
                     //only prevents picking up from own anthill now, but that's not specified in spec
-                    if (ant.hasFood() || board.food_at(currentPos) == 0) {
+                    if (ant.hasFood() || board.getFoodAt(currentPos) == 0) {
                         nextState = pickup.getFalseState();
                     } else {
-                        board.set_food_at(currentPos, board.food_at(currentPos) - 1);
+                        board.setFoodAt(currentPos, board.getFoodAt(currentPos) - 1);
                         ant.setHasFood(true);
                         nextState = pickup.getTrueState();
                     }
                 } else if (instruction instanceof Drop) {
                     Drop drop = (Drop) instruction;
-                    // && board.anthill_at(currentPos, ant.getColour()) prevent dropping outside anthill, not in spec
+                    // && board.isAnthillAt(currentPos, ant.getColour()) prevent dropping outside anthill, not in spec
                     if (ant.hasFood()) {
-                        board.set_food_at(currentPos, board.food_at(currentPos) + 1);
+                        board.setFoodAt(currentPos, board.getFoodAt(currentPos) + 1);
                         ant.setHasFood(false);
                     }
                     nextState = drop.getStateToGoTo();
@@ -251,18 +252,18 @@ public class Game {
                     nextState = turn.getStateToGoTo();
                 } else if (instruction instanceof Move) {
                     Move move = (Move) instruction;
-                    Coordinate nextPosition = board.adjacent_cell(currentPos, ant.getDirection());
+                    Coordinate nextPosition = board.getAdjacentCell(currentPos, ant.getDirection());
 
-                    if (board.rocky(nextPosition) || board.some_ant_is_at(nextPosition)) {
+                    if (board.isRocky(nextPosition) || board.isAntAt(nextPosition)) {
                         nextState = move.getStateToGoToIfBlocked(); //if blocked
                     } else {
-                        board.clear_ant_at(currentPos);
-                        board.set_ant_at(nextPosition, ant);
+                        board.clearAntAt(currentPos);
+                        board.setAntAt(nextPosition, ant);
                         ant.setCurrentPosition(nextPosition);
                         ant.setResting(14);
                         nextState = move.getStateToGoToIfClear();
                         //System.out.println("Initial Cord: X (" + currentPos.getX() + ") Y(" + currentPos.getY()+ "), Moved to: X(" + nextPosition.getX() + ") Y(" + nextPosition.getY()+ ")");
-                        check_for_surrounded_ants(nextPosition);
+                        checkForSurroundedAnts(nextPosition);
                         if (delay > 0) {
                             Thread.sleep(delay);
                         }
@@ -293,14 +294,14 @@ public class Game {
         int p1Food = 0;
         int p2Food = 0;
         Result matchResult;
-
+        
         int round = 0;
         while (round < 300000) {
             for (Ant ant : ants) {
                 //alive check
                 step(ant);
             }
-
+            
             round++;
         }
 
@@ -324,8 +325,8 @@ public class Game {
 
         int count = 0;
         for (Coordinate antHill : board.getAnthills()) {
-            if (board.anthill_at(antHill, colour) && board.food_at(antHill) > 0) {
-                count += board.food_at(antHill);
+            if (board.isAnthillAt(antHill, colour) && board.getFoodAt(antHill) > 0) {
+                count += board.getFoodAt(antHill);
             }
         }
 

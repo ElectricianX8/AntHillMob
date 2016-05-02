@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -129,11 +130,13 @@ public class Player {
      */
     public void loadAntBrain(File f) throws IOException, LexerException, ParsingException, NotValidInstructionException {
         AntBrain ab;
+        Path fileName = f.toPath();
+        System.out.println(fileName.getFileName());
         String content = readFile(f.getPath(), Charset.defaultCharset());
 
         Lexer lex = new Lexer();
         Parser parse = new Parser();
-        ab = parse.parseAntBrain(lex.lexAntBrain(content));
+        ab = parse.parseAntBrain(lex.lexAntBrain(fileName.getFileName(), content));
         setAntBrain(ab);
     }
 

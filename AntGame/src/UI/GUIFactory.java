@@ -232,6 +232,27 @@ public class GUIFactory {
     }
     
     /**
+     * Create the panel for inputting AntHill size in world creation.
+     * @param heightCount The upper limit on available sizes.
+     * @param widthCount The upper limit on available sizes.
+     * @return The panel.
+     */
+    public JPanel createAnthillSizeInputPanel(int minSize, int maxSize){
+        
+        JPanel panel = new JPanel();
+   
+        panel.add(createLabel("Anthill Size: ", false));
+        
+        JComboBox<Integer> numbers = new JComboBox<Integer>();
+        for(int i = minSize; i<=maxSize; i+=2){
+            numbers.addItem(i);
+        }
+        panel.add(numbers);
+        
+        return panel;
+    }
+    
+    /**
      * Create a panel with label and dropdown box containing true and false values.
      * @param label Label of the panel
      * @return The panel.

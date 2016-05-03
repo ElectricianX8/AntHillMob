@@ -30,6 +30,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -608,14 +609,24 @@ public class GameView extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    processWorldInput();
+                    String worldAsText = processWorldInput();
                     //if processed well, do this
                     factory.setFileFilter(fileBrowser, ListMode.WORLD);
                     int returnVal = fileBrowser.showSaveDialog(panel);
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File file = fileBrowser.getSelectedFile();
+                        
+                        String fileName = file.getAbsolutePath();
+                        if (!fileName.endsWith(".world")) {
+                            file = new File(fileName+".world");
+                        }
 
                         System.out.println("Opening: " + file.getPath());
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(worldAsText);
+                        fileWriter.flush();
+                        fileWriter.close();
+                        
                         //dump to file here
                         //finish screen?
                     } else {
@@ -634,7 +645,7 @@ public class GameView extends JFrame {
         return panel;
     }
 
-    private void processWorldInput() throws Exception {
+    private String processWorldInput() throws Exception {
 
         BoardLayoutGenerator generator = new BoardLayoutGenerator();
 
@@ -650,7 +661,7 @@ public class GameView extends JFrame {
         foodSpread = bool.equals("True");
         int noRocks = (Integer) ((JComboBox) ((JPanel) parent.getComponent(4)).getComponent(1)).getSelectedItem();
 
-        generator.generate(height, width, anthillSize, foodCount, foodSpread, noRocks);
+        return generator.generate(height, width, anthillSize, foodCount, foodSpread, noRocks);
     }
 
     // Game Window panels

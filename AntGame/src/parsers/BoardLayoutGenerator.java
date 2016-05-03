@@ -22,7 +22,7 @@ public class BoardLayoutGenerator {
      * @param numOfRocks The total number of non-border rocks within the world.
      * @throws Exception Incorrect parameters.
      */
-    public void generate(int h, int w, int anthillSize, int numOfFoodBlobs, boolean randomFoodBlobs, int numOfRocks) throws Exception {
+    public String generate(int h, int w, int anthillSize, int numOfFoodBlobs, boolean randomFoodBlobs, int numOfRocks) throws Exception {
         if (anthillSize%2 == 0) {
             throw new Exception("Ant Hill Size must be an odd number");
         }
@@ -38,7 +38,16 @@ public class BoardLayoutGenerator {
             addRockyTerrain(this.board);
         }
         fillIn(this.board);
+        
+        String boardAsString = height+"\n"+width;
+        for (char[] ca : board) {
+            boardAsString = boardAsString+"\n";
+            for (char c : ca) {
+                boardAsString = boardAsString+c;
+            }
+        }
 
+        return boardAsString;
     }
 
     /**
@@ -47,7 +56,7 @@ public class BoardLayoutGenerator {
      * @param w The width of the world.
      * @throws Exception Incorrect parameters.
      */
-    public void generate(int h, int w) throws Exception {
+    public String generate(int h, int w) throws Exception {
         this.height = h;
         this.width = w;
         this.board = new char[height][width];
@@ -60,7 +69,16 @@ public class BoardLayoutGenerator {
             addRockyTerrain(this.board);
         }
         fillIn(this.board);
+        
+        String boardAsString = height+"\n"+width;
+        for (char[] ca : board) {
+            boardAsString = boardAsString+"\n";
+            for (char c : ca) {
+                boardAsString = boardAsString+c;
+            }
+        }
 
+        return boardAsString;
     }
 
     //Generate the rocky outline for the world.

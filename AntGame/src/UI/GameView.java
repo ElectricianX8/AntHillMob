@@ -627,8 +627,9 @@ public class GameView extends JFrame {
                         fileWriter.flush();
                         fileWriter.close();
                         
+                        
                         //dump to file here
-                        //finish screen?
+                        creationMessage();
                     } else {
                         System.out.println("Open command cancelled by user.");
                     }
@@ -889,6 +890,18 @@ public class GameView extends JFrame {
             createTournamentPanel();
         }
 
+    }
+    
+    private void creationMessage(){
+        
+        JPanel resultPanel = new JPanel();
+        resultPanel.add(factory.createLabel("World was created!", 16, true));
+        
+
+        JOptionPane.showMessageDialog(null, resultPanel, "World created!",
+                JOptionPane.INFORMATION_MESSAGE);
+        
+        
     }
 
     private boolean isValidName(JTextField field) {

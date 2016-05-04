@@ -476,7 +476,17 @@ public class GameView extends JFrame {
 
         if (currentMatch == null) {
             panel.add(factory.createLabel("The tournament is done!", 20, true));
-            panel.add(factory.createLabel("Winner: " + gameController.getLeaderboard().get(0).getName(), 15, true));
+            
+            if(gameController.getLeaderboard().get(0).getScore() == gameController.getLeaderboard().get(1).getScore() ){
+                
+                panel.add(factory.createLabel("No clear winner", 15, true));
+                
+            }else{
+                 panel.add(factory.createLabel("Winner: " + gameController.getLeaderboard().get(0).getName(), 15, true));
+            }
+            
+            
+           
 
         } else {
             panel.add(factory.createLabel("Map #" + currentMatch.getMapNumber(), true));

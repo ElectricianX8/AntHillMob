@@ -6,24 +6,16 @@ package antgame;
  * and open the template in the editor.
  */
 
-import antgame.Ant;
-import antgame.Game;
-import antgame.GameBoard;
 import parsers.InvalidMapTokenException;
 import parsers.LexerException;
 import parsers.ParsingException;
-import antgame.Player;
-import antgame.Result;
 import parsers.WorldParser;
 import instructions.NotValidInstructionException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +27,7 @@ public class MatchTest {
 
     public MatchTest() {
     }
-/*
+
     @Test
     public void testMatch() throws LexerException, ParsingException {
         try {
@@ -49,16 +41,15 @@ public class MatchTest {
             two.setName("Two");
             two.setId(2);
             two.loadAntBrain(new File("sample.ant"));
-            Match m = new Match(one, one, testBoard);
-            Result r = m.start();
-            int count = 0;
-            for (Ant a : m.getAntArray()) {
-                if (a.getIsAlive()) {
-                    count++;
-                }
-            }
-            testBoard.printBoard();
-            System.out.println("Num of alive ants at the end " + count);
+            ArrayList<Player> playerList = new ArrayList<>();
+            playerList.add(one);
+            playerList.add(two);
+            ArrayList<GameBoard> boardList = new ArrayList<>();
+            boardList.add(testBoard);
+            GameController gc = new GameController();
+            gc.setSingleGame(playerList, boardList);
+            Result r = gc.startNextMatch();
+            System.out.println("Match test successful");
             if (r.gameWasATie()) {
                 System.out.println("Tie");
             } else {
@@ -70,7 +61,7 @@ public class MatchTest {
             Logger.getLogger(MatchTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    */
+    
      @Test
      public void testRNG() throws InvalidMapTokenException {
      try {
@@ -85,7 +76,7 @@ public class MatchTest {
      two.setName("Two");
      two.setId(2);
      two.loadAntBrain(new File("TestBrain.txt"));
-     Game m = new Game(one, one, testBoard);
+     Game m = new Game(one, two, testBoard);
      assertEquals(7193, m.randomNumberGen(16384));
      assertEquals(2932, m.randomNumberGen(16384));
      assertEquals(10386, m.randomNumberGen(16384));

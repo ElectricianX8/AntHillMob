@@ -1,8 +1,17 @@
 package antgame;
 
+import instructions.NotValidInstructionException;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import parsers.InvalidMapTokenException;
+import parsers.LexerException;
+import parsers.ParsingException;
+import parsers.WorldParser;
 
 /**
  *
@@ -42,6 +51,49 @@ public class ResultTest {
     
     @Test
     public void gameWasATieTest(){
-        assertFalse(r.gameWasATie());
+        try {
+            assertFalse(r.gameWasATie());
+            WorldParser parser = new WorldParser();
+            Player one = new Player();
+            one.setName("Dave");
+            one.setId(1);
+            one.loadAntBrain(new File("sample.ant"));
+            Player two = new Player();
+            two.setName("Chris");
+            two.setId(2);
+            two.loadAntBrain(new File("sample.ant"));
+            GameBoard board = parser.parse("sample0.world.txt");
+            Game g = new Game(one, two, board);
+            Result r = g.start();
+            if(g.getPlayerFoodCount(Colour.RED) == g.getPlayerFoodCount(Colour.BLACK)){
+                System.out.println(g.getPlayerFoodCount(Colour.RED));
+                System.out.println(g.getPlayerFoodCount(Colour.BLACK));
+                assertTrue(r.gameWasATie());
+            }
+            else{
+                assertFalse(r.gameWasATie());
+                if(g.getPlayerFoodCount(Colour.RED) > g.getPlayerFoodCount(Colour.BLACK)){
+                    assertEquals(one, r.getWinner());
+                    assertEquals(two, r.getLoser());
+                }
+                else{
+                    assertEquals(two, r.getWinner());
+                    assertEquals(one, r.getLoser());
+                }
+            }
+            
+                    } catch (IOException ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidMapTokenException ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LexerException ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParsingException ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotValidInstructionException ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ResultTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

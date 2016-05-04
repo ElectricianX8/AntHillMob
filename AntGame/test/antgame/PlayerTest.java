@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import parsers.LexerException;
 
 /**
  *
@@ -33,13 +34,14 @@ public class PlayerTest {
     
     Player p1,p2;
     int id;
-    AntBrain ab1, ab2;
+    AntBrain ab1, ab2, ab3;
     
     @Before
     public void setUpPlayer(){
         Instruction[] i = new Instruction[10];
-        ab1 = new AntBrain("Brain1", i);
-        ab2 = new AntBrain("Brain2", i);
+        ab1 = new AntBrain("~Brain1", i);
+        ab2 = new AntBrain("~Brain2", i);
+        ab3 = new AntBrain("~Brain3", i);
         p1 = new Player("Jeremy", ++id, ab1);
         p2 = new Player("James", ++id, ab2);
     }
@@ -87,6 +89,13 @@ public class PlayerTest {
         p1.setAntBrain(ab2);
         assertEquals(ab2, p1.getAntBrain());
         assertFalse(p1.getAntBrain() == ab1);
+    }
+    
+    @Test
+    public void loadAntBrainTest() throws IOException, LexerException, ParsingException, NotValidInstructionException{
+        assertEquals(ab1, p1.getAntBrain());
+        p1.loadAntBrain(new File("sampleInvalid.ant"));
+        assertFalse(ab1 == p1.getAntBrain());
     }
     
     @Test

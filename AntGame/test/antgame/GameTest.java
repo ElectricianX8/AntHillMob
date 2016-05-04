@@ -31,6 +31,9 @@ public class GameTest {
     public GameTest() {
     }
 
+    /**
+     * Initializes the parameters for the Game class, as well as games it depends on.
+     */
     @Before
     public void init() {
 
@@ -51,6 +54,9 @@ public class GameTest {
     
 
 
+    /**
+     * Tests whether the current coordinate matches the criteria in the condition.
+     */
     @Test
     public void cell_matches_test() {
         try {
@@ -65,6 +71,10 @@ public class GameTest {
 
     }
 
+    /**
+     * Tests the senseDirection method in the Game class, which returns the coordinate of the cell in the 
+     * sensed direction.
+     */
     @Test
     public void SenseDirectionTest() {
         try {
@@ -86,7 +96,10 @@ public class GameTest {
 
     }
     
-    
+    /**
+     * Tests the adjacentAnts method in the Game class. Gives the number of ants of the specified colour
+     * in the cells adjacent to the cell occupied by an ant.
+     */
     @Test
     public void adjacentAntsTest(){
         
@@ -95,24 +108,40 @@ public class GameTest {
         
         int antTest = game.countAdjacentAnts(cord, Colour.RED);
         assertEquals(4, antTest);
-        
-        System.out.println("works?");
         Coordinate cord2 = new Coordinate(27, 40);
         int antTest2 = game.countAdjacentAnts(cord2, Colour.RED);
         assertEquals(3, antTest2);
         
     }
     
+    /**
+     * Tests whether the other method that gets the colour of the opposition's ant works in the game class.
+     */
     @Test
     public void otherColourTest(){
         assertEquals(Colour.BLACK, game.getOppositeColour(Colour.RED));
     }
     
+    /**
+     * Tests the turn method in the game class for both when an ant turns left and when an ant
+     * turns right.
+     */
     @Test
     public void turnTest(){
         assertEquals(3, game.turn(TurnDirection.Left, 4));
         assertEquals(0, game.turn(TurnDirection.Left, 1));
         assertEquals(0, game.turn(TurnDirection.Right, 5));
         assertEquals(2, game.turn(TurnDirection.Right, 7));
+    }
+    
+    
+    /**
+     * Boolean indicates whether the game has finished. Game not started yet, so cannot finish,
+     * therefore we assert that the boolean will return false.
+     * @throws Exception 
+     */
+    @Test
+    public void isDoneTest() throws Exception{
+        assertFalse(game.isGameDone());
     }
 }

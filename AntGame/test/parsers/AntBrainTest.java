@@ -1,6 +1,5 @@
-package antgame;
+package parsers;
 
-import parsers.AntBrain;
 import instructions.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,13 +22,14 @@ public class AntBrainTest {
     
     @Before
     public void createAntBrain() {
-        name = " Monica";
+        name = " ~Monica";
         nospace = "Monica";
         brain = new Instruction[4];
         brain[0] = new Drop();
         brain[1] = new Move();
         brain[2] = new Mark();
         brain[3] = new Flip();
+        
         ab = new AntBrain(name, brain);
     }
 

@@ -14,18 +14,13 @@ public class AntTest {
     }
     
     Ant a, b;
-    int id;
-    Colour colour;
-    int direction;
-    int x;
-    int y;
     
     @Before
     public void createAnt(){
-        colour = Colour.BLACK;
-        direction = 5;
-        x = 6;
-        y = 5;
+        Colour colour = Colour.BLACK;
+        int direction = 5;
+        int x = 6;
+        int y = 5;
         a = new Ant(colour, direction, x, y);
         colour = Colour.RED;
         direction = 2;

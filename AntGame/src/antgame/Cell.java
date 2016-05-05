@@ -14,6 +14,7 @@ public class Cell {
     ArrayList<Integer> redMarkers;
     ArrayList<Integer> blackMarkers;
     private Colour antHill;
+    Colour antColour;
 
     /**
      * Constructor for cell objects.
@@ -71,6 +72,7 @@ public class Cell {
      */
     public void setOccupied(Ant ant) {
         this.ant = ant;
+        antColour = ant.getColour();
     }
     
     /**
@@ -78,6 +80,7 @@ public class Cell {
      */
     public void clearAnt(){
         ant = null;
+        antColour = null;
     }
     
     /**
@@ -169,7 +172,7 @@ public class Cell {
             return new Color(250,250,210);
         }
         else{
-            if(ant.getColour()==Colour.RED){
+            if(antColour==Colour.RED){
                 return Color.RED;
             }
             else{
